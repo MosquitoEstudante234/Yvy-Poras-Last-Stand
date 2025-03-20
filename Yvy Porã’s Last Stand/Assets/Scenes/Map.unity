@@ -221,13 +221,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 288501032}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.53, y: 4.53, z: 4.53}
+  m_LocalRotation: {x: -0, y: 0.24530958, z: -0, w: 0.9694448}
+  m_LocalPosition: {x: 2.2, y: 0, z: -0.95}
+  m_LocalScale: {x: 5.1913805, y: 5.1913805, z: 5.1913805}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 28.4, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +398,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1146964261
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.192
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.192
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.192
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 25.14
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.3800001
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -23.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.41523844
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.90971255
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -130.931
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
+      propertyPath: m_Name
+      value: Main Boat from Over the Seas GGJ'17
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 22450611e5ed2a542b2585a328ce5ea6, type: 3}
 --- !u!114 &72710010280736134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2327,3 +2396,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 288501036}
   - {fileID: 8030105389620632344}
+  - {fileID: 1146964261}
