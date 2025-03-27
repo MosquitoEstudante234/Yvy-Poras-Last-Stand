@@ -5,6 +5,8 @@ using TMPro;
 
 public class WaveSpawner : MonoBehaviour
 {
+    public static WaveSpawner instance;
+
     public GameObject[] enemyPrefabs; // Prefabs dos inimigos comuns
     public GameObject bossPrefab; // Prefab do inimigo boss
     public Transform[] spawnPoints; // Locais onde os inimigos podem spawnar
@@ -16,6 +18,16 @@ public class WaveSpawner : MonoBehaviour
     private int enemiesAlive = 0;
     private bool isSpawning = false;
 
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(this);
+        }
+        else
+            instance = this;
+    }
+
     void Start()
     {
         StartNextWave();
@@ -23,7 +35,8 @@ public class WaveSpawner : MonoBehaviour
 
     void Update()
     {
-        if (!isSpawning && enemiesAlive <= 0)
+        // Garante que a próxima onda só começa se todos os inimigos estiverem mortos
+        if (!isSpawning && enemiesAlive == 0)
         {
             StartNextWave();
         }
@@ -42,6 +55,7 @@ public class WaveSpawner : MonoBehaviour
         yield return new WaitForSeconds(2f); // Pequena pausa antes de iniciar a nova onda
 
         enemiesToSpawn = waveNumber + Random.Range(1, 3);
+        enemiesAlive = 0; // Reset da contagem antes de spawnar
 
         if (waveNumber % 5 == 0)
         {
@@ -74,8 +88,14 @@ public class WaveSpawner : MonoBehaviour
 
     void EnemyDied()
     {
-        enemiesAlive--;
+        enemiesAlive = Mathf.Max(0, enemiesAlive - 1); // Garante que nunca fique negativo
         UpdateUI();
+
+        // Debug para checar se o número de inimigos está correto
+        if (enemiesAlive < 0)
+        {
+            Debug.LogError("Inimigos vivos ficou negativo! Algo está errado.");
+        }
     }
 
     void UpdateUI()

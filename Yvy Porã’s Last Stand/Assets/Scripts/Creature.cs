@@ -9,12 +9,23 @@ public class Creature : MonoBehaviour
     public UnityEvent OnChasing;
 
     private NavMeshAgent agent;
-    public Transform playerPos;
+    private Transform playerPos;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        OnChasing.Invoke();
+
+        // Encontra o jogador pela tag "Player"
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerPos = player.transform;
+            OnChasing.Invoke(); // Invoca o evento apenas se encontrou o player
+        }
+        else
+        {
+            Debug.LogWarning("Nenhum objeto com a tag 'Player' foi encontrado.");
+        }
     }
 
     private void Update()
