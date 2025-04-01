@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1591882878877636449}
   - component: {fileID: 2918556747988138374}
   - component: {fileID: 2297627101105069474}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Inimigo
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -150,7 +150,6 @@ MonoBehaviour:
   OnChasing:
     m_PersistentCalls:
       m_Calls: []
-  playerPos: {fileID: 0}
 --- !u!114 &2297627101105069474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,5 +162,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637563fe0779cc64bab56efc168fb79c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 2
+  maxHealth: 75
   currentHealth: 0
