@@ -1018,8 +1018,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 7609340852474696997, guid: 39c9c86ef31b1e04ba132929c0491721, type: 3}
   minX: -5
   maxX: 5
-  minY: -5
-  maxY: 5
+  minY: 0
+  maxY: 0
 --- !u!4 &1336728508
 Transform:
   m_ObjectHideFlags: 0
