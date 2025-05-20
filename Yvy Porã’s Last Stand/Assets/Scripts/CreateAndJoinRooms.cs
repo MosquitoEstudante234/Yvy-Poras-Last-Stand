@@ -1,9 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using WebSocketSharp;
 
 public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
 {
@@ -14,11 +12,12 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        if (roomName.IsNullOrEmpty() == true)
+        if (string.IsNullOrEmpty(createInput.text))
         {
-            roomName = "Room" + Random.Range(0, 100) + Random.Range(0, 100);
+            roomName = " " + Random.Range(0, 100) + Random.Range(0, 100);
+            RoomInfoHolder.RoomName = roomName;
         }
-        else 
+        else
         {
             roomName = createInput.text;
         }
@@ -27,7 +26,8 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(joinInput.text);
+        roomName = joinInput.text;
+        PhotonNetwork.JoinRoom(roomName);
     }
 
     public void JoinRandomRoom()
@@ -37,12 +37,14 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        roomName = "Room" + Random.Range(0, 100) + Random.Range(0, 100);
+        roomName = " " + Random.Range(0, 100) + Random.Range(0, 100);
+        RoomInfoHolder.RoomName = roomName;
         PhotonNetwork.CreateRoom(roomName, new RoomOptions { MaxPlayers = 2 });
     }
 
     public override void OnJoinedRoom()
     {
+        RoomInfoHolder.RoomName = roomName;
         Debug.Log("Entrou em " + roomName);
         PhotonNetwork.LoadLevel("Game");
     }

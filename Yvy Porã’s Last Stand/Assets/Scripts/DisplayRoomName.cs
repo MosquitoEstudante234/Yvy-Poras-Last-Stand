@@ -1,16 +1,12 @@
+using TMPro;
 using UnityEngine;
 
 public class DisplayRoomName : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public TMP_Text roomNameText;
+
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        roomNameText.text = "Estás no quarto: " + RoomInfoHolder.RoomName;
     }
 }
