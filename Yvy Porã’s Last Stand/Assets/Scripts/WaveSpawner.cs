@@ -1,17 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Photon.Pun;
 
-public class WaveSpawner : MonoBehaviour
+public class WaveSpawner : MonoBehaviourPun
 {
     public static WaveSpawner instance;
 
-    public GameObject[] enemyPrefabs; // Prefabs dos inimigos comuns
-    public GameObject bossPrefab; // Prefab do inimigo boss
-    public Transform[] spawnPoints; // Locais onde os inimigos podem spawnar
-    public TextMeshProUGUI waveText; // Texto para exibir a wave
-    public TextMeshProUGUI enemiesText; // Texto para exibir inimigos restantes
+    public GameObject[] enemyPrefabs;
+    public GameObject bossPrefab;
+    public Transform[] spawnPoints;
+    public TextMeshProUGUI waveText;
+    public TextMeshProUGUI enemiesText;
 
     public int waveNumber = 0;
     private int enemiesToSpawn;
@@ -30,12 +30,16 @@ public class WaveSpawner : MonoBehaviour
 
     void Start()
     {
-        StartNextWave();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartNextWave();
+        }
     }
 
     void Update()
     {
-        // Garante que a próxima onda só começa se todos os inimigos estiverem mortos
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (!isSpawning && enemiesAlive == 0)
         {
             StartNextWave();
@@ -46,16 +50,16 @@ public class WaveSpawner : MonoBehaviour
     {
         waveNumber++;
         isSpawning = true;
-        UpdateUI();
+        photonView.RPC("RPC_UpdateUI", RpcTarget.All, waveNumber, enemiesAlive);
         StartCoroutine(SpawnWave());
     }
 
     IEnumerator SpawnWave()
     {
-        yield return new WaitForSeconds(2f); // Pequena pausa antes de iniciar a nova onda
+        yield return new WaitForSeconds(2f);
 
         enemiesToSpawn = waveNumber + Random.Range(1, 3);
-        enemiesAlive = 0; // Reset da contagem antes de spawnar
+        enemiesAlive = 0;
 
         if (waveNumber % 5 == 0)
         {
@@ -75,9 +79,9 @@ public class WaveSpawner : MonoBehaviour
     void SpawnEnemy(GameObject enemyPrefab)
     {
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+        GameObject enemy = PhotonNetwork.Instantiate(enemyPrefab.name, spawnPoint.position, spawnPoint.rotation);
         enemiesAlive++;
-        UpdateUI();
+        photonView.RPC("RPC_UpdateUI", RpcTarget.All, waveNumber, enemiesAlive);
 
         Enemy enemyScript = enemy.GetComponent<Enemy>();
         if (enemyScript != null)
@@ -88,18 +92,21 @@ public class WaveSpawner : MonoBehaviour
 
     void EnemyDied()
     {
-        enemiesAlive = Mathf.Max(0, enemiesAlive - 1); // Garante que nunca fique negativo
-        UpdateUI();
+        enemiesAlive = Mathf.Max(0, enemiesAlive - 1);
+        photonView.RPC("RPC_UpdateUI", RpcTarget.All, waveNumber, enemiesAlive);
 
-        // Debug para checar se o número de inimigos está correto
         if (enemiesAlive < 0)
         {
             Debug.LogError("Inimigos vivos ficou negativo! Algo está errado.");
         }
     }
 
-    void UpdateUI()
+    [PunRPC]
+    void RPC_UpdateUI(int wave, int alive)
     {
+        waveNumber = wave;
+        enemiesAlive = alive;
+
         if (waveText != null)
             waveText.text = "Wave: " + waveNumber;
 
