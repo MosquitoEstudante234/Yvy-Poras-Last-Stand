@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Spear : MonoBehaviour
+public class Spear : MonoBehaviourPun
 {
     public int damage = 25; // Dano normal
     public float cooldownTime = 3f; // Tempo de cooldown entre ataques
@@ -11,8 +11,19 @@ public class Spear : MonoBehaviour
 
     private bool canAttack = true; // Verifica se a lança pode atacar
 
+    void Start()
+    {
+        // Se este objeto não pertence ao jogador local, desativa a lança
+        if (!photonView.IsMine)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
     void Update()
     {
+        if (!photonView.IsMine) return; // Apenas o dono pode atacar
+
         if (Input.GetMouseButtonDown(0) && canAttack) // Clique esquerdo do mouse
         {
             Attack();
