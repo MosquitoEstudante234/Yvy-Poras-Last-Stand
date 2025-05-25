@@ -1011,7 +1011,7 @@ GameObject:
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1209208068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1026,7 +1026,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoints:
   - {fileID: 342819871}
-  enemy: {fileID: 0}
+  - {fileID: 995443849}
+  - {fileID: 1450829998}
+  enemy: {fileID: 7765888950752619067, guid: 485904f2b2af14343b9555262ea299dc, type: 3}
   timer: 4
   cooldown: 0
 --- !u!4 &1209208069

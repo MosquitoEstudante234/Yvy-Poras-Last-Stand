@@ -1,9 +1,9 @@
-using System.Collections;
-using UnityEngine;
-using TMPro;
 using Photon.Pun;
+using TMPro;
+using UnityEngine;
+using System.Collections;
 
-public class WaveSpawner : MonoBehaviourPun
+public class WaveSpawner : MonoBehaviourPunCallbacks
 {
     public static WaveSpawner instance;
 
@@ -20,20 +20,14 @@ public class WaveSpawner : MonoBehaviourPun
 
     private void Awake()
     {
-        if (instance != null)
-        {
-            Destroy(this);
-        }
-        else
-            instance = this;
+        if (instance != null) Destroy(gameObject);
+        else instance = this;
     }
 
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)
-        {
             StartNextWave();
-        }
     }
 
     void Update()
@@ -50,7 +44,7 @@ public class WaveSpawner : MonoBehaviourPun
     {
         waveNumber++;
         isSpawning = true;
-        photonView.RPC("RPC_UpdateUI", RpcTarget.All, waveNumber, enemiesAlive);
+        UpdateUI();
         StartCoroutine(SpawnWave());
     }
 
@@ -81,7 +75,7 @@ public class WaveSpawner : MonoBehaviourPun
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         GameObject enemy = PhotonNetwork.Instantiate(enemyPrefab.name, spawnPoint.position, spawnPoint.rotation);
         enemiesAlive++;
-        photonView.RPC("RPC_UpdateUI", RpcTarget.All, waveNumber, enemiesAlive);
+        UpdateUI();
 
         Enemy enemyScript = enemy.GetComponent<Enemy>();
         if (enemyScript != null)
@@ -93,20 +87,11 @@ public class WaveSpawner : MonoBehaviourPun
     void EnemyDied()
     {
         enemiesAlive = Mathf.Max(0, enemiesAlive - 1);
-        photonView.RPC("RPC_UpdateUI", RpcTarget.All, waveNumber, enemiesAlive);
-
-        if (enemiesAlive < 0)
-        {
-            Debug.LogError("Inimigos vivos ficou negativo! Algo está errado.");
-        }
+        UpdateUI();
     }
 
-    [PunRPC]
-    void RPC_UpdateUI(int wave, int alive)
+    void UpdateUI()
     {
-        waveNumber = wave;
-        enemiesAlive = alive;
-
         if (waveText != null)
             waveText.text = "Wave: " + waveNumber;
 

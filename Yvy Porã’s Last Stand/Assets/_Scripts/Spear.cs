@@ -1,30 +1,18 @@
 using System.Collections;
 using UnityEngine;
-using Photon.Pun;
 
-public class Spear : MonoBehaviourPun
+public class Spear : MonoBehaviour
 {
-    public int damage = 25; // Dano normal
-    public float cooldownTime = 3f; // Tempo de cooldown entre ataques
-    public float attackRange = 2f; // Alcance do golpe
-    public LayerMask enemyLayer; // Camada dos inimigos
+    public int damage = 25;
+    public float cooldownTime = 3f;
+    public float attackRange = 2f;
+    public LayerMask enemyLayer;
 
-    private bool canAttack = true; // Verifica se a lança pode atacar
-
-    void Start()
-    {
-        // Se este objeto não pertence ao jogador local, desativa a lança
-        if (!photonView.IsMine)
-        {
-            gameObject.SetActive(false);
-        }
-    }
+    private bool canAttack = true;
 
     void Update()
     {
-        if (!photonView.IsMine) return; // Apenas o dono pode atacar
-
-        if (Input.GetMouseButtonDown(0) && canAttack) // Clique esquerdo do mouse
+        if (Input.GetMouseButtonDown(0) && canAttack)
         {
             Attack();
         }
@@ -36,7 +24,7 @@ public class Spear : MonoBehaviourPun
 
         if (hits.Length > 0)
         {
-            bool firstHit = true; // Marca o primeiro inimigo atingido
+            bool firstHit = true;
 
             foreach (RaycastHit hit in hits)
             {
@@ -45,12 +33,12 @@ public class Spear : MonoBehaviourPun
                 {
                     if (firstHit)
                     {
-                        enemy.TakeDamage(damage); // Dano total no primeiro inimigo
+                        enemy.TakeDamage(damage);
                         firstHit = false;
                     }
                     else
                     {
-                        enemy.TakeDamage(damage / 2); // 50% do dano nos outros
+                        enemy.TakeDamage(damage / 2);
                     }
                 }
             }
@@ -62,15 +50,13 @@ public class Spear : MonoBehaviourPun
             Debug.Log("Ataque errou.");
         }
 
-        StartCoroutine(StartCooldown()); // Cooldown acontece mesmo errando
+        StartCoroutine(StartCooldown());
     }
 
     IEnumerator StartCooldown()
     {
         canAttack = false;
-        Debug.Log("Cooldown iniciado.");
         yield return new WaitForSeconds(cooldownTime);
         canAttack = true;
-        Debug.Log("Cooldown finalizado.");
     }
 }
