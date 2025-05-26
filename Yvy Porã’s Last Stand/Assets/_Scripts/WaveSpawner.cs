@@ -25,35 +25,17 @@ public class WaveSpawner : MonoBehaviour
             Destroy(this);
         }
         else
-        {
             instance = this;
-        }
     }
 
     void Start()
     {
-        Debug.Log("WaveSpawner ativo no objeto: " + gameObject.name);
-
-        // Adota todos os inimigos já existentes na cena (spawnados por outros scripts)
-        Enemy[] existingEnemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-        foreach (Enemy e in existingEnemies)
-        {
-            e.OnDeath += EnemyDied;
-            enemiesAlive++;
-        }
-
-        UpdateUI();
-
-        // Inicia a primeira wave apenas se não houver inimigos ativos
-        if (enemiesAlive == 0)
-        {
-            StartNextWave();
-        }
+        StartNextWave();
     }
 
     void Update()
     {
-        // Inicia a próxima wave somente se todos os inimigos morrerem
+        // Garante que a próxima onda só começa se todos os inimigos estiverem mortos
         if (!isSpawning && enemiesAlive == 0)
         {
             StartNextWave();
@@ -70,9 +52,10 @@ public class WaveSpawner : MonoBehaviour
 
     IEnumerator SpawnWave()
     {
-        yield return new WaitForSeconds(2f); // Pequeno atraso antes da wave
+        yield return new WaitForSeconds(2f); // Pequena pausa antes de iniciar a nova onda
 
         enemiesToSpawn = waveNumber + Random.Range(1, 3);
+        enemiesAlive = 0; // Reset da contagem antes de spawnar
 
         if (waveNumber % 5 == 0)
         {
@@ -93,27 +76,26 @@ public class WaveSpawner : MonoBehaviour
     {
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-
         enemiesAlive++;
-        Debug.Log("Inimigo spawnado. Total vivos: " + enemiesAlive);
         UpdateUI();
 
-        Enemy enemyScript = enemy.GetComponentInChildren<Enemy>(); // mais seguro para prefabs com hierarquia
+        Enemy enemyScript = enemy.GetComponent<Enemy>();
         if (enemyScript != null)
         {
             enemyScript.OnDeath += EnemyDied;
-        }
-        else
-        {
-            Debug.LogError("Componente Enemy não encontrado no inimigo instanciado!");
         }
     }
 
     void EnemyDied()
     {
-        enemiesAlive = Mathf.Max(0, enemiesAlive - 1);
-        Debug.Log("Inimigo morreu. Restantes: " + enemiesAlive);
+        enemiesAlive = Mathf.Max(0, enemiesAlive - 1); // Garante que nunca fique negativo
         UpdateUI();
+
+        // Debug para checar se o número de inimigos está correto
+        if (enemiesAlive < 0)
+        {
+            Debug.LogError("Inimigos vivos ficou negativo! Algo está errado.");
+        }
     }
 
     void UpdateUI()
