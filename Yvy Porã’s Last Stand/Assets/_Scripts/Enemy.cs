@@ -1,10 +1,9 @@
-using Photon.Pun;
 using UnityEngine;
 
-public class Enemy : MonoBehaviourPun
+public class Enemy : MonoBehaviour
 {
     public int maxHealth = 50;
-    private int currentHealth;
+    [SerializeField] private int currentHealth;
 
     public delegate void DeathDelegate();
     public event DeathDelegate OnDeath;
@@ -26,10 +25,8 @@ public class Enemy : MonoBehaviourPun
 
     void Die()
     {
-        OnDeath?.Invoke();
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.Destroy(gameObject);
-        }
+        OnDeath?.Invoke(); // Notifica que o inimigo morreu
+        Destroy(gameObject);
+        // WaveSpawner.instance.enemiesAlive--;
     }
 }
