@@ -6,11 +6,11 @@ public class Spear : MonoBehaviour
 {
 
     public int damage = 25; // Dano normal
-    public float cooldownTime = 3f; // Tempo de cooldown entre ataques
-    public float attackRange = 2f; // Alcance do golpe
+    public float cooldownTime = 0.4f; // Tempo de cooldown entre ataques
+    public float attackRange = 4f; // Alcance do golpe
     public LayerMask enemyLayer; // Camada dos inimigos
 
-    private bool canAttack = true; // Verifica se a lança pode atacar
+    private bool canAttack = true; // Verifica se a lanï¿½a pode atacar
 
 
     void Update()
