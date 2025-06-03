@@ -44,9 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ed7292a53696f84b8c885d37e8eb88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 25
-  cooldownTime: 3
-  attackRange: 2
+  damage: 26
+  cooldownTime: 1
+  attackRange: 3
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
