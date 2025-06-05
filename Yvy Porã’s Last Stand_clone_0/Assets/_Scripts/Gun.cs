@@ -17,7 +17,9 @@ public class Gun : MonoBehaviour
     public Camera fpsCam;
     public TextMeshProUGUI ammoText;
 
-    private bool nearReloadZone = false;
+    [Header("Recarga por olhar")]
+    public float reloadLookDistance = 3f; // Distância máxima para ativar recarga ao olhar
+    public string reloadTag = "ReloadZone";
 
     void Start()
     {
@@ -27,14 +29,16 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
+        // Atirar
         if (Input.GetButtonDown("Fire1") && canShoot && currentAmmo > 0)
         {
             Shoot();
         }
 
-        if (nearReloadZone && Input.GetKeyDown(KeyCode.E))
+        // Verifica se está olhando para a zona de recarga
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            Reload();
+            TryReload();
         }
     }
 
@@ -64,10 +68,22 @@ public class Gun : MonoBehaviour
         canShoot = true;
     }
 
+    void TryReload()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, reloadLookDistance))
+        {
+            if (hit.collider.CompareTag(reloadTag))
+            {
+                Reload();
+                Debug.Log("Estilingue recarregado ao olhar para o objeto!");
+            }
+        }
+    }
+
     void Reload()
     {
         currentAmmo = maxAmmo;
-        Debug.Log("Estilingue recarregado!");
         UpdateAmmoUI();
     }
 
@@ -76,23 +92,6 @@ public class Gun : MonoBehaviour
         if (ammoText != null)
         {
             ammoText.text = $"Munição: {currentAmmo}/{maxAmmo}";
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("ReloadZone"))
-        {
-            nearReloadZone = true;
-            Debug.Log("Pressione E para recarregar o estilingue.");
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("ReloadZone"))
-        {
-            nearReloadZone = false;
         }
     }
 }

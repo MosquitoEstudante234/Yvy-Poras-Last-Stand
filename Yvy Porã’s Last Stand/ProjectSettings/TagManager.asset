@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - Enemy
   - ReloadZone
+  - Interactable
   layers:
   - Default
   - TransparentFX
