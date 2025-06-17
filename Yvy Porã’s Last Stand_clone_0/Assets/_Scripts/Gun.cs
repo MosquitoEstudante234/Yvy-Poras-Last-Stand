@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Gun : MonoBehaviour
 {
@@ -11,28 +12,67 @@ public class Gun : MonoBehaviour
     public float cooldownTime = 0.5f;
     private bool canShoot = true;
     public float range = 100f;
-    public int damage = 20;
+    public int maxDamage = 20;
+
+    [Header("Carregamento")]
+    public float chargeDuration = 1.5f;
+    private float chargeTimer = 0f;
+    private bool isCharging = false;
 
     [Header("Referências")]
     public Camera fpsCam;
     public TextMeshProUGUI ammoText;
+    public Slider chargeSlider; // Adicione no Inspector
 
     [Header("Recarga por olhar")]
-    public float reloadLookDistance = 3f; // Distância máxima para ativar recarga ao olhar
+    public float reloadLookDistance = 3f;
     public string reloadTag = "ReloadZone";
 
     void Start()
     {
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
+        if (chargeSlider != null)
+        {
+            chargeSlider.gameObject.SetActive(false);
+            chargeSlider.maxValue = chargeDuration;
+            chargeSlider.value = 0f;
+        }
     }
 
     void Update()
     {
-        // Atirar
+        // Início do carregamento
         if (Input.GetButtonDown("Fire1") && canShoot && currentAmmo > 0)
         {
-            Shoot();
+            isCharging = true;
+            chargeTimer = 0f;
+            if (chargeSlider != null)
+                chargeSlider.gameObject.SetActive(true);
+        }
+
+        // Durante o carregamento
+        if (Input.GetButton("Fire1") && isCharging)
+        {
+            chargeTimer += Time.deltaTime;
+            if (chargeSlider != null)
+                chargeSlider.value = chargeTimer;
+        }
+
+        // Soltou o botão = atira
+        if (Input.GetButtonUp("Fire1") && isCharging)
+        {
+            float chargePercent = Mathf.Clamp01(chargeTimer / chargeDuration);
+            int damageToDeal = Mathf.RoundToInt(maxDamage * chargePercent);
+
+            Shoot(damageToDeal);
+            isCharging = false;
+            chargeTimer = 0f;
+            if (chargeSlider != null)
+            {
+                chargeSlider.value = 0f;
+                chargeSlider.gameObject.SetActive(false);
+            }
         }
 
         // Verifica se está olhando para a zona de recarga
@@ -42,7 +82,7 @@ public class Gun : MonoBehaviour
         }
     }
 
-    void Shoot()
+    void Shoot(int damage)
     {
         canShoot = false;
         currentAmmo--;
