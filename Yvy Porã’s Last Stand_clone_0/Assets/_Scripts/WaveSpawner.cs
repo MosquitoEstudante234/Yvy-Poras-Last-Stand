@@ -14,6 +14,7 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
     public TextMeshProUGUI waveText; // Texto para exibir a wave
     public TextMeshProUGUI enemiesText; // Texto para exibir inimigos restantes
 
+    bool canWave = false;
     public int waveNumber = 0;
     private int enemiesToSpawn;
     private int enemiesAlive = 0;
@@ -31,12 +32,15 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        StartNextWave();
+        if (PhotonNetwork.IsMasterClient && !canWave)
+        {
+            StartNextWave();
+            canWave = true;
+        }
     }
 
     void Update()
     {
-        // Garante que a pr�xima onda s� come�a se todos os inimigos estiverem mortos
         if (!isSpawning && enemiesAlive == 0)
         {
             StartNextWave();
