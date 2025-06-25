@@ -35,7 +35,6 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient && !canWave)
         {
             StartNextWave();
-            canWave = true;
         }
     }
 
