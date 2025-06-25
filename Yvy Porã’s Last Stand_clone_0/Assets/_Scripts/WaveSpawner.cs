@@ -14,7 +14,7 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
     public TextMeshProUGUI waveText; // Texto para exibir a wave
     public TextMeshProUGUI enemiesText; // Texto para exibir inimigos restantes
 
-    bool canWave = false;
+    private static bool canWave = false;
     public int waveNumber = 0;
     private int enemiesToSpawn;
     private int enemiesAlive = 0;
@@ -30,16 +30,23 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
             instance = this;
     }
 
-    void Start()
+    public override void OnJoinedRoom()
     {
         if (PhotonNetwork.IsMasterClient && !canWave)
         {
-            StartNextWave();
+            canWave = true;
+            StartWave();
         }
+    }
+
+    void StartWave()
+    {
+        StartNextWave();
     }
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         if (!isSpawning && enemiesAlive == 0)
         {
             StartNextWave();
