@@ -2984,6 +2984,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -884374042922124736, guid: 485904f2b2af14343b9555262ea299dc, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 613788298576439283, guid: 485904f2b2af14343b9555262ea299dc, type: 3}
       propertyPath: sceneViewId
       value: 2
