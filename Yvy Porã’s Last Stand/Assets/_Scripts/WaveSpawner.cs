@@ -86,7 +86,7 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
     void SpawnEnemy(GameObject enemyPrefab)
     {
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        GameObject enemy = PhotonNetwork.Instantiate("Inimigo", spawnPoint.position, spawnPoint.rotation);
+        GameObject enemy = PhotonNetwork.Instantiate(enemyPrefab.name, spawnPoint.position, spawnPoint.rotation);
         enemiesAlive++;
         UpdateUI();
 
