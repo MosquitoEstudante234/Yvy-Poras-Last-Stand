@@ -1,10 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using Photon.Pun;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviourPun
 {
     public int maxHealth = 50;
     [SerializeField] private int currentHealth;
+
+    public int damage = 10;
+    public float initialCooldown = 1f;
+    public float damageInterval = 2f;
+
+    private Coroutine damageCoroutine;
+    private PlayerHealth currentTarget;
 
     public delegate void DeathDelegate();
     public event DeathDelegate OnDeath;
@@ -16,11 +24,9 @@ public class Enemy : MonoBehaviour
     {
         currentHealth = maxHealth;
 
-        // Guarda a referência do Renderer e a cor original
         enemyRenderer = GetComponent<Renderer>();
         if (enemyRenderer != null)
         {
-            // Instancia o material para evitar alterar outros inimigos
             enemyRenderer.material = new Material(enemyRenderer.material);
             originalColor = enemyRenderer.material.color;
         }
@@ -29,8 +35,6 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-
-        // Pisca vermelho ao tomar dano
         StartCoroutine(FlashRed());
 
         if (currentHealth <= 0)
@@ -43,16 +47,50 @@ public class Enemy : MonoBehaviour
     {
         if (enemyRenderer != null)
         {
-            enemyRenderer.material.color = Color.red; // Fica vermelho
-            yield return new WaitForSeconds(0.2f);    // Espera um tempo curto
-            enemyRenderer.material.color = originalColor; // Volta à cor original
+            enemyRenderer.material.color = Color.red;
+            yield return new WaitForSeconds(0.2f);
+            enemyRenderer.material.color = originalColor;
         }
     }
 
     void Die()
     {
-        OnDeath?.Invoke(); // Notifica que o inimigo morreu
+        OnDeath?.Invoke();
         Destroy(gameObject);
-        // WaveSpawner.instance.enemiesAlive--;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            PlayerHealth player = collision.collider.GetComponent<PlayerHealth>();
+            if (player != null)
+            {
+                currentTarget = player;
+                damageCoroutine = StartCoroutine(DealDamageOverTime(player));
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            if (damageCoroutine != null)
+                StopCoroutine(damageCoroutine);
+
+            currentTarget = null;
+        }
+    }
+
+    IEnumerator DealDamageOverTime(PlayerHealth player)
+    {
+        yield return new WaitForSeconds(initialCooldown);
+
+        while (player != null && currentTarget == player)
+        {
+            player.TakeDamage(damage);
+            yield return new WaitForSeconds(damageInterval);
+        }
     }
 }

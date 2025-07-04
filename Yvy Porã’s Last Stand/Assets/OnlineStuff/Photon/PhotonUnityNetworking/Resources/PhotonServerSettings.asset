@@ -43,6 +43,7 @@ MonoBehaviour:
   - Char2IsTrue
   - CharsIsFalse
   - RPC_UpdateUI
+  - ReturnToMenu
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
