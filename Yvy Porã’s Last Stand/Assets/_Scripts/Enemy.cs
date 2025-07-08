@@ -59,11 +59,12 @@ public class Enemy : MonoBehaviourPun
         Destroy(gameObject);
     }
 
-    private void OnCollisionEnter(Collision collision)
+   
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            PlayerHealth player = collision.collider.GetComponent<PlayerHealth>();
+            PlayerHealth player = other.GetComponent<PlayerHealth>();
             if (player != null)
             {
                 currentTarget = player;
@@ -72,13 +73,11 @@ public class Enemy : MonoBehaviourPun
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (other.CompareTag("Player") && currentTarget != null)
         {
-            if (damageCoroutine != null)
-                StopCoroutine(damageCoroutine);
-
+            StopCoroutine(damageCoroutine);
             currentTarget = null;
         }
     }
