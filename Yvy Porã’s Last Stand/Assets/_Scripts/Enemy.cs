@@ -59,8 +59,8 @@ public class Enemy : MonoBehaviourPun
         Destroy(gameObject);
     }
 
-   
-    private void OnTriggerEnter(Collider other)
+    
+    public void OnPlayerEnterTrigger(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviourPun
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    public void OnPlayerExitTrigger(Collider other)
     {
         if (other.CompareTag("Player") && currentTarget != null)
         {
