@@ -88,8 +88,11 @@ public class Gun : MonoBehaviour
         currentAmmo--;
         UpdateAmmoUI();
 
+        // Ignora a layer EnemyTrigger (trigger do inimigo)
+        int mask = ~LayerMask.GetMask("EnemyIgnore");
+
         RaycastHit hit;
-        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
+        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range, mask))
         {
             Debug.Log("Acertou: " + hit.transform.name);
 

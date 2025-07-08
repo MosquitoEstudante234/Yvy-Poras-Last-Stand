@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1732544491850631465}
   - component: {fileID: 5139019506690301729}
   - component: {fileID: 2415252512686360080}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: SphereTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

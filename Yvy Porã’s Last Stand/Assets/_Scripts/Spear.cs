@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class Spear : MonoBehaviour
 {
-
     public int damage = 25; // Dano normal
     public float cooldownTime = 0.4f; // Tempo de cooldown entre ataques
     public float attackRange = 4f; // Alcance do golpe
-    public LayerMask enemyLayer; // Camada dos inimigos
+    public LayerMask enemyLayer; // Camada dos inimigos (configurar no Inspector se quiser)
 
-    private bool canAttack = true; // Verifica se a lan�a pode atacar
-
+    private bool canAttack = true; // Verifica se a lança pode atacar
 
     void Update()
     {
@@ -23,7 +21,10 @@ public class Spear : MonoBehaviour
 
     void Attack()
     {
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, transform.forward, attackRange, enemyLayer);
+        // Ignora a layer EnemyTrigger (trigger do inimigo)
+        int mask = ~LayerMask.GetMask("EnemyIgnore");
+
+        RaycastHit[] hits = Physics.RaycastAll(transform.position, transform.forward, attackRange, mask);
 
         if (hits.Length > 0)
         {
