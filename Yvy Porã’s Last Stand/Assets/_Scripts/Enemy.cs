@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviourPun
         }
     }
 
-    public void TakeDamage(int damage)
+    [PunRPC]public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         StartCoroutine(FlashRed());
@@ -56,7 +56,7 @@ public class Enemy : MonoBehaviourPun
     void Die()
     {
         OnDeath?.Invoke();
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     

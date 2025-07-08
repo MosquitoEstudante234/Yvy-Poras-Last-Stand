@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,12 +38,12 @@ public class Spear : MonoBehaviour
                 {
                     if (firstHit)
                     {
-                        enemy.TakeDamage(damage); // Dano total no primeiro inimigo
+                        enemy.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, damage);
                         firstHit = false;
                     }
                     else
                     {
-                        enemy.TakeDamage(damage / 2); // 50% do dano nos outros
+                        enemy.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, damage / 2); // 50% do dano nos outros
                     }
                 }
             }
