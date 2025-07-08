@@ -7,6 +7,6 @@ public class DisplayRoomName : MonoBehaviour
 
     void Start()
     {
-        roomNameText.text = "Estás no quarto: " + RoomInfoHolder.RoomName;
+        roomNameText.text = "Room: " + RoomInfoHolder.RoomName;
     }
 }

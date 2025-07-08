@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 7515203666821959455}
   - component: {fileID: 7564434200151422374}
   m_Layer: 5
-  m_Name: Carregar tiro
+  m_Name: LoadShot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -713,10 +713,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8919074242322292200}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 362, y: -230}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchorMin: {x: 0.039, y: 0.71855557}
+  m_AnchorMax: {x: 0.15, y: 0.763}
+  m_AnchoredPosition: {x: -26.71997, y: -591.79004}
+  m_SizeDelta: {x: 67.44, y: 5.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8966641387380069745
 CanvasRenderer:
@@ -773,8 +773,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 49.36
+  m_fontSizeBase: 49.36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1082,15 +1082,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.46927714
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.375
+      value: -11.325914
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 17.813011
       objectReference: {fileID: 0}
     - target: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       propertyPath: m_LocalRotation.w
