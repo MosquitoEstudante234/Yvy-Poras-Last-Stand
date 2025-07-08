@@ -111,10 +111,14 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
     void UpdateUI()
     {
-        if (waveText != null)
+        if (waveText.text != "Wave:" + waveNumber)
+        {
             waveText.text = "Wave: " + waveNumber;
+        }
 
-        if (enemiesText != null)
+        if (enemiesText.text != "Enemies Left: " + enemiesAlive)
+        {
             enemiesText.text = "Enemies Left: " + enemiesAlive;
+        }
     }
 }
