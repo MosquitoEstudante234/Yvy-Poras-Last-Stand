@@ -22,7 +22,7 @@ public class Gun : MonoBehaviour
     [Header("Referências")]
     public Camera fpsCam;
     public TextMeshProUGUI ammoText;
-    public Slider chargeSlider; // Adicione no Inspector
+    public Slider chargeSlider; 
 
     [Header("Recarga por olhar")]
     public float reloadLookDistance = 3f;
@@ -42,7 +42,7 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
-        // Início do carregamento
+        
         if (Input.GetButtonDown("Fire1") && canShoot && currentAmmo > 0)
         {
             isCharging = true;
@@ -51,7 +51,7 @@ public class Gun : MonoBehaviour
                 chargeSlider.gameObject.SetActive(true);
         }
 
-        // Durante o carregamento
+        
         if (Input.GetButton("Fire1") && isCharging)
         {
             chargeTimer += Time.deltaTime;
@@ -59,7 +59,7 @@ public class Gun : MonoBehaviour
                 chargeSlider.value = chargeTimer;
         }
 
-        // Soltou o botão = atira
+        
         if (Input.GetButtonUp("Fire1") && isCharging)
         {
             float chargePercent = Mathf.Clamp01(chargeTimer / chargeDuration);
@@ -75,7 +75,7 @@ public class Gun : MonoBehaviour
             }
         }
 
-        // Verifica se está olhando para a zona de recarga
+       
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryReload();
@@ -88,7 +88,7 @@ public class Gun : MonoBehaviour
         currentAmmo--;
         UpdateAmmoUI();
 
-        // Ignora a layer EnemyTrigger (trigger do inimigo)
+        
         int mask = ~LayerMask.GetMask("EnemyIgnore");
 
         RaycastHit hit;

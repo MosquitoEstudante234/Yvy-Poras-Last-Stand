@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Se quiser manter entre cenas
+            DontDestroyOnLoad(gameObject); 
         }
         else
         {
@@ -40,6 +40,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void ReturnToMenu()
     {
-        SceneManager.LoadScene("Menu"); // Altere "Menu" para o nome da sua cena
+        SceneManager.LoadScene("Menu");
     }
 }

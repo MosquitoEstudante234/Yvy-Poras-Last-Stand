@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class Spear : MonoBehaviour
 {
-    public int damage = 25; // Dano normal
-    public float cooldownTime = 0.4f; // Tempo de cooldown entre ataques
-    public float attackRange = 4f; // Alcance do golpe
-    public LayerMask enemyLayer; // Camada dos inimigos (configurar no Inspector se quiser)
+    public int damage = 25; 
+    public float cooldownTime = 0.4f; 
+    public float attackRange = 4f; 
+    public LayerMask enemyLayer; 
 
-    private bool canAttack = true; // Verifica se a lança pode atacar
+    private bool canAttack = true; 
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && canAttack) // Clique esquerdo do mouse
+        if (Input.GetMouseButtonDown(0) && canAttack) 
         {
             Attack();
         }
@@ -22,14 +22,14 @@ public class Spear : MonoBehaviour
 
     void Attack()
     {
-        // Ignora a layer EnemyTrigger (trigger do inimigo)
+       
         int mask = ~LayerMask.GetMask("EnemyIgnore");
 
         RaycastHit[] hits = Physics.RaycastAll(transform.position, transform.forward, attackRange, mask);
 
         if (hits.Length > 0)
         {
-            bool firstHit = true; // Marca o primeiro inimigo atingido
+            bool firstHit = true; 
 
             foreach (RaycastHit hit in hits)
             {
@@ -43,7 +43,7 @@ public class Spear : MonoBehaviour
                     }
                     else
                     {
-                        enemy.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, damage / 2); // 50% do dano nos outros
+                        enemy.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, damage / 2); 
                     }
                 }
             }
@@ -55,7 +55,7 @@ public class Spear : MonoBehaviour
             Debug.Log("Ataque errou.");
         }
 
-        StartCoroutine(StartCooldown()); // Cooldown acontece mesmo errando
+        StartCoroutine(StartCooldown()); 
     }
 
     IEnumerator StartCooldown()

@@ -10,13 +10,13 @@ public class MultiplayerSetup : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            // Habilita câmera e controles apenas para o jogador local
+            
             cameraRoot.SetActive(true);
-            spear.SetActive(true); // Ativa a arma do jogador local
+            spear.SetActive(true); 
         }
         else
         {
-            // Desativa câmera e controles para jogadores remotos
+            
             cameraRoot.SetActive(false);
             spear.SetActive(false);
         }

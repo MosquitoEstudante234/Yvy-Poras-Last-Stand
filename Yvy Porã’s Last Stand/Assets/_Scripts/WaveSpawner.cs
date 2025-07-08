@@ -8,11 +8,11 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 {
     public static WaveSpawner instance;
 
-    public GameObject[] enemyPrefabs; // Prefabs dos inimigos comuns
-    public GameObject bossPrefab; // Prefab do inimigo boss
-    public Transform[] spawnPoints; // Locais onde os inimigos podem spawnar
-    public TextMeshProUGUI waveText; // Texto para exibir a wave
-    public TextMeshProUGUI enemiesText; // Texto para exibir inimigos restantes
+    public GameObject[] enemyPrefabs; 
+    public GameObject bossPrefab; 
+    public Transform[] spawnPoints; 
+    public TextMeshProUGUI waveText; 
+    public TextMeshProUGUI enemiesText; 
 
     private static bool canWave = false;
     public int waveNumber = 0;
@@ -64,10 +64,10 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
     IEnumerator SpawnWave()
     {
-        yield return new WaitForSeconds(2f); // Pequena pausa antes de iniciar a nova onda
+        yield return new WaitForSeconds(2f); 
 
         enemiesToSpawn = waveNumber + Random.Range(1, 3);
-        enemiesAlive = 0; // Reset da contagem antes de spawnar
+        enemiesAlive = 0; 
 
         if (waveNumber % 5 == 0)
         {
@@ -100,10 +100,10 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
     void EnemyDied()
     {
-        enemiesAlive = Mathf.Max(0, enemiesAlive - 1); // Garante que nunca fique negativo
+        enemiesAlive = Mathf.Max(0, enemiesAlive - 1); 
         UpdateUI();
 
-        // Debug para checar se o n�mero de inimigos est� correto
+        
         if (enemiesAlive < 0)
         {
             Debug.LogError("Inimigos vivos ficou negativo! Algo est� errado.");

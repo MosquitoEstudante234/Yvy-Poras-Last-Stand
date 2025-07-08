@@ -15,12 +15,12 @@ public class Creature : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
 
-        // Encontra o jogador pela tag "Player"
+        
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             playerPos = player.transform;
-            OnChasing.Invoke(); // Invoca o evento apenas se encontrou o player
+            OnChasing.Invoke();
         }
         else
         {
