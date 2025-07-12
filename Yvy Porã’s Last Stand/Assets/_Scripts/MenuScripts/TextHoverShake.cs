@@ -3,25 +3,38 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(AudioSource))]
 public class TextHoverShake : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private TextMeshProUGUI textMesh;
     private bool isHovering = false;
 
+    public AudioClip hoverSound;
+    private AudioSource audioSource;
+    private bool soundPlayed = false;
+
     void Awake()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         isHovering = true;
         StartCoroutine(ShakeText());
+
+        if (hoverSound != null && audioSource != null && !soundPlayed)
+        {
+            audioSource.PlayOneShot(hoverSound);
+            soundPlayed = true;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovering = false;
+        soundPlayed = false;
     }
 
     IEnumerator ShakeText()
@@ -72,7 +85,6 @@ public class TextHoverShake : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             yield return new WaitForSeconds(0.03f);
         }
 
-        // Resetar a malha
-        textMesh.ForceMeshUpdate();
+        textMesh.ForceMeshUpdate(); // Reset
     }
 }
