@@ -19,6 +19,8 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
     private int enemiesToSpawn;
     private int enemiesAlive = 0;
     private bool isSpawning = false;
+    public static event System.Action<int> OnWaveCompleted;
+
 
     private void Awake()
     {
@@ -106,14 +108,23 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
         
         if (enemiesAlive < 0)
         {
-            Debug.LogError("Inimigos vivos ficou negativo! Algo est� errado.");
+            Debug.LogError("Inimigos vivos ficou negativo! Algo esta errado.");
         }
+        if (enemiesAlive == 0)
+        {
+            OnWaveCompleted?.Invoke(waveNumber);
+        }
+
     }
 
     void UpdateUI()
     {
         waveText.text = "Wave: " + waveNumber;
-
         enemiesText.text = "Enemies Left: " + enemiesAlive;
+
+        // Sincroniza a UI nos outros clientes
+        Object.FindAnyObjectByType<WaveUIManager>()?.SyncUIFromSpawner(waveNumber, enemiesAlive);
+
     }
+
 }
