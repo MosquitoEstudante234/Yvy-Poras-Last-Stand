@@ -30,6 +30,7 @@ public class CardEffect : ScriptableObject
 
     public string cardName;
     [TextArea] public string description;
+    public Sprite sprite;
 
     public StatType stat;
     public CardType type;
@@ -53,8 +54,7 @@ public class CardEffect : ScriptableObject
                 break;
 
             case StatType.MaxHealth:
-                var health = player.GetComponent<PlayerHealth>();
-                health.maxHealth += Mathf.RoundToInt(value);
+                player.GetComponent<PlayerHealth>().maxHealth += Mathf.RoundToInt(value);
                 break;
 
             case StatType.MaxAmmo:

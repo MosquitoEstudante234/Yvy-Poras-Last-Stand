@@ -4,8 +4,8 @@ using Photon.Pun;
 
 public class CardDraftManager : MonoBehaviourPun
 {
-    public GameObject cardUIPrefab; // Prefab que mostra as cartas na tela
-    public Transform cardUIParent; // Parent onde as cartas vão aparecer (Canvas)
+    public GameObject cardUIPrefab;
+    public Transform cardUIParent;
     public float showDelay = 2f;
 
     private void OnEnable()
@@ -32,14 +32,14 @@ public class CardDraftManager : MonoBehaviourPun
     {
         yield return new WaitForSeconds(showDelay);
 
-       // CardLibrary library = FindObjectOfType<CardLibrary>();
-      //  CardEffect[] draft = library.GetRandomCards(3); // 3 cartas por draft
+        CardLibrary library = Object.FindFirstObjectByType<CardLibrary>();
+        var draft = library.GetRandomCards(3, CardEffect.CardType.Common); // ou outro tipo
 
-      //  foreach (CardEffect card in draft)
+        foreach (CardEffect card in draft)
         {
             GameObject ui = Instantiate(cardUIPrefab, cardUIParent);
             CardUI uiScript = ui.GetComponent<CardUI>();
-       //     uiScript.SetCard(card);
+            uiScript.SetCard(card);
         }
     }
 }

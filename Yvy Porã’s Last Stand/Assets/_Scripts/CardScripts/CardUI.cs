@@ -1,13 +1,27 @@
 using Photon.Pun;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour
 {
-    public CardEffect cardEffect;
+    public TextMeshProUGUI cardNameText;
+    public TextMeshProUGUI cardDescriptionText;
+    public Image cardImage;
+
+    private CardEffect cardEffect;
+
+    public void SetCard(CardEffect effect)
+    {
+        cardEffect = effect;
+
+        cardNameText.text = effect.cardName;
+        cardDescriptionText.text = effect.description;
+        cardImage.sprite = effect.sprite;
+    }
 
     public void OnClickApplyCard()
     {
-        // Acha o CardManager do próprio player local
         var player = FindLocalPlayer();
         if (player != null)
         {
