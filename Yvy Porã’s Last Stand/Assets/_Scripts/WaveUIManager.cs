@@ -10,10 +10,9 @@ public class WaveUIManager : MonoBehaviourPun
 
     private void Start()
     {
-        // Se não for o Master, espera atualizações do Master.
         if (!PhotonNetwork.IsMasterClient)
         {
-            // Solicita os dados atuais da wave
+            // Pede os dados ao MasterClient
             photonView.RPC("RequestWaveData", RpcTarget.MasterClient);
         }
     }
@@ -21,7 +20,7 @@ public class WaveUIManager : MonoBehaviourPun
     [PunRPC]
     void RequestWaveData(PhotonMessageInfo info)
     {
-        // Envia os dados atuais para o player que solicitou
+        // Master envia a wave atual e inimigos restantes ao client que pediu
         photonView.RPC("UpdateWaveUI", info.Sender, WaveSpawner.instance.waveNumber, WaveSpawner.instance.GetEnemiesAlive());
     }
 
@@ -35,7 +34,7 @@ public class WaveUIManager : MonoBehaviourPun
             enemiesText.text = "Enemies Left: " + enemiesLeft;
     }
 
-    // Esse método pode ser chamado por WaveSpawner via evento para manter todos sincronizados
+    // Chamado pelo WaveSpawner para sincronizar nos clients
     public void SyncUIFromSpawner(int wave, int enemiesLeft)
     {
         photonView.RPC("UpdateWaveUI", RpcTarget.All, wave, enemiesLeft);

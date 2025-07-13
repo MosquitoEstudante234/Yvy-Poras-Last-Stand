@@ -32,14 +32,14 @@ public class CardDraftManager : MonoBehaviourPun
     {
         yield return new WaitForSeconds(showDelay);
 
-        CardLibrary library = FindObjectOfType<CardLibrary>();
-        CardEffect[] draft = library.GetRandomCards(3); // 3 cartas por draft
+      //  CardLibrary library = FindObjectOfType<CardLibrary>();
+       // CardEffect[] draft = library.GetRandomCards(3); // 3 cartas por draft
 
-        foreach (CardEffect card in draft)
+     //   foreach (CardEffect card in draft)
         {
             GameObject ui = Instantiate(cardUIPrefab, cardUIParent);
             CardUI uiScript = ui.GetComponent<CardUI>();
-            uiScript.SetCard(card);
+       //     uiScript.SetCard(card);
         }
     }
 }
