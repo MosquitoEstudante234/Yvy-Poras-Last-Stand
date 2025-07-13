@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commonCards:
   - {fileID: 11400000, guid: b6d340486f46b54448a3ce37b5b4338f, type: 2}
+  - {fileID: 11400000, guid: 00628e174a05b404c9453a3592ffa36b, type: 2}
+  rareCards:
   - {fileID: 0}
-  rareCards: []
   legendaryCards: []
