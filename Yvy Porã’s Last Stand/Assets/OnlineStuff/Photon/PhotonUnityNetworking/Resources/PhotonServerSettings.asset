@@ -45,9 +45,6 @@ MonoBehaviour:
   - RPC_UpdateUI
   - ReturnToMenu
   - TakeDamage
-  - ApplyCardEffectRPC
-  - RequestWaveData
-  - UpdateWaveUI
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

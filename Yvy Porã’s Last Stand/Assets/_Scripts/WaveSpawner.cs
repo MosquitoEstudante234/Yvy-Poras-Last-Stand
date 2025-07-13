@@ -8,11 +8,11 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 {
     public static WaveSpawner instance;
 
-    public GameObject[] enemyPrefabs;
-    public GameObject bossPrefab;
-    public Transform[] spawnPoints;
-    public TextMeshProUGUI waveText;
-    public TextMeshProUGUI enemiesText;
+    public GameObject[] enemyPrefabs; 
+    public GameObject bossPrefab; 
+    public Transform[] spawnPoints; 
+    public TextMeshProUGUI waveText; 
+    public TextMeshProUGUI enemiesText; 
 
     private static bool canWave = false;
     public int waveNumber = 0;
@@ -21,6 +21,7 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
     private bool isSpawning = false;
     public static event System.Action<int> OnWaveCompleted;
 
+
     private void Awake()
     {
         if (instance != null)
@@ -28,9 +29,7 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
             Destroy(this);
         }
         else
-        {
             instance = this;
-        }
     }
 
     public override void OnJoinedRoom()
@@ -51,7 +50,6 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
     void Update()
     {
         if (!PhotonNetwork.IsMasterClient) return;
-
         if (!isSpawning && enemiesAlive == 0)
         {
             StartNextWave();
@@ -68,10 +66,10 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
     IEnumerator SpawnWave()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(2f); 
 
         enemiesToSpawn = waveNumber + Random.Range(1, 3);
-        enemiesAlive = 0;
+        enemiesAlive = 0; 
 
         if (waveNumber % 5 == 0)
         {
@@ -104,18 +102,19 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
     void EnemyDied()
     {
-        enemiesAlive = Mathf.Max(0, enemiesAlive - 1);
+        enemiesAlive = Mathf.Max(0, enemiesAlive - 1); 
         UpdateUI();
 
+        
         if (enemiesAlive < 0)
         {
-            Debug.LogError("Inimigos vivos ficou negativo! Algo está errado.");
+            Debug.LogError("Inimigos vivos ficou negativo! Algo esta errado.");
         }
-
         if (enemiesAlive == 0)
         {
             OnWaveCompleted?.Invoke(waveNumber);
         }
+
     }
 
     void UpdateUI()
@@ -125,14 +124,7 @@ public class WaveSpawner : MonoBehaviourPunCallbacks
 
         // Sincroniza a UI nos outros clientes
         Object.FindAnyObjectByType<WaveUIManager>()?.SyncUIFromSpawner(waveNumber, enemiesAlive);
+
     }
 
-    // Para acesso externo à quantidade de inimigos vivos
-    public int GetEnemiesAlive()
-    {
-        return enemiesAlive;
-    }
-
-    // Alternativa moderna:
-    // public int EnemiesAlive => enemiesAlive;
 }
