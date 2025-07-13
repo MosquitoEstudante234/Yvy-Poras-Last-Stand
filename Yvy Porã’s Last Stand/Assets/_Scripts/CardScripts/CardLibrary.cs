@@ -8,6 +8,25 @@ public class CardLibrary : ScriptableObject
     public List<CardEffect> rareCards;
     public List<CardEffect> legendaryCards;
 
+    [Range(0f, 1f)] public float rareChance = 0.25f;
+    [Range(0f, 1f)] public float legendaryChance = 0.05f;
+
+    public List<CardEffect> GetRandomCards(int count)
+    {
+        List<CardEffect> result = new();
+
+        while (result.Count < count)
+        {
+            CardEffect.CardType type = GetRandomCardType();
+            CardEffect card = GetRandomCard(type);
+
+            if (card != null && !result.Contains(card))
+                result.Add(card);
+        }
+
+        return result;
+    }
+
     public List<CardEffect> GetRandomCards(int count, CardEffect.CardType type)
     {
         List<CardEffect> pool = type switch
@@ -44,5 +63,17 @@ public class CardLibrary : ScriptableObject
 
         if (pool == null || pool.Count == 0) return null;
         return pool[Random.Range(0, pool.Count)];
+    }
+
+    private CardEffect.CardType GetRandomCardType()
+    {
+        float roll = Random.value;
+
+        if (roll < legendaryChance)
+            return CardEffect.CardType.Legendary;
+        else if (roll < legendaryChance + rareChance)
+            return CardEffect.CardType.Rare;
+        else
+            return CardEffect.CardType.Common;
     }
 }
