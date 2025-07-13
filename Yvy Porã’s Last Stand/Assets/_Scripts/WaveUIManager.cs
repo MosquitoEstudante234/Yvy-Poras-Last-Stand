@@ -22,7 +22,7 @@ public class WaveUIManager : MonoBehaviourPun
     void RequestWaveData(PhotonMessageInfo info)
     {
         // Envia os dados atuais para o player que solicitou
-        photonView.RPC("UpdateWaveUI", info.Sender, WaveSpawner.instance.waveNumber, WaveSpawner.instance.GetEnemiesAlive());
+    //    photonView.RPC("UpdateWaveUI", info.Sender, WaveSpawner.instance.waveNumber, WaveSpawner.instance.GetEnemiesAlive());
     }
 
     [PunRPC]
