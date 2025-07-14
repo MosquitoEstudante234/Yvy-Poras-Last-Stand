@@ -8578,9 +8578,12 @@ MonoBehaviour:
   buttonDialogues:
   - key: ChooseCards
     phrases:
-    - A
-    - B
-    - C
+    - "Escolha com o cora\xE7\xE3o... ou com o medo. Ambos te conhecem bem."
+    - Uma carta te eleva. Outra te consome. Mas todas te marcam.
+    - "O poder nunca \xE9 gr\xE1tis. Mas \xE0s vezes \xE9... irresist\xEDvel."
+    - "Cartas s\xE3o espelhos. Algumas quebram quando voc\xEA se v\xEA nelas."
+    - "A queimar ou a curar, a decis\xE3o ainda \xE9 tua. Por enquanto."
+    - "Voc\xEA se pergunta se elas mentem? Sim. E ainda assim, funcionam."
   typingSpeed: 0.02
 --- !u!4 &1879860772 stripped
 Transform:
