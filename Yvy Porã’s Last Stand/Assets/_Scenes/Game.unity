@@ -3729,8 +3729,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140}
-  m_SizeDelta: {x: 0, y: -187.6687}
+  m_AnchoredPosition: {x: 0, y: -23.083}
+  m_SizeDelta: {x: 0, y: 46.165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &801906468
 MonoBehaviour:
@@ -3787,7 +3787,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -4415,8 +4415,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140}
-  m_SizeDelta: {x: 0, y: -187.6687}
+  m_AnchoredPosition: {x: 0, y: -23.083}
+  m_SizeDelta: {x: 0, y: 46.165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &895091113
 MonoBehaviour:
@@ -4473,7 +4473,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -6055,8 +6055,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140}
-  m_SizeDelta: {x: 0, y: -187.6687}
+  m_AnchoredPosition: {x: 0, y: -23.083}
+  m_SizeDelta: {x: 0, y: 46.165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1300961896
 MonoBehaviour:
@@ -6113,7 +6113,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -6652,6 +6652,7 @@ RectTransform:
   - {fileID: 895783025}
   - {fileID: 758840902}
   - {fileID: 377589011}
+  - {fileID: 1865529384}
   m_Father: {fileID: 670094756}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8524,6 +8525,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745902542}
   m_CullTransparentMesh: 1
+--- !u!1 &1865529383
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1865529384}
+  - component: {fileID: 1865529385}
+  m_Layer: 0
+  m_Name: NPCDialogueManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1865529384
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865529383}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 44.66559, y: 277.5487, z: 438.3173}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1354726871}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1865529385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865529383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28b5f08dbaa7646429c12680139cd940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueText: {fileID: 2010845523}
+  randomDialogues:
+  - "Ah... a\xED est\xE1 voc\xEA. A presa que ca\xE7a a pr\xF3pria sorte."
+  - "Voc\xEA sobreviveu. Isso \xE9... admir\xE1vel. Mas at\xE9 quando?"
+  - "Senti o cheiro da tua d\xFAvida. Vim ajudar... ou piorar."
+  - Escute. As cartas sussurram. Quer ouvir?
+  buttonDialogues:
+  - key: ChooseCards
+    phrases:
+    - A
+    - B
+    - C
+  typingSpeed: 0.02
 --- !u!4 &1879860772 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4068628574086915646, guid: 98bf622ab5d771b47b3e2c532a894299, type: 3}
@@ -9150,6 +9208,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1865529385}
+        m_TargetAssemblyTypeName: NPCDialogue, Assembly-CSharp
+        m_MethodName: SpeakSpecific
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChooseCards
           m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &2091489129
