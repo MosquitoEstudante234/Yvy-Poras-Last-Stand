@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: "Mymbaku\xE9ra"
   productName: "Yvy Por\xE3's Last Stand"
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}

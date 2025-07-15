@@ -8,14 +8,12 @@ public class PlayerHealth : MonoBehaviourPun
     public int maxHealth = 100;
     private int currentHealth;
 
-    public float spectatorSpeed = 5f;
-    private bool isSpectator = false;
-
     private CharacterController controller;
     private Collider playerCollider;
     private Renderer[] renderers;
 
     public TextMeshProUGUI healthText; // Texto TMP da vida
+    public GameObject deathCanvas;     // Canvas que avisa que o jogador morreu
 
     void Start()
     {
@@ -24,33 +22,32 @@ public class PlayerHealth : MonoBehaviourPun
         playerCollider = GetComponent<Collider>();
         renderers = GetComponentsInChildren<Renderer>();
 
-        UpdateHealthText(); // Mostra a vida inicial
-    }
+        if (deathCanvas != null)
+            deathCanvas.SetActive(false);
 
-    void Update()
-    {
-        if (!photonView.IsMine) return;
+        UpdateHealthText();
 
-        if (isSpectator)
+        //coisa nova abaixo
+        if (photonView.IsMine)
         {
-            SpectatorMovement();
+            PhotonNetwork.LocalPlayer.TagObject = this;
         }
+            
     }
 
     public void TakeDamage(int damage)
     {
-        if (!photonView.IsMine || isSpectator) return;
+        if (!photonView.IsMine) return;
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
         UpdateHealthText();
 
         Debug.Log("Player levou dano. Vida atual: " + currentHealth);
 
         if (currentHealth <= 0)
         {
-            EnterSpectatorMode();
+            HandleDeath();
         }
     }
 
@@ -62,42 +59,30 @@ public class PlayerHealth : MonoBehaviourPun
         }
     }
 
-    void EnterSpectatorMode()
+    void HandleDeath()
     {
-        Debug.Log("Entrando no modo espectador...");
-        isSpectator = true;
+        Debug.Log("Player morreu.");
 
+        // Desativa colisores e renderers
         if (playerCollider != null)
             playerCollider.enabled = false;
 
         foreach (Renderer rend in renderers)
         {
-            if (rend.material.HasProperty("_Color"))
-            {
-                Color color = rend.material.color;
-                color.a = 0.5f;
-                rend.material.color = color;
-            }
+            rend.enabled = false;
         }
 
         if (controller != null)
             controller.detectCollisions = false;
 
+        if (photonView.IsMine)
+        {
+            if (deathCanvas != null)
+                deathCanvas.SetActive(true);
+        }
+
         if (PhotonNetwork.IsConnected)
             GameManager.instance.PlayerDied();
-    }
-
-    void SpectatorMovement()
-    {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        float upDown = 0f;
-
-        if (Input.GetKey(KeyCode.Space)) upDown = 1f;
-        else if (Input.GetKey(KeyCode.LeftShift)) upDown = -1f;
-
-        Vector3 move = new Vector3(horizontal, upDown, vertical);
-        controller.Move(transform.TransformDirection(move) * spectatorSpeed * Time.deltaTime);
     }
 
     public void SetMaxHealth(int value)

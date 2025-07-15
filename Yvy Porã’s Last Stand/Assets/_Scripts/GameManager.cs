@@ -8,17 +8,27 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static GameManager instance;
 
     private int playersDead = 0;
+    private int totalPlayers = 0;
 
     void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    void Start()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            totalPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+            Debug.Log("Total de jogadores na partida: " + totalPlayers);
         }
     }
 
@@ -27,13 +37,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
 
         playersDead++;
+        Debug.Log("Players mortos: " + playersDead + " / " + totalPlayers);
 
-        Debug.Log("Players mortos: " + playersDead + " / " + PhotonNetwork.CurrentRoom.PlayerCount);
-
-        if (playersDead >= PhotonNetwork.CurrentRoom.PlayerCount)
+        if (playersDead >= totalPlayers)
         {
             Debug.Log("Todos os jogadores morreram. Voltando para o menu...");
-            photonView.RPC("ReturnToMenu", RpcTarget.AllBuffered);
+            photonView.RPC("ReturnToMenu", RpcTarget.All); // sem Buffered
         }
     }
 
