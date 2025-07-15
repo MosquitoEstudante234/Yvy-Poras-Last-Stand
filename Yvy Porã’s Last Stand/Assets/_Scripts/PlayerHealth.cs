@@ -99,4 +99,11 @@ public class PlayerHealth : MonoBehaviourPun
         Vector3 move = new Vector3(horizontal, upDown, vertical);
         controller.Move(transform.TransformDirection(move) * spectatorSpeed * Time.deltaTime);
     }
+
+    public void SetMaxHealth(int value)
+    {
+        maxHealth = value;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthText();
+    }
 }

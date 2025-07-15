@@ -8,7 +8,8 @@ using System.Collections;
 public class Gun : MonoBehaviour
 {
     [Header("Munição")]
-    public int maxAmmo = 5;
+    public PlayerStats stats;
+    private int maxAmmo = 5;
     private int currentAmmo;
 
     [Header("Cooldown e Dano")]

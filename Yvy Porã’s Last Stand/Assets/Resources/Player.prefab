@@ -1115,8 +1115,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
+  m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1146,7 +1146,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -1389,6 +1389,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6370952946361642069}
+    - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1251804051621745367}
   m_SourcePrefab: {fileID: 100100000, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
 --- !u!4 &863528680630206224 stripped
 Transform:
@@ -1454,6 +1457,42 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1251804051621745367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4975850829394658892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88f13971f5cb1a54bb3d29a229bfd809, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth:
+    name: Health
+    baseValue: 100
+    currentValue: 0
+  moveSpeed:
+    name: Move Speed
+    baseValue: 5
+    currentValue: 0
+  sprintSpeed:
+    name: Sprint Speed
+    baseValue: 7
+    currentValue: 0
+  spearDamage:
+    name: Spear Damage
+    baseValue: 25
+    currentValue: 0
+  maxAmmo:
+    name: Max Ammo
+    baseValue: 10
+    currentValue: 0
+  cooldownReduction:
+    name: Cooldown Reduction
+    baseValue: 5
+    currentValue: 0
 --- !u!4 &5640219067401280758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
@@ -1761,6 +1800,26 @@ PrefabInstance:
     - target: {fileID: 6128058581279868725, guid: ef8dc8b1a2bcc9f4cb3ed5c6818c9014, type: 3}
       propertyPath: m_Name
       value: "Muni\xE7\xE3o"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7247134067769575121, guid: ef8dc8b1a2bcc9f4cb3ed5c6818c9014, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
+    - target: {fileID: 7247134067769575121, guid: ef8dc8b1a2bcc9f4cb3ed5c6818c9014, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7247134067769575121, guid: ef8dc8b1a2bcc9f4cb3ed5c6818c9014, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
+    - target: {fileID: 7247134067769575121, guid: ef8dc8b1a2bcc9f4cb3ed5c6818c9014, type: 3}
+      propertyPath: m_characterSpacing
+      value: 11.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7247134067769575121, guid: ef8dc8b1a2bcc9f4cb3ed5c6818c9014, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
