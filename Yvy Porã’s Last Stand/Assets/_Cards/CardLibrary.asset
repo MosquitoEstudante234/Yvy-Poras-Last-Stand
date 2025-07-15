@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CardLibrary
   m_EditorClassIdentifier: 
   commonCards:
-  - {fileID: 11400000, guid: b6d340486f46b54448a3ce37b5b4338f, type: 2}
-  - {fileID: 11400000, guid: 00628e174a05b404c9453a3592ffa36b, type: 2}
-  rareCards:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e56f290f5140b7246b7ab0a001ae5982, type: 2}
+  rareCards: []
   legendaryCards: []
+  rareChance: 0.25
+  legendaryChance: 0.05

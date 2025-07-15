@@ -8,7 +8,8 @@ public class CardManager : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        photonView.RPC(nameof(ApplyCardEffectRPC), RpcTarget.AllBuffered, (int)card.stat, card.value);
+        photonView.RPC(nameof(ApplyCardEffectRPC), photonView.Owner, (int)card.stat, card.value);
+
     }
 
     [PunRPC]
@@ -46,37 +47,30 @@ public class CardManager : MonoBehaviourPun
                 break;
 
             case CardEffect.StatType.Shield:
-                // Implementar sistema de escudo no PlayerHealth futuramente
                 Debug.Log("Escudo aplicado: implementar lógica de escudo regenerável.");
                 break;
 
             case CardEffect.StatType.ConvertCommonsToRares:
-                // Marcar flag em um gerenciador de cartas local
                 Debug.Log("Todas cartas comuns se tornarão raras.");
                 break;
 
             case CardEffect.StatType.PassiveRegen:
-                // Exemplo: ativar regeneração passiva (precisa ser implementada)
                 Debug.Log("Regeneração passiva ativada.");
                 break;
 
             case CardEffect.StatType.PoisonEnemies:
-                // Ativar lógica de veneno em ataques futuros
                 Debug.Log("Ataques agora envenenam inimigos.");
                 break;
 
             case CardEffect.StatType.AoEDamageAura:
-                // Ativar dano de área passivo
                 Debug.Log("Aura de dano contínuo ativada.");
                 break;
 
             case CardEffect.StatType.ReviveOnDeath:
-                // Ativar lógica de auto-revive
                 Debug.Log("O jogador será revivido automaticamente na morte.");
                 break;
 
             case CardEffect.StatType.DrawCardOnKill:
-                // Exemplo: implementar lógica de drop de carta por kill
                 Debug.Log("O jogador ganha carta a cada 5 inimigos mortos.");
                 break;
         }
