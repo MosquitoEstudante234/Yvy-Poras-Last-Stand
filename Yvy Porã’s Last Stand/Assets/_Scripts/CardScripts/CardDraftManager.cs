@@ -14,40 +14,34 @@ public class CardDraftManager : MonoBehaviourPun
     [Range(0f, 1f)] public float chanceRare = 0.25f;
     [Range(0f, 1f)] public float chanceLegendary = 0.05f;
 
-    public float showDelay = 2f;
+    [Header("Tempo entre novas cartas (segundos)")]
+    public float intervalSeconds = 90f;
 
     private List<CardEffect> pendingCards = new();
 
-    private void OnEnable()
+    void Start()
     {
-        WaveSpawner.OnWaveCompleted += HandleWaveCompleted;
-    }
-
-    private void OnDisable()
-    {
-        WaveSpawner.OnWaveCompleted -= HandleWaveCompleted;
-    }
-
-    private void HandleWaveCompleted(int wave)
-    {
-        if (!photonView.IsMine) return;
-
-        if (wave == 6)
+        if (photonView.IsMine)
         {
-            StartCoroutine(ShowCardDraftAfterDelay());
+            StartCoroutine(TimedCardGain());
         }
     }
 
-    IEnumerator ShowCardDraftAfterDelay()
+    IEnumerator TimedCardGain()
     {
-        yield return new WaitForSeconds(showDelay);
+        while (true)
+        {
+            yield return new WaitForSeconds(intervalSeconds);
+            AddCardsToPending(3);
+        }
+    }
 
+    void AddCardsToPending(int amount)
+    {
         CardLibrary library = Object.FindFirstObjectByType<CardLibrary>();
-        if (library == null) yield break;
+        if (library == null) return;
 
-        pendingCards.Clear();
-
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < amount; i++)
         {
             var rarity = RollRarity();
             CardEffect card = library.GetRandomCard(rarity);
@@ -72,7 +66,6 @@ public class CardDraftManager : MonoBehaviourPun
 
     public void ShowPendingCards()
     {
-        // Limpa cartas antigas na UI
         foreach (Transform child in cardUIParent)
             Destroy(child.gameObject);
 
