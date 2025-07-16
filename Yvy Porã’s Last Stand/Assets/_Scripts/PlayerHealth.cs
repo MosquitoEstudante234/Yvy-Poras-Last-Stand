@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviourPun
 {
     public int maxHealth = 100;
     private int currentHealth;
+    public bool isDead { get; private set; } = false;
 
     private CharacterController controller;
     private Collider playerCollider;
@@ -62,6 +63,7 @@ public class PlayerHealth : MonoBehaviourPun
     void HandleDeath()
     {
         Debug.Log("Player morreu.");
+        isDead = true;
 
         // Desativa colisores e renderers
         if (playerCollider != null)

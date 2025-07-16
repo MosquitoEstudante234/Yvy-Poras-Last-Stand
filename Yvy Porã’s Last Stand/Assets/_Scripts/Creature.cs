@@ -9,35 +9,51 @@ public class Creature : MonoBehaviour
     public UnityEvent OnChasing;
 
     private NavMeshAgent agent;
-    private Transform playerPos;
+    private Transform targetPlayer;
+
+    public float checkInterval = 1.5f;
+    public string playerTag = "Player";
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-
-        
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            playerPos = player.transform;
-            OnChasing.Invoke();
-        }
-        else
-        {
-            Debug.LogWarning("Nenhum objeto com a tag 'Player' foi encontrado.");
-        }
+        StartCoroutine(UpdateTarget());
+        OnChasing?.Invoke();
     }
 
     private void Update()
     {
-        ChasePlayer();
+        if (targetPlayer != null)
+        {
+            agent.SetDestination(targetPlayer.position);
+        }
     }
 
-    private void ChasePlayer()
+    IEnumerator UpdateTarget()
     {
-        if (playerPos != null)
+        while (true)
         {
-            agent.SetDestination(playerPos.position);
+            GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);
+            float closestDistance = Mathf.Infinity;
+            Transform closest = null;
+
+            foreach (GameObject player in players)
+            {
+                if (!player.activeInHierarchy) continue;
+
+                var health = player.GetComponent<PlayerHealth>();
+                if (health == null || health.isDead) continue;
+
+                float dist = Vector3.Distance(transform.position, player.transform.position);
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    closest = player.transform;
+                }
+            }
+
+            targetPlayer = closest;
+            yield return new WaitForSeconds(checkInterval);
         }
     }
 }
