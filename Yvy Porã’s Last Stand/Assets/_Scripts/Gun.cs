@@ -135,6 +135,7 @@ public class Gun : MonoBehaviour
         }
 
         Invoke(nameof(ResetCooldown), cooldownTime);
+        AudioManager.instance.Play("Shoot");
     }
 
     void ResetCooldown()

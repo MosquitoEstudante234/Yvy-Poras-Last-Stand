@@ -76,7 +76,7 @@ public class Spear : MonoBehaviour
                 }
             }
         }
-
+        AudioManager.instance.Play("Spear");
         StartCoroutine(StartCooldown());
     }
 

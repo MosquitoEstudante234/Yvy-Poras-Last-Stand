@@ -36,6 +36,7 @@ public class Enemy : MonoBehaviourPun
     {
         currentHealth -= damage;
         StartCoroutine(FlashRed());
+        AudioManager.instance.Play("HitEnemy");
 
         if (currentHealth <= 0)
         {

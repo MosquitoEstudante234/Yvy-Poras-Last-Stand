@@ -152,6 +152,8 @@ MonoBehaviour:
   OnChasing:
     m_PersistentCalls:
       m_Calls: []
+  checkInterval: 1.5
+  playerTag: Player
 --- !u!114 &2297627101105069474
 MonoBehaviour:
   m_ObjectHideFlags: 0
