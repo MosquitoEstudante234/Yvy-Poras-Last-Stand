@@ -13,8 +13,8 @@ public class PlayerHealth : MonoBehaviourPun
     private Collider playerCollider;
     private Renderer[] renderers;
 
-    public TextMeshProUGUI healthText; // Texto TMP da vida
-    public GameObject deathCanvas;     // Canvas que avisa que o jogador morreu
+    public TextMeshProUGUI healthText;
+    public GameObject deathCanvas;
 
     void Start()
     {
@@ -28,27 +28,24 @@ public class PlayerHealth : MonoBehaviourPun
 
         UpdateHealthText();
 
-        //coisa nova abaixo
         if (photonView.IsMine)
         {
             PhotonNetwork.LocalPlayer.TagObject = this;
         }
-            
     }
 
     public void TakeDamage(int damage)
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine || isDead) return;
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthText();
 
-        Debug.Log("Player levou dano. Vida atual: " + currentHealth);
-
         if (currentHealth <= 0)
         {
-            HandleDeath();
+            photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
+            photonView.RPC(nameof(RPC_NotifyDeathToMaster), RpcTarget.MasterClient);
         }
     }
 
@@ -60,12 +57,13 @@ public class PlayerHealth : MonoBehaviourPun
         }
     }
 
-    void HandleDeath()
+    [PunRPC]
+    void RPC_SetDead()
     {
-        Debug.Log("Player morreu.");
+        if (isDead) return;
+
         isDead = true;
 
-        // Desativa colisores e renderers
         if (playerCollider != null)
             playerCollider.enabled = false;
 
@@ -77,14 +75,22 @@ public class PlayerHealth : MonoBehaviourPun
         if (controller != null)
             controller.detectCollisions = false;
 
-        if (photonView.IsMine)
-        {
-            if (deathCanvas != null)
-                deathCanvas.SetActive(true);
-        }
+        if (photonView.IsMine && deathCanvas != null)
+            deathCanvas.SetActive(true);
 
-        if (PhotonNetwork.IsConnected)
+        // Corrigido: só o MasterClient conta mortes
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected)
+        {
             GameManager.instance.PlayerDied();
+        }
+    }
+    [PunRPC]
+    void RPC_NotifyDeathToMaster()
+    {
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected)
+        {
+            GameManager.instance.PlayerDied();
+        }
     }
 
     public void SetMaxHealth(int value)

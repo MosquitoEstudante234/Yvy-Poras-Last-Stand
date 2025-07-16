@@ -50,6 +50,8 @@ MonoBehaviour:
   - UpdateWaveUI
   - IncreaseDeadCountRPC
   - RequestDeathStatus
+  - RPC_SetDead
+  - RPC_NotifyDeathToMaster
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
