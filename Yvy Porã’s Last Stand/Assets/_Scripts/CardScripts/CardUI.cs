@@ -1,4 +1,4 @@
-using Photon.Pun;
+/*using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,3 +43,4 @@ public class CardUI : MonoBehaviour
         return null;
     }
 }
+*/

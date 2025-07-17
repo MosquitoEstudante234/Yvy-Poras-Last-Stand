@@ -44,8 +44,8 @@ public class NPCInteraction : MonoBehaviour
             Cursor.visible = state;
             Cursor.lockState = state ? CursorLockMode.None : CursorLockMode.Locked;
             CardDraftManager draft = Object.FindFirstObjectByType<CardDraftManager>();
-            if (draft != null)
-                draft.ShowPendingCards();
+           // if (draft != null)
+              //  draft.ShowPendingCards();
         }
     }
 }
