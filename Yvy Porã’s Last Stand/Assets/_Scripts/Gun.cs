@@ -9,7 +9,7 @@ public class Gun : MonoBehaviour
 {
     [Header("Munição")]
     public PlayerStats stats;
-    public int maxAmmo = 5;
+    public int maxAmmo = 10;
     private int currentAmmo;
     //berne, mudei o max ammo pra public só pra testar uns ngc, tava dando conflito em outros códigos por ele estar private
 
@@ -17,7 +17,7 @@ public class Gun : MonoBehaviour
     public float cooldownTime = 0.5f;
     private bool canShoot = true;
     public float range = 100f;
-    public int maxDamage = 20;
+    public int maxDamage = 40;
 
     [Header("Carregamento")]
     public float chargeDuration = 1.5f;

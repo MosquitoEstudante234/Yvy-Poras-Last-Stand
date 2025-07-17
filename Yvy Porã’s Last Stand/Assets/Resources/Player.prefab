@@ -995,10 +995,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 0}
-  maxAmmo: 5
+  maxAmmo: 10
   cooldownTime: 0.5
   range: 100
-  maxDamage: 20
+  maxDamage: 40
   chargeDuration: 2
   fpsCam: {fileID: 2654273634592044817}
   ammoText: {fileID: 1335723579375101504}
