@@ -1,22 +1,18 @@
 using Photon.Pun;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 
 public class CardUI : MonoBehaviour
 {
-    public TextMeshProUGUI cardNameText;
-    public TextMeshProUGUI cardDescriptionText;
     public Image cardImage;
-
     private CardEffect cardEffect;
+
+    [Header("Referência via Inspector")]
+    public CardDraftManager cardDraftManager;
 
     public void SetCard(CardEffect effect)
     {
         cardEffect = effect;
-
-        cardNameText.text = effect.cardName;
-        cardDescriptionText.text = effect.description;
         cardImage.sprite = effect.sprite;
     }
 
@@ -28,6 +24,12 @@ public class CardUI : MonoBehaviour
             var manager = player.GetComponent<CardManager>();
             manager.ApplyCardEffect(cardEffect);
         }
+    }
+
+    public void OnClick_ShowCards()
+    {
+        if (cardDraftManager != null)
+            cardDraftManager.ShowPendingCards();
     }
 
     GameObject FindLocalPlayer()

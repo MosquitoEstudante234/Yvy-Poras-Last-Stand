@@ -52,6 +52,7 @@ MonoBehaviour:
   - RequestDeathStatus
   - RPC_SetDead
   - RPC_NotifyDeathToMaster
+  - ApplyBurnEffectRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
