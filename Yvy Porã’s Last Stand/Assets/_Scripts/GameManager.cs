@@ -50,5 +50,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     void ReturnToMenu()
     {
         SceneManager.LoadScene("Menu");
+        PhotonNetwork.Destroy(gameObject);
     }
 }
