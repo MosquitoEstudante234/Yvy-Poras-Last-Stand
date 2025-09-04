@@ -33,13 +33,13 @@ public class MenuController : MonoBehaviourPunCallbacks
 
     public void Lobby()
     {
-
-        SceneManager.LoadScene("Menu");
+        PhotonNetwork.Disconnect();
+        PhotonNetwork.LoadLevel("LoadingScene");
     }
 
     public void Menu()
     {
-        PhotonNetwork.Destroy(gameObject);
-        SceneManager.LoadScene("Menu");
+        PhotonNetwork.Disconnect();
+        PhotonNetwork.LoadLevel("PlayMenu");
     }
 }

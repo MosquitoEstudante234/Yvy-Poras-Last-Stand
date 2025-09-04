@@ -9,12 +9,12 @@ public class GoToMenu : MonoBehaviour
     {
         if (goToMenuOnEnable)
         {
-            SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene("LoadingScene");
         }
     }
 
     public void LoadMenuScene()
     {
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("LoadingScene");
     }
 }

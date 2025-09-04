@@ -11,7 +11,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
     public TMP_InputField joinInput;
 
     // Controle se o player já está no lobby
-    private bool inLobby = false;
+    private bool inLobby = true;
 
     // Botão para criar sala
     public void CreateRoom()
