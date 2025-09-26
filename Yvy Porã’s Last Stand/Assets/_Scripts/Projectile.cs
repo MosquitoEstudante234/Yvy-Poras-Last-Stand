@@ -3,26 +3,28 @@ using Photon.Pun;
 
 public class Projectile : MonoBehaviourPun
 {
-    private int damage;
+    public int damage = 10;
+    public float lifeTime = 5f;
 
-    public void SetDamage(int dmg)
+    void Start()
     {
-        damage = dmg;
+        Destroy(gameObject, lifeTime);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerHealth ph = other.GetComponent<PlayerHealth>();
-            if (ph != null)
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+
+            if (playerHealth != null && !playerHealth.isDead)
             {
-                ph.TakeDamage(damage);
+                playerHealth.TakeDamage(damage); 
             }
 
-            PhotonNetwork.Destroy(gameObject); // destroi o projétil na rede
+            PhotonNetwork.Destroy(gameObject); // destrói o projétil em todos os clientes
         }
-        else if (!other.CompareTag("Enemy")) // não colidir com outros inimigos
+        else
         {
             PhotonNetwork.Destroy(gameObject);
         }

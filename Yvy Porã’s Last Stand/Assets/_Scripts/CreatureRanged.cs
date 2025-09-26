@@ -1,67 +1,56 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
-using Photon.Pun;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(Enemy))] // garante que o inimigo tem vida/dano
-public class CreatureRanged : MonoBehaviourPun
+public class CreatureRanged : MonoBehaviour
 {
-    public UnityEvent OnChasing;
-
+    [Header("Referências")]
     private NavMeshAgent agent;
     private Transform targetPlayer;
-    private Enemy enemy; // script de vida/dano
 
+    [Header("Configurações de Movimento")]
+    public float stopDistance = 5f;   // Distância para parar e atirar
     public float checkInterval = 1.5f;
     public string playerTag = "Player";
 
-    [Header("Ataque à distância")]
+    [Header("Ataque à Distância")]
     public GameObject projectilePrefab;
-    public Transform shootPoint;
-    public float attackRange = 10f;
-    public float fireRate = 2f;
-    private float fireCooldown = 0f;
+    public Transform firePoint;
+    public float fireRate = 1f;
+    public float projectileSpeed = 10f;
+
+    private float nextFireTime = 0f;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        enemy = GetComponent<Enemy>();
-
         StartCoroutine(UpdateTarget());
-        OnChasing?.Invoke();
     }
 
     private void Update()
     {
-        if (targetPlayer != null)
+        if (targetPlayer == null) return;
+
+        float distance = Vector3.Distance(transform.position, targetPlayer.position);
+
+        if (distance > stopDistance)
         {
-            float dist = Vector3.Distance(transform.position, targetPlayer.position);
+            // Persegue o player
+            agent.isStopped = false;
+            agent.SetDestination(targetPlayer.position);
+        }
+        else
+        {
+            // Para para atirar
+            agent.isStopped = true;
 
-            if (dist > attackRange)
+            if (Time.time >= nextFireTime)
             {
-                agent.isStopped = false;
-                agent.SetDestination(targetPlayer.position);
-            }
-            else
-            {
-                agent.isStopped = true;
-
-                Vector3 dir = (targetPlayer.position - transform.position).normalized;
-                dir.y = 0;
-                transform.rotation = Quaternion.LookRotation(dir);
-
-                if (fireCooldown <= 0f)
-                {
-                    photonView.RPC("Shoot", RpcTarget.All, targetPlayer.position);
-                    fireCooldown = fireRate;
-                }
+                Shoot();
+                nextFireTime = Time.time + 1f / fireRate;
             }
         }
-
-        if (fireCooldown > 0f)
-            fireCooldown -= Time.deltaTime;
     }
 
     IEnumerator UpdateTarget()
@@ -92,31 +81,17 @@ public class CreatureRanged : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
-    void Shoot(Vector3 targetPos)
+    void Shoot()
     {
-        if (projectilePrefab != null && shootPoint != null)
+        if (projectilePrefab == null || firePoint == null || targetPlayer == null) return;
+
+        GameObject proj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+
+        Rigidbody rb = proj.GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            GameObject proj = Instantiate(projectilePrefab, shootPoint.position, Quaternion.identity);
-
-            // calcula direção pro player
-            Vector3 dir = (targetPos - shootPoint.position).normalized;
-
-            Rigidbody rb = proj.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-#if UNITY_6000_0_OR_NEWER
-                rb.linearVelocity = dir * 15f; // Unity 6
-#else
-                rb.velocity = dir * 15f;       // Unity 2022/2023
-#endif
-            }
-
-            Projectile projectile = proj.GetComponent<Projectile>();
-            if (projectile != null)
-            {
-                projectile.SetDamage(enemy.damage); // pega o valor do Enemy.cs
-            }
+            Vector3 dir = (targetPlayer.position - firePoint.position).normalized;
+            rb.linearVelocity = dir * projectileSpeed;
         }
     }
 }

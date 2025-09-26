@@ -66,6 +66,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 2.25
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &6030119617283113026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2828936414095777128}
+  m_Layer: 6
+  m_Name: Shooting point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2828936414095777128
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6030119617283113026}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.487, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8477356611879931295}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7765888950752619067
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,7 +110,7 @@ GameObject:
   - component: {fileID: 8018246166005343589}
   - component: {fileID: 1319173994813406565}
   - component: {fileID: 1591882878877636449}
-  - component: {fileID: 2918556747988138374}
+  - component: {fileID: 7934426837195157965}
   - component: {fileID: 2297627101105069474}
   - component: {fileID: 6104955463308039548}
   - component: {fileID: -884374042922124736}
@@ -104,6 +135,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1732544491850631465}
+  - {fileID: 2828936414095777128}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2972017047905313452
@@ -204,7 +236,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2918556747988138374
+--- !u!114 &7934426837195157965
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,14 +245,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7765888950752619067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58804e4cacd18a842b6ca4402ee61bbb, type: 3}
+  m_Script: {fileID: 11500000, guid: 03ded30285f707f4889c7775b3fa6aee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnChasing:
-    m_PersistentCalls:
-      m_Calls: []
-  checkInterval: 1.5
-  playerTag: Player
+  player: {fileID: 0}
+  moveSpeed: 3
+  stopDistance: 5
+  projectilePrefab: {fileID: 619119889870601587, guid: 1b02c9f68ba323e47a4c590ce8d194a7, type: 3}
+  firePoint: {fileID: 2828936414095777128}
+  fireRate: 2
+  projectileSpeed: 10
 --- !u!114 &2297627101105069474
 MonoBehaviour:
   m_ObjectHideFlags: 0
