@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - ReloadZone
   - Interactable
+  - ShootingPoint
   layers:
   - Default
   - TransparentFX
