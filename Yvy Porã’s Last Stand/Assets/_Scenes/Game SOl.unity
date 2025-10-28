@@ -2114,6 +2114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047f23b0047756d40898aec14cc7396d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardManager
+  ownedCards: []
 --- !u!114 &371853536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7020,6 +7021,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.y
       value: -0.83754706
       objectReference: {fileID: 0}
+    - target: {fileID: 4362128494287182857, guid: 39c9c86ef31b1e04ba132929c0491721, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5640219067401280758, guid: 39c9c86ef31b1e04ba132929c0491721, type: 3}
       propertyPath: m_LocalPosition.y
       value: 7.31
@@ -7046,7 +7051,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7609340852474696997, guid: 39c9c86ef31b1e04ba132929c0491721, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7928358595400136378, guid: 39c9c86ef31b1e04ba132929c0491721, type: 3}
       propertyPath: sceneViewId
@@ -10319,7 +10324,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1257935671}
+      - m_Target: {fileID: 371853533}
         m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 1
