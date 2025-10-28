@@ -139,4 +139,44 @@ public class PlayerStats : MonoBehaviour
                 break;
         }
     }
+
+    public void ApplyCardEffect(string effectType, float value)
+    {
+        switch (effectType)
+        {
+            case "MaxHealth":
+                maxHealth.Add(value);
+                if (health != null)
+                    health.SetMaxHealth(Mathf.RoundToInt(maxHealth.currentValue));
+                break;
+            case "MoveSpeed":
+                moveSpeed.Add(value);
+                if (controller != null)
+                    controller.MoveSpeed = moveSpeed.currentValue;
+                break;
+            case "SprintSpeed":
+                sprintSpeed.Add(value);
+                if (controller != null)
+                    controller.SprintSpeed = sprintSpeed.currentValue;
+                break;
+            case "SpearDamage":
+                spearDamage.Add(value);
+                if (spear != null)
+                    spear.damage = Mathf.RoundToInt(spearDamage.currentValue);
+                break;
+            case "MaxAmmo":
+                maxAmmo.Add(value);
+                if (gun != null)
+                    gun.maxAmmo = Mathf.RoundToInt(maxAmmo.currentValue);
+                break;
+            case "CooldownReduction":
+                cooldownReduction.Add(value);
+                if (gun != null)
+                    gun.cooldownTime *= (1f - cooldownReduction.currentValue);
+                break;
+            default:
+                Debug.LogWarning($"Tipo de efeito desconhecido: {effectType}");
+                break;
+        }
+    }
 }
