@@ -1,12 +1,16 @@
+// 28/10/2025 AI-Tag
+// This was created with the help of Assistant, a Unity Artificial Intelligence product.
+
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
 public class CardManager : MonoBehaviourPun
 {
+    [Header("Cartas do Jogador")]
     public List<Card> ownedCards = new List<Card>();
 
-    // Add card to player's inventory
+    // Adiciona uma carta ao inventário do jogador
     public void AddCardToInventory(Card card)
     {
         if (!photonView.IsMine) return;
@@ -14,11 +18,11 @@ public class CardManager : MonoBehaviourPun
         if (!ownedCards.Contains(card))
         {
             ownedCards.Add(card);
-            Debug.Log($"Card added to inventory: {card.cardName}");
+            Debug.Log($"Carta adicionada ao inventário: {card.cardName}");
         }
     }
 
-    // Apply card effects to the player
+    // Aplica os efeitos da carta ao jogador
     public void ApplyCardEffect(Card card)
     {
         if (!photonView.IsMine) return;
@@ -34,13 +38,11 @@ public class CardManager : MonoBehaviourPun
     [PunRPC]
     private void ApplyCardEffectRPC(CardEffectType effectType, float value)
     {
-        GameObject player = photonView.gameObject; // Reference to the player object (local to this instance)
-
-        PlayerStats playerStats = player.GetComponent<PlayerStats>();
+        PlayerStats playerStats = GetComponent<PlayerStats>();
 
         if (playerStats == null)
         {
-            Debug.LogError("PlayerStats component not found on player.");
+            Debug.LogError("Componente PlayerStats não encontrado no jogador.");
             return;
         }
 
@@ -63,8 +65,7 @@ public class CardManager : MonoBehaviourPun
                 break;
 
             case CardEffectType.ShieldPerWave:
-                playerStats.AddToStat("ShieldPerWave", value);
-                Debug.Log("Shield per wave effect applied.");
+                playerStats.AddToStat("Shield", value);
                 break;
 
             case CardEffectType.CooldownReduction:
@@ -73,30 +74,28 @@ public class CardManager : MonoBehaviourPun
 
             case CardEffectType.PoisonEffect:
                 playerStats.AddToStat("PoisonEffect", value);
-                Debug.Log("Poison effect applied.");
                 break;
 
             case CardEffectType.ReviveOnce:
                 playerStats.AddToStat("ReviveOnce", value);
-                Debug.Log("Player will be revived automatically upon death.");
                 break;
 
             case CardEffectType.UpgradeCommonsToRare:
-                playerStats.AddToStat("UpgradeCommonsToRare", value);
-                Debug.Log("Common cards upgraded to rare.");
+                // Implementação futura: Atualizar lógica para upgrade de cartas comuns para raras
+                Debug.Log("Efeito de UpgradeCommonsToRare aplicado.");
                 break;
 
             case CardEffectType.PassiveRegenAndEvade:
                 playerStats.AddToStat("PassiveRegen", value);
                 playerStats.AddToStat("Evasion", value);
-                Debug.Log("Passive regeneration and evasion activated.");
+                Debug.Log("Regeneração passiva e evasão ativadas.");
                 break;
 
             default:
-                Debug.LogWarning($"Unknown effect type: {effectType}");
+                Debug.LogWarning($"Tipo de efeito desconhecido: {effectType}");
                 break;
         }
 
-        Debug.Log($"Card effect applied: {effectType} with value {value}");
+        Debug.Log($"Efeito da carta aplicado: {effectType} com valor {value}");
     }
 }

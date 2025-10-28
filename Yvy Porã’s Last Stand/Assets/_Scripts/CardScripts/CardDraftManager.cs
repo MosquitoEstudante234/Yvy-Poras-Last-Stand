@@ -2,10 +2,10 @@
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using System.Collections.Generic;
 
 public class CardDraftManager : MonoBehaviourPunCallbacks
 {
@@ -13,14 +13,24 @@ public class CardDraftManager : MonoBehaviourPunCallbacks
     public Button cardButton; // Botão que o jogador clica para puxar uma carta
     public Image cardImage; // Imagem que mostra o sprite da carta recebida
     public float cooldown = 90f; // Tempo de recarga entre puxadas de carta
+
     [Header("Chances de Raridade (0 a 1)")]
-    [Range(0f, 1f)]
-    public float chanceCommon = 0.7f;
-    [Range(0f, 1f)]
-    public float chanceRare = 0.25f;
-    [Range(0f, 1f)]
-    public float chanceLegendary = 0.05f;
+    [Range(0f, 1f)] public float chanceCommon = 0.7f;
+    [Range(0f, 1f)] public float chanceRare = 0.25f;
+    [Range(0f, 1f)] public float chanceLegendary = 0.05f;
+
     private Card currentCard;
+    private CardLibrary cardLibrary; // Referência ao CardLibrary para economizar processamento
+
+    private void Awake()
+    {
+        cardLibrary = FindObjectOfType<CardLibrary>();
+
+        if (cardLibrary == null)
+        {
+            Debug.LogError("CardLibrary não encontrado na cena.");
+        }
+    }
 
     private void Start()
     {
@@ -76,22 +86,25 @@ public class CardDraftManager : MonoBehaviourPunCallbacks
 
     private void DrawCard()
     {
-        CardLibrary library = FindCardLibrary();
-        if (library == null)
+        if (cardLibrary == null)
+        {
+            Debug.LogError("CardLibrary não encontrado. Certifique-se de que está na cena.");
             return;
+        }
+
         Rarity rarity = RollRarity();
-        Card card = library.GetRandomCard(rarity);
+        Card card = cardLibrary.GetRandomCard(rarity);
+
         if (card == null)
+        {
+            Debug.LogWarning($"Nenhuma carta encontrada para a raridade: {rarity}");
             return;
+        }
+
         currentCard = card;
         DisplayCardImage(card);
         AddCardToInventory(card);
         ApplyCardEffectToPlayer(card);
-    }
-
-    private CardLibrary FindCardLibrary()
-    {
-        return FindObjectOfType<CardLibrary>();
     }
 
     private Rarity RollRarity()
@@ -108,8 +121,12 @@ public class CardDraftManager : MonoBehaviourPunCallbacks
     private void DisplayCardImage(Card card)
     {
         if (card == null)
+        {
+            Debug.LogWarning("Tentativa de exibir uma carta nula.");
             return;
-        cardImage.sprite = card.GetCardSprite(); // Usa o método GetCardSprite() para obter o sprite específico da carta
+        }
+
+        cardImage.sprite = card.GetCardSprite();
         cardImage.enabled = true;
     }
 
@@ -117,11 +134,19 @@ public class CardDraftManager : MonoBehaviourPunCallbacks
     {
         var localPlayer = FindLocalPlayer();
         if (localPlayer == null)
+        {
+            Debug.LogError("Nenhum jogador local encontrado.");
             return;
+        }
+
         var cardManager = localPlayer.GetComponent<CardManager>();
         if (cardManager != null)
         {
-            cardManager.AddCardToInventory(card); // Adiciona a carta ao inventário do jogador
+            cardManager.AddCardToInventory(card);
+        }
+        else
+        {
+            Debug.LogError("CardManager não encontrado no jogador local.");
         }
     }
 
@@ -129,11 +154,19 @@ public class CardDraftManager : MonoBehaviourPunCallbacks
     {
         var localPlayer = FindLocalPlayer();
         if (localPlayer == null)
-            return;
-        var cardManager = localPlayer.GetComponent<CardManager>();
-        if (cardManager != null)
         {
-            cardManager.ApplyCardEffect(card); // Aplica o efeito da carta ao jogador
+            Debug.LogError("Nenhum jogador local encontrado.");
+            return;
+        }
+
+        var playerStats = localPlayer.GetComponent<PlayerStats>();
+        if (playerStats != null)
+        {
+            playerStats.ApplyCardEffect(card.effectType.ToString(), card.value); // Centralização na lógica de PlayerStats
+        }
+        else
+        {
+            Debug.LogError("PlayerStats não encontrado no jogador local.");
         }
     }
 

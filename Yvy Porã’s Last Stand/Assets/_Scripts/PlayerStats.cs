@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    [Header("Atributos do Jogador")]
     public Stat maxHealth;
     public Stat moveSpeed;
     public Stat sprintSpeed;
@@ -17,15 +18,15 @@ public class PlayerStats : MonoBehaviour
     private Gun gun;
     private Spear spear;
 
-    void Awake()
+    private void Awake()
     {
         health = GetComponent<PlayerHealth>();
         controller = GetComponent<StarterAssets.FirstPersonController>();
         gun = GetComponentInChildren<Gun>();
         spear = GetComponentInChildren<Spear>();
 
-        ResetAllStats(); // Initializes values
-        ApplyStats();
+        ResetAllStats(); // Inicializa os valores base de todos os atributos
+        ApplyStats();    // Aplica os atributos ao jogador
     }
 
     public void ResetAllStats()
@@ -93,6 +94,9 @@ public class PlayerStats : MonoBehaviour
                 if (gun != null)
                     gun.cooldownTime *= (1f - cooldownReduction.currentValue);
                 break;
+            default:
+                Debug.LogWarning($"Atributo desconhecido: {statName}");
+                break;
         }
     }
 
@@ -129,6 +133,9 @@ public class PlayerStats : MonoBehaviour
                 cooldownReduction.Multiply(multiplier);
                 if (gun != null)
                     gun.cooldownTime *= (1f - cooldownReduction.currentValue);
+                break;
+            default:
+                Debug.LogWarning($"Atributo desconhecido: {statName}");
                 break;
         }
     }

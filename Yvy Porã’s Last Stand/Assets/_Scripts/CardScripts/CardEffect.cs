@@ -1,7 +1,9 @@
-using StarterAssets;
+// 28/10/2025 AI-Tag
+// This was created with the help of Assistant, a Unity Artificial Intelligence product.
+
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewCard", menuName = "Cards/Card Effect")]
+[CreateAssetMenu(fileName = "NewCardEffect", menuName = "Cards/Card Effect")]
 public class CardEffect : ScriptableObject
 {
     public enum StatType
@@ -47,29 +49,58 @@ public class CardEffect : ScriptableObject
     public BurnEffectType burnEffect;
     public float burnValue;
 
-    public void ApplyEffect(GameObject player)
+    public void ApplyEffect(PlayerStats playerStats)
     {
+        if (playerStats == null)
+        {
+            Debug.LogError("PlayerStats component não encontrado no jogador.");
+            return;
+        }
+
         switch (stat)
         {
             case StatType.MoveSpeed:
-                player.GetComponent<FirstPersonController>().MoveSpeed += value;
+                playerStats.AddToStat("MoveSpeed", value);
                 break;
             case StatType.SprintSpeed:
-                player.GetComponent<FirstPersonController>().SprintSpeed += value;
+                playerStats.AddToStat("SprintSpeed", value);
                 break;
             case StatType.SpearDamage:
-                player.GetComponentInChildren<Spear>().damage += Mathf.RoundToInt(value);
+                playerStats.AddToStat("SpearDamage", value);
                 break;
             case StatType.MaxHealth:
-                player.GetComponent<PlayerHealth>().maxHealth += Mathf.RoundToInt(value);
+                playerStats.AddToStat("MaxHealth", Mathf.RoundToInt(value));
                 break;
             case StatType.MaxAmmo:
-                player.GetComponentInChildren<Gun>().maxAmmo += Mathf.RoundToInt(value);
+                playerStats.AddToStat("MaxAmmo", Mathf.RoundToInt(value));
                 break;
             case StatType.CooldownReduction:
-                player.GetComponentInChildren<Gun>().cooldownTime *= 1f - value;
+                playerStats.AddToStat("CooldownReduction", value);
                 break;
-           
+            case StatType.Shield:
+                playerStats.AddToStat("Shield", value);
+                break;
+            case StatType.PoisonEnemies:
+                playerStats.AddToStat("PoisonEffect", value);
+                break;
+            case StatType.PassiveRegen:
+                playerStats.AddToStat("PassiveRegen", value);
+                break;
+            case StatType.AoEDamageAura:
+                playerStats.AddToStat("AoEDamageAura", value);
+                break;
+            case StatType.ReviveOnDeath:
+                playerStats.AddToStat("ReviveOnce", value);
+                break;
+            case StatType.ConvertCommonsToRares:
+                playerStats.AddToStat("UpgradeCommonsToRare", value);
+                break;
+            case StatType.DrawCardOnKill:
+                playerStats.AddToStat("CardOnKill", value);
+                break;
+            default:
+                Debug.LogWarning($"Unknown stat type: {stat}");
+                break;
         }
     }
 }

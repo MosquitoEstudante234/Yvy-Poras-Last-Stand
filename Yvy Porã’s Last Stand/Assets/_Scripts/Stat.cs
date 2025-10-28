@@ -2,6 +2,7 @@
 // This was created with the help of Assistant, a Unity Artificial Intelligence product.
 
 using System;
+using UnityEngine; // Added namespace for Debug
 
 [Serializable]
 public class Stat
@@ -31,5 +32,27 @@ public class Stat
     public void Reset()
     {
         currentValue = baseValue;
+    }
+
+    // Adiciona uma validação para valores negativos
+    public void AddWithValidation(float value)
+    {
+        if (currentValue + value < 0)
+        {
+            Debug.LogWarning($"Tentativa de atribuir um valor negativo ao atributo. Valor atual: {currentValue}, Valor a adicionar: {value}");
+            return;
+        }
+        currentValue += value;
+    }
+
+    // Multiplica com validação para evitar valores negativos
+    public void MultiplyWithValidation(float multiplier)
+    {
+        if (currentValue * multiplier < 0)
+        {
+            Debug.LogWarning($"Tentativa de multiplicar o atributo por um valor que resulta em negativo. Valor atual: {currentValue}, Multiplicador: {multiplier}");
+            return;
+        }
+        currentValue *= multiplier;
     }
 }
