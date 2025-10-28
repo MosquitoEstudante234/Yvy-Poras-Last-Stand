@@ -92,16 +92,6 @@ public class CardManager : MonoBehaviourPun
                 Debug.Log("Passive regeneration and evasion activated.");
                 break;
 
-            case CardEffectType.DamageAura:
-                playerStats.AddToStat("DamageAura", value);
-                Debug.Log("Damage aura activated.");
-                break;
-
-            case CardEffectType.CardOnKill:
-                playerStats.AddToStat("CardOnKill", value);
-                Debug.Log("Card will be received upon killing an enemy.");
-                break;
-
             default:
                 Debug.LogWarning($"Unknown effect type: {effectType}");
                 break;

@@ -69,27 +69,7 @@ public class CardEffect : ScriptableObject
             case StatType.CooldownReduction:
                 player.GetComponentInChildren<Gun>().cooldownTime *= 1f - value;
                 break;
-            case StatType.Shield:
-                Debug.Log("Escudo aplicado. Requer implementação de sistema de escudo.");
-                break;
-            case StatType.PoisonEnemies:
-                Debug.Log("Efeito de veneno aplicado. Requer lógica em ataques.");
-                break;
-            case StatType.PassiveRegen:
-                Debug.Log("Regeneração passiva ativada.");
-                break;
-            case StatType.AoEDamageAura:
-                Debug.Log("Aura de dano contínuo ativada.");
-                break;
-            case StatType.ReviveOnDeath:
-                Debug.Log("O jogador será revivido automaticamente na morte.");
-                break;
-            case StatType.ConvertCommonsToRares:
-                Debug.Log("Cartas comuns futuras serão convertidas em raras.");
-                break;
-            case StatType.DrawCardOnKill:
-                Debug.Log("Jogador ganhará carta a cada 5 inimigos mortos.");
-                break;
+           
         }
     }
 }
