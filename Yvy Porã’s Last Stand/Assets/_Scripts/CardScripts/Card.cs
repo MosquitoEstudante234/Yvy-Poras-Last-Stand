@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[System.Serializable]
 public class Card
 {
     public string cardName;
@@ -16,6 +15,13 @@ public class Card
 
     [Header("Penalidade ao queimar")]
     public BurnPenaltyType burnPenalty;
+
+    public Sprite cardSprite;
+
+    public Sprite GetCardSprite()
+    {
+        return cardSprite;
+    }
 }
 
 public enum Rarity

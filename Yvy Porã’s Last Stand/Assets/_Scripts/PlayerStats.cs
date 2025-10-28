@@ -1,20 +1,9 @@
+// 28/10/2025 AI-Tag
+// This was created with the help of Assistant, a Unity Artificial Intelligence product.
+
 using UnityEngine;
-using Photon.Pun;
-using StarterAssets;
 
-[System.Serializable]
-public class Stat
-{
-    public string name;
-    public float baseValue;
-    public float currentValue;
-
-    public void Reset() => currentValue = baseValue;
-    public void Add(float amount) => currentValue += amount;
-    public void Multiply(float multiplier) => currentValue *= multiplier;
-}
-
-public class PlayerStats : MonoBehaviourPun
+public class PlayerStats : MonoBehaviour
 {
     public Stat maxHealth;
     public Stat moveSpeed;
@@ -24,18 +13,18 @@ public class PlayerStats : MonoBehaviourPun
     public Stat cooldownReduction;
 
     private PlayerHealth health;
-    private FirstPersonController controller;
+    private StarterAssets.FirstPersonController controller;
     private Gun gun;
     private Spear spear;
 
     void Awake()
     {
         health = GetComponent<PlayerHealth>();
-        controller = GetComponent<FirstPersonController>();
+        controller = GetComponent<StarterAssets.FirstPersonController>();
         gun = GetComponentInChildren<Gun>();
         spear = GetComponentInChildren<Spear>();
 
-        ResetAllStats(); // Inicializa os valores
+        ResetAllStats(); // Initializes values
         ApplyStats();
     }
 
@@ -74,14 +63,73 @@ public class PlayerStats : MonoBehaviourPun
     {
         switch (statName)
         {
-            case "MaxHealth": maxHealth.Add(value); break;
-            case "MoveSpeed": moveSpeed.Add(value); break;
-            case "SprintSpeed": sprintSpeed.Add(value); break;
-            case "SpearDamage": spearDamage.Add(value); break;
-            case "MaxAmmo": maxAmmo.Add(value); break;
-            case "CooldownReduction": cooldownReduction.Add(value); break;
+            case "MaxHealth":
+                maxHealth.Add(value);
+                if (health != null)
+                    health.SetMaxHealth(Mathf.RoundToInt(maxHealth.currentValue));
+                break;
+            case "MoveSpeed":
+                moveSpeed.Add(value);
+                if (controller != null)
+                    controller.MoveSpeed = moveSpeed.currentValue;
+                break;
+            case "SprintSpeed":
+                sprintSpeed.Add(value);
+                if (controller != null)
+                    controller.SprintSpeed = sprintSpeed.currentValue;
+                break;
+            case "SpearDamage":
+                spearDamage.Add(value);
+                if (spear != null)
+                    spear.damage = Mathf.RoundToInt(spearDamage.currentValue);
+                break;
+            case "MaxAmmo":
+                maxAmmo.Add(value);
+                if (gun != null)
+                    gun.maxAmmo = Mathf.RoundToInt(maxAmmo.currentValue);
+                break;
+            case "CooldownReduction":
+                cooldownReduction.Add(value);
+                if (gun != null)
+                    gun.cooldownTime *= (1f - cooldownReduction.currentValue);
+                break;
         }
+    }
 
-        ApplyStats();
+    public void MultiplyStat(string statName, float multiplier)
+    {
+        switch (statName)
+        {
+            case "MaxHealth":
+                maxHealth.Multiply(multiplier);
+                if (health != null)
+                    health.SetMaxHealth(Mathf.RoundToInt(maxHealth.currentValue));
+                break;
+            case "MoveSpeed":
+                moveSpeed.Multiply(multiplier);
+                if (controller != null)
+                    controller.MoveSpeed = moveSpeed.currentValue;
+                break;
+            case "SprintSpeed":
+                sprintSpeed.Multiply(multiplier);
+                if (controller != null)
+                    controller.SprintSpeed = sprintSpeed.currentValue;
+                break;
+            case "SpearDamage":
+                spearDamage.Multiply(multiplier);
+                if (spear != null)
+                    spear.damage = Mathf.RoundToInt(spearDamage.currentValue);
+                break;
+            case "MaxAmmo":
+                maxAmmo.Multiply(multiplier);
+                if (gun != null)
+                    gun.maxAmmo = Mathf.RoundToInt(maxAmmo.currentValue);
+                break;
+            case "CooldownReduction":
+                cooldownReduction.Multiply(multiplier);
+                if (gun != null)
+                    gun.cooldownTime *= (1f - cooldownReduction.currentValue);
+                break;
+        }
     }
 }

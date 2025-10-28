@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController), typeof(PhotonView))]
 public class PlayerHealth : MonoBehaviourPun
@@ -16,7 +17,12 @@ public class PlayerHealth : MonoBehaviourPun
     public TextMeshProUGUI healthText;
     public GameObject deathCanvas;
 
-    void Start()
+    [Header("Passive Regen Settings")]
+    public bool enablePassiveRegen = false; // Toggle for passive regeneration
+    public float regenRate = 1f; // Health regenerated per second
+    public float regenInterval = 1f; // Time interval for regeneration
+
+    private void Start()
     {
         currentHealth = maxHealth;
         controller = GetComponent<CharacterController>();
@@ -31,6 +37,11 @@ public class PlayerHealth : MonoBehaviourPun
         if (photonView.IsMine)
         {
             PhotonNetwork.LocalPlayer.TagObject = this;
+
+            if (enablePassiveRegen)
+            {
+                StartCoroutine(PassiveRegeneration());
+            }
         }
     }
 
@@ -49,7 +60,7 @@ public class PlayerHealth : MonoBehaviourPun
         }
     }
 
-    void UpdateHealthText()
+    private void UpdateHealthText()
     {
         if (healthText != null)
         {
@@ -57,8 +68,24 @@ public class PlayerHealth : MonoBehaviourPun
         }
     }
 
+    // Passive regeneration coroutine
+    private IEnumerator PassiveRegeneration()
+    {
+        while (!isDead)
+        {
+            yield return new WaitForSeconds(regenInterval);
+
+            if (currentHealth < maxHealth)
+            {
+                currentHealth += Mathf.RoundToInt(regenRate);
+                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+                UpdateHealthText();
+            }
+        }
+    }
+
     [PunRPC]
-    void RPC_SetDead()
+    private void RPC_SetDead()
     {
         if (isDead) return;
 
@@ -78,14 +105,15 @@ public class PlayerHealth : MonoBehaviourPun
         if (photonView.IsMine && deathCanvas != null)
             deathCanvas.SetActive(true);
 
-        // Corrigido: só o MasterClient conta mortes
+        // Only the MasterClient counts deaths
         if (PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected)
         {
             GameManager.instance.PlayerDied();
         }
     }
+
     [PunRPC]
-    void RPC_NotifyDeathToMaster()
+    private void RPC_NotifyDeathToMaster()
     {
         if (PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected)
         {
@@ -98,5 +126,19 @@ public class PlayerHealth : MonoBehaviourPun
         maxHealth = value;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthText();
+    }
+
+    public void EnablePassiveRegen(bool enable)
+    {
+        enablePassiveRegen = enable;
+
+        if (enable && photonView.IsMine)
+        {
+            StartCoroutine(PassiveRegeneration());
+        }
+        else
+        {
+            StopCoroutine(PassiveRegeneration());
+        }
     }
 }

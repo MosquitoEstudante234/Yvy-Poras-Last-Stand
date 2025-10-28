@@ -1,102 +1,112 @@
-using Photon.Pun;
-using StarterAssets;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using Photon.Pun;
 
 public class CardManager : MonoBehaviourPun
 {
-    public List<CardEffect> ownedCards = new();
+    public List<Card> ownedCards = new List<Card>();
 
-    public void ApplyCardEffect(CardEffect card)
+    // Add card to player's inventory
+    public void AddCardToInventory(Card card)
     {
         if (!photonView.IsMine) return;
 
         if (!ownedCards.Contains(card))
-            ownedCards.Add(card);
-
-        photonView.RPC(nameof(ApplyCardEffectRPC), photonView.Owner, (int)card.stat, card.value);
-    }
-
-    [PunRPC]
-    void ApplyCardEffectRPC(int statIndex, float value)
-    {
-        var stat = (CardEffect.StatType)statIndex;
-        GameObject player = gameObject;
-
-        switch (stat)
         {
-            case CardEffect.StatType.MoveSpeed:
-                player.GetComponent<FirstPersonController>().MoveSpeed += value;
-                break;
-            case CardEffect.StatType.SprintSpeed:
-                player.GetComponent<FirstPersonController>().SprintSpeed += value;
-                break;
-            case CardEffect.StatType.SpearDamage:
-                player.GetComponentInChildren<Spear>().damage += Mathf.RoundToInt(value);
-                break;
-            case CardEffect.StatType.MaxHealth:
-                player.GetComponent<PlayerHealth>().maxHealth += Mathf.RoundToInt(value);
-                break;
-            case CardEffect.StatType.MaxAmmo:
-                player.GetComponentInChildren<Gun>().maxAmmo += Mathf.RoundToInt(value);
-                break;
-            case CardEffect.StatType.CooldownReduction:
-                player.GetComponentInChildren<Gun>().cooldownTime *= 1f - value;
-                break;
-            case CardEffect.StatType.Shield:
-                Debug.Log("Escudo aplicado: implementar lógica de escudo regenerável.");
-                break;
-            case CardEffect.StatType.ConvertCommonsToRares:
-                Debug.Log("Todas cartas comuns se tornarão raras.");
-                break;
-            case CardEffect.StatType.PassiveRegen:
-                Debug.Log("Regeneração passiva ativada.");
-                break;
-            case CardEffect.StatType.PoisonEnemies:
-                Debug.Log("Ataques agora envenenam inimigos.");
-                break;
-            case CardEffect.StatType.AoEDamageAura:
-                Debug.Log("Aura de dano contínuo ativada.");
-                break;
-            case CardEffect.StatType.ReviveOnDeath:
-                Debug.Log("O jogador será revivido automaticamente na morte.");
-                break;
-            case CardEffect.StatType.DrawCardOnKill:
-                Debug.Log("O jogador ganha carta a cada 5 inimigos mortos.");
-                break;
+            ownedCards.Add(card);
+            Debug.Log($"Card added to inventory: {card.cardName}");
         }
-
-        Debug.Log($"Carta aplicada: {stat} + {value}");
     }
 
-    public void BurnCard(CardEffect card)
+    // Apply card effects to the player
+    public void ApplyCardEffect(Card card)
     {
         if (!photonView.IsMine) return;
 
-        if (ownedCards.Contains(card))
-            ownedCards.Remove(card);
+        if (!ownedCards.Contains(card))
+        {
+            AddCardToInventory(card);
+        }
 
-        photonView.RPC(nameof(ApplyBurnEffectRPC), photonView.Owner, (int)card.burnEffect, card.burnValue);
+        photonView.RPC(nameof(ApplyCardEffectRPC), RpcTarget.All, card.effectType, card.value);
     }
 
     [PunRPC]
-    void ApplyBurnEffectRPC(int effectIndex, float value)
+    private void ApplyCardEffectRPC(CardEffectType effectType, float value)
     {
-        var effect = (CardEffect.BurnEffectType)effectIndex;
+        GameObject player = photonView.gameObject; // Reference to the player object (local to this instance)
 
-        switch (effect)
+        PlayerStats playerStats = player.GetComponent<PlayerStats>();
+
+        if (playerStats == null)
         {
-            case CardEffect.BurnEffectType.LoseAmmo:
-                GetComponentInChildren<Gun>().maxAmmo -= Mathf.RoundToInt(value);
+            Debug.LogError("PlayerStats component not found on player.");
+            return;
+        }
+
+        switch (effectType)
+        {
+            case CardEffectType.IncreaseDamage:
+                playerStats.AddToStat("SpearDamage", value);
                 break;
-            case CardEffect.BurnEffectType.LoseHealth:
-                GetComponent<PlayerHealth>().maxHealth -= Mathf.RoundToInt(value);
+
+            case CardEffectType.IncreaseMaxHP:
+                playerStats.AddToStat("MaxHealth", value);
                 break;
-            case CardEffect.BurnEffectType.IncreaseCooldown:
-                GetComponentInChildren<Gun>().cooldownTime *= 1f + value;
+
+            case CardEffectType.MovementSpeed:
+                playerStats.AddToStat("MoveSpeed", value);
+                break;
+
+            case CardEffectType.AmmoCapacity:
+                playerStats.AddToStat("MaxAmmo", value);
+                break;
+
+            case CardEffectType.ShieldPerWave:
+                playerStats.AddToStat("ShieldPerWave", value);
+                Debug.Log("Shield per wave effect applied.");
+                break;
+
+            case CardEffectType.CooldownReduction:
+                playerStats.AddToStat("CooldownReduction", value);
+                break;
+
+            case CardEffectType.PoisonEffect:
+                playerStats.AddToStat("PoisonEffect", value);
+                Debug.Log("Poison effect applied.");
+                break;
+
+            case CardEffectType.ReviveOnce:
+                playerStats.AddToStat("ReviveOnce", value);
+                Debug.Log("Player will be revived automatically upon death.");
+                break;
+
+            case CardEffectType.UpgradeCommonsToRare:
+                playerStats.AddToStat("UpgradeCommonsToRare", value);
+                Debug.Log("Common cards upgraded to rare.");
+                break;
+
+            case CardEffectType.PassiveRegenAndEvade:
+                playerStats.AddToStat("PassiveRegen", value);
+                playerStats.AddToStat("Evasion", value);
+                Debug.Log("Passive regeneration and evasion activated.");
+                break;
+
+            case CardEffectType.DamageAura:
+                playerStats.AddToStat("DamageAura", value);
+                Debug.Log("Damage aura activated.");
+                break;
+
+            case CardEffectType.CardOnKill:
+                playerStats.AddToStat("CardOnKill", value);
+                Debug.Log("Card will be received upon killing an enemy.");
+                break;
+
+            default:
+                Debug.LogWarning($"Unknown effect type: {effectType}");
                 break;
         }
 
-        Debug.Log($"Carta queimada: {effect} -{value}");
+        Debug.Log($"Card effect applied: {effectType} with value {value}");
     }
 }

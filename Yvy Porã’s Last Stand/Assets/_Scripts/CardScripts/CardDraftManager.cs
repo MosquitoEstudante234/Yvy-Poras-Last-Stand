@@ -1,100 +1,153 @@
+// 28/10/2025 AI-Tag
+// This was created with the help of Assistant, a Unity Artificial Intelligence product.
+
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.Collections.Generic;
 
-public class CardDraftManager : MonoBehaviourPun
+public class CardDraftManager : MonoBehaviourPunCallbacks
 {
     [Header("Referências")]
-    public Button cardButton;         // Botão que o jogador clica para puxar uma carta
-    public Image cardImage;           // Imagem que mostra o sprite da carta recebida
-    public float cooldown = 90f;      // Tempo de recarga entre puxadas de carta
-
+    public Button cardButton; // Botão que o jogador clica para puxar uma carta
+    public Image cardImage; // Imagem que mostra o sprite da carta recebida
+    public float cooldown = 90f; // Tempo de recarga entre puxadas de carta
     [Header("Chances de Raridade (0 a 1)")]
-    [Range(0f, 1f)] public float chanceCommon = 0.7f;
-    [Range(0f, 1f)] public float chanceRare = 0.25f;
-    [Range(0f, 1f)] public float chanceLegendary = 0.05f;
+    [Range(0f, 1f)]
+    public float chanceCommon = 0.7f;
+    [Range(0f, 1f)]
+    public float chanceRare = 0.25f;
+    [Range(0f, 1f)]
+    public float chanceLegendary = 0.05f;
+    private Card currentCard;
 
-    private CardEffect currentCard;
+    private void Start()
+    {
+        SetupPlayer();
+    }
 
-    void Start()
+    private void SetupPlayer()
     {
         if (photonView.IsMine)
         {
-            cardButton.onClick.AddListener(OnClick_DrawCard);
-            cardButton.interactable = true;
-            cardImage.enabled = false; // Esconde imagem da carta até uma ser sorteada
+            InitializeCardButton();
+            HideCardImage();
         }
         else
         {
-            // Esconde o botão para jogadores remotos
-            cardButton.gameObject.SetActive(false);
+            HideCardButton();
         }
+    }
+
+    private void InitializeCardButton()
+    {
+        cardButton.onClick.AddListener(OnClick_DrawCard);
+        cardButton.interactable = true;
+    }
+
+    private void HideCardImage()
+    {
+        cardImage.enabled = false; // Esconde imagem da carta até uma ser sorteada
+    }
+
+    private void HideCardButton()
+    {
+        cardButton.gameObject.SetActive(false);
     }
 
     public void OnClick_DrawCard()
     {
-        CardLibrary library = Object.FindFirstObjectByType<CardLibrary>();
-        if (library == null) return;
-
-        var rarity = RollRarity();
-        CardEffect card = library.GetRandomCard(rarity);
-        if (card == null) return;
-
-        currentCard = card;
-
-        // Exibe a imagem da carta
-        cardImage.sprite = currentCard.sprite;
-        cardImage.enabled = true;
-
-        // Aplica o efeito ao jogador local
-        ApplyCardEffectToLocalPlayer(currentCard);
-
-        // Desativa botão e inicia cooldown
-        cardButton.interactable = false;
-        StartCoroutine(ReenableButtonAfterCooldown());
+        if (cardButton.interactable)
+        {
+            StartCoroutine(DrawCardWithCooldown());
+        }
     }
 
-    IEnumerator ReenableButtonAfterCooldown()
+    private IEnumerator DrawCardWithCooldown()
     {
+        cardButton.interactable = false;
+        DrawCard();
         yield return new WaitForSeconds(cooldown);
-
         cardButton.interactable = true;
-        cardImage.enabled = false;
+        HideCardImage();
         currentCard = null;
     }
 
-    CardEffect.CardType RollRarity()
+    private void DrawCard()
+    {
+        CardLibrary library = FindCardLibrary();
+        if (library == null)
+            return;
+        Rarity rarity = RollRarity();
+        Card card = library.GetRandomCard(rarity);
+        if (card == null)
+            return;
+        currentCard = card;
+        DisplayCardImage(card);
+        AddCardToInventory(card);
+        ApplyCardEffectToPlayer(card);
+    }
+
+    private CardLibrary FindCardLibrary()
+    {
+        return FindObjectOfType<CardLibrary>();
+    }
+
+    private Rarity RollRarity()
     {
         float roll = Random.value;
-
         if (roll < chanceLegendary)
-            return CardEffect.CardType.Legendary;
+            return Rarity.Legendary;
         else if (roll < chanceLegendary + chanceRare)
-            return CardEffect.CardType.Rare;
+            return Rarity.Rare;
         else
-            return CardEffect.CardType.Common;
+            return Rarity.Common;
     }
 
-    void ApplyCardEffectToLocalPlayer(CardEffect card)
+    private void DisplayCardImage(Card card)
     {
-        var player = FindLocalPlayer();
-        if (player == null) return;
-
-        var manager = player.GetComponent<CardManager>();
-        if (manager != null)
-            manager.ApplyCardEffect(card);
+        if (card == null)
+            return;
+        cardImage.sprite = card.GetCardSprite(); // Usa o método GetCardSprite() para obter o sprite específico da carta
+        cardImage.enabled = true;
     }
 
-    GameObject FindLocalPlayer()
+    private void AddCardToInventory(Card card)
     {
-        foreach (var p in GameObject.FindGameObjectsWithTag("Player"))
+        var localPlayer = FindLocalPlayer();
+        if (localPlayer == null)
+            return;
+        var cardManager = localPlayer.GetComponent<CardManager>();
+        if (cardManager != null)
         {
-            PhotonView view = p.GetComponent<PhotonView>();
-            if (view != null && view.IsMine)
-                return p;
+            cardManager.AddCardToInventory(card); // Adiciona a carta ao inventário do jogador
         }
+    }
+
+    private void ApplyCardEffectToPlayer(Card card)
+    {
+        var localPlayer = FindLocalPlayer();
+        if (localPlayer == null)
+            return;
+        var cardManager = localPlayer.GetComponent<CardManager>();
+        if (cardManager != null)
+        {
+            cardManager.ApplyCardEffect(card); // Aplica o efeito da carta ao jogador
+        }
+    }
+
+    private GameObject FindLocalPlayer()
+    {
+        foreach (var player in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            PhotonView view = player.GetComponent<PhotonView>();
+            if (view != null && view.IsMine)
+            {
+                return player;
+            }
+        }
+
         return null;
     }
 }
