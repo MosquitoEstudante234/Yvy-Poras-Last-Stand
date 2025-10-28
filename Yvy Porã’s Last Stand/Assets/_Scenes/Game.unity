@@ -2078,6 +2078,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 371853534}
+  - component: {fileID: 371853536}
+  - component: {fileID: 371853535}
   m_Layer: 0
   m_Name: CardManager
   m_TagString: Untagged
@@ -2100,6 +2102,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &371853535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371853533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 047f23b0047756d40898aec14cc7396d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardManager
+--- !u!114 &371853536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371853533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1afe17eb47aa1c448334447c343df15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardDraftManager
+  cardButton: {fileID: 1566309004}
+  cardImage: {fileID: 983066277920592235, guid: 9487149c722fb2448915b37d81027fd1, type: 3}
+  cooldown: 90
+  chanceCommon: 0.7
+  chanceRare: 0.25
+  chanceLegendary: 0.05
 --- !u!1 &377589010
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,6 +2404,10 @@ PrefabInstance:
     - target: {fileID: 7765888950752619067, guid: 485904f2b2af14343b9555262ea299dc, type: 3}
       propertyPath: m_Name
       value: Inimigo (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7765888950752619067, guid: 485904f2b2af14343b9555262ea299dc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8477356611879931295, guid: 485904f2b2af14343b9555262ea299dc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3145,7 +3181,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &550558568
 Transform:
   m_ObjectHideFlags: 0
@@ -6135,6 +6171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Atirador
       objectReference: {fileID: 0}
+    - target: {fileID: 7765888950752619067, guid: f03c1f8734b6e364ebb3a314e670c2d3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7934426837195157965, guid: f03c1f8734b6e364ebb3a314e670c2d3, type: 3}
       propertyPath: playerTag
       value: Player
@@ -7239,6 +7279,10 @@ PrefabInstance:
     - target: {fileID: 619119889870601587, guid: 1b02c9f68ba323e47a4c590ce8d194a7, type: 3}
       propertyPath: m_Name
       value: Projectile
+      objectReference: {fileID: 0}
+    - target: {fileID: 619119889870601587, guid: 1b02c9f68ba323e47a4c590ce8d194a7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6939019455485084313, guid: 1b02c9f68ba323e47a4c590ce8d194a7, type: 3}
       propertyPath: m_LocalPosition.x
