@@ -1,9 +1,10 @@
 using UnityEngine;
 using Photon.Pun;
+using Unity.VisualScripting;
 
 public class Projectile : MonoBehaviourPun
 {
-    public int damage = 10;
+    public int damage = 5;
     public float lifeTime = 5f;
 
     void Start()
@@ -11,18 +12,20 @@ public class Projectile : MonoBehaviourPun
         Destroy(gameObject, lifeTime);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            print("Foi");
+            PlayerHealth playerHealth = other.gameObject.GetComponent<PlayerHealth>();
 
             if (playerHealth != null && !playerHealth.isDead)
             {
-                playerHealth.TakeDamage(damage); 
+                playerHealth.TakeDamage(damage);
+                gameObject.SetActive(false);
             }
 
-            PhotonNetwork.Destroy(gameObject); // destrói o projétil em todos os clientes
+            PhotonNetwork.Destroy(gameObject);
         }
         else
         {

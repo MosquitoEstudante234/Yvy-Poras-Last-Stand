@@ -1722,6 +1722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047f23b0047756d40898aec14cc7396d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ownedCards: []
 --- !u!4 &5640219067401280758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
