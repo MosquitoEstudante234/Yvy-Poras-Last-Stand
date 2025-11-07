@@ -997,22 +997,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ca186206f7710f40bdeb014553d7add, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 0}
   maxAmmo: 10
-  cooldownTime: 0.5
+  damage: 25
   range: 100
-  maxDamage: 40
-  chargeDuration: 2
+  fireRate: 0.5
+  reloadDuration: 4
   fpsCam: {fileID: 2654273634592044817}
   ammoText: {fileID: 1335723579375101504}
-  chargeSlider: {fileID: 7564434200151422374}
-  reloadLookDistance: 3
-  reloadTag: ReloadZone
-  virtualCamera: {fileID: 56737644624202232}
-  fovIncreaseAmount: 15
-  fovTransitionTime: 0.5
-  maxShakeAmplitude: 2.5
-  maxShakeFrequency: 2.5
+  reloadSlider: {fileID: 0}
+  muzzleFlashEffect: {fileID: 0}
+  shootSoundName: Shoot
+  reloadSoundName: Reload
+  emptyClickSoundName: EmptyClick
 --- !u!114 &5839494139212583989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1606,12 +1602,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6370952946361642069}
-    - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1251804051621745367}
-    - targetCorrespondingSourceObject: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7541173673795055614}
   m_SourcePrefab: {fileID: 100100000, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
 --- !u!4 &863528680630206224 stripped
 Transform:
@@ -1638,9 +1628,11 @@ MonoBehaviour:
   maxHealth: 100
   healthText: {fileID: 6728733458262612064}
   deathCanvas: {fileID: 662130889774684581}
+  respawnTimerText: {fileID: 0}
   enablePassiveRegen: 0
   regenRate: 1
   regenInterval: 1
+  respawnTime: 7
 --- !u!114 &1856891651994906017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1680,49 +1672,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1251804051621745367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4975850829394658892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88f13971f5cb1a54bb3d29a229bfd809, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth:
-    baseValue: 100
-    currentValue: 0
-  moveSpeed:
-    baseValue: 5
-    currentValue: 0
-  sprintSpeed:
-    baseValue: 7
-    currentValue: 0
-  spearDamage:
-    baseValue: 25
-    currentValue: 0
-  maxAmmo:
-    baseValue: 10
-    currentValue: 0
-  cooldownReduction:
-    baseValue: 5
-    currentValue: 0
---- !u!114 &7541173673795055614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4975850829394658892}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 047f23b0047756d40898aec14cc7396d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ownedCards: []
 --- !u!4 &5640219067401280758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
@@ -2208,17 +2157,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
---- !u!114 &56737644624202232 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8762286023885395323, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
-  m_PrefabInstance: {fileID: 8741616758738705539}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &56737644624202233 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
