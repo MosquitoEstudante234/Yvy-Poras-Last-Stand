@@ -4,7 +4,7 @@ using UnityEngine.Events;
 public class RestartScene : MonoBehaviour
 {
     [SerializeField] UnityEvent OnRestartScene;
-    private void Start()
+    private void Awake()
     {
         OnRestartScene.Invoke();
     }
