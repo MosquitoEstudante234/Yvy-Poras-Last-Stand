@@ -7,6 +7,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
 {
     string roomName;
 
+    [SerializeField] string sceneGame;
     public TMP_InputField createInput;
     public TMP_InputField joinInput;
 
@@ -73,7 +74,7 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
     {
         RoomInfoHolder.RoomName = roomName;
         Debug.Log("Entrou em " + roomName);
-        PhotonNetwork.LoadLevel("Game");
+        PhotonNetwork.LoadLevel(sceneGame);
     }
 
     // Callback quando sai da sala

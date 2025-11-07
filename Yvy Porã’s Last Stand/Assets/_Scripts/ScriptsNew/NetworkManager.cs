@@ -50,7 +50,7 @@ namespace MOBAGame.Network
         {
             Debug.Log("[NetworkManager] Entrou no Lobby");
             // Carregar cena de seleção de time
-            PhotonNetwork.LoadLevel("LobbyScene");
+            PhotonNetwork.LoadLevel("Lobby");
         }
 
         public override void OnDisconnected(DisconnectCause cause)

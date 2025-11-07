@@ -16011,7 +16011,7 @@ MonoBehaviour:
   m_text: Sala aleatoria
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
-  m_sharedMaterial: {fileID: -50573482408517628, guid: 319fc9d6d7c28eb4f820faa0b5e5bf20, type: 2}
+  m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -16076,7 +16076,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -0.03366473, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1332902307
@@ -16714,7 +16714,7 @@ MonoBehaviour:
   m_text: Entrar em sala
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
-  m_sharedMaterial: {fileID: -50573482408517628, guid: 319fc9d6d7c28eb4f820faa0b5e5bf20, type: 2}
+  m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -16779,7 +16779,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -0.03366473, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1369205340
@@ -25121,7 +25121,7 @@ MonoBehaviour:
   m_text: Voltar
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
-  m_sharedMaterial: {fileID: -50573482408517628, guid: 319fc9d6d7c28eb4f820faa0b5e5bf20, type: 2}
+  m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -25186,7 +25186,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -0.03366473, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1678426028
@@ -27104,7 +27104,7 @@ MonoBehaviour:
   m_text: Criar sala
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
-  m_sharedMaterial: {fileID: -50573482408517628, guid: 319fc9d6d7c28eb4f820faa0b5e5bf20, type: 2}
+  m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -27169,7 +27169,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: -0.03366473, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1860388945
@@ -38242,6 +38242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bba9532c626e84aa17e89db19033be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneGame: Lobby
   createInput: {fileID: 6032767886707626083}
   joinInput: {fileID: 2460922288698699514}
 --- !u!108 &8852531118803270760

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // ADICIONADO: TextMeshPro
 using Photon.Pun;
-// REMOVIDO: using Photon.Realtime;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
 using MOBAGame.Core;
@@ -17,16 +17,15 @@ namespace MOBAGame.Lobby
         [SerializeField] private Button startGameButton;
 
         [Header("Team Display")]
-        [SerializeField] private Text indigenousPlayerText;
-        [SerializeField] private Text portuguesePlayerText;
-        [SerializeField] private Text statusText;
+        [SerializeField] private TextMeshProUGUI indigenousPlayerText; // ALTERADO
+        [SerializeField] private TextMeshProUGUI portuguesePlayerText; // ALTERADO
+        [SerializeField] private TextMeshProUGUI statusText; // ALTERADO
 
         [Header("Settings")]
         [SerializeField] private string gameSceneName = "GameScene";
 
         private const string TEAM_KEY = "Team";
         private const string READY_KEY = "Ready";
-
 
         private void Start()
         {
@@ -51,7 +50,8 @@ namespace MOBAGame.Lobby
             // Verifica se o time já está ocupado
             if (IsTeamOccupied(team))
             {
-                statusText.text = "Time já ocupado!";
+                if (statusText != null)
+                    statusText.text = "Time já ocupado!";
                 return;
             }
 
@@ -63,12 +63,13 @@ namespace MOBAGame.Lobby
             };
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
-            statusText.text = $"Time selecionado: {team}";
+
+            if (statusText != null)
+                statusText.text = $"Time selecionado: {team}";
         }
 
         private bool IsTeamOccupied(Team team)
         {
-            // USA: Photon.Realtime.Player explicitamente
             foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
             {
                 if (player.CustomProperties.TryGetValue(TEAM_KEY, out object teamValue))
@@ -80,7 +81,6 @@ namespace MOBAGame.Lobby
             return false;
         }
 
-        // USA: Photon.Realtime.Player explicitamente
         public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
         {
             UpdateTeamDisplay();
@@ -89,10 +89,12 @@ namespace MOBAGame.Lobby
 
         private void UpdateTeamDisplay()
         {
-            indigenousPlayerText.text = "Indígenas: Aguardando...";
-            portuguesePlayerText.text = "Portugueses: Aguardando...";
+            if (indigenousPlayerText != null)
+                indigenousPlayerText.text = "Indígenas: Aguardando...";
 
-            // USA: Photon.Realtime.Player explicitamente
+            if (portuguesePlayerText != null)
+                portuguesePlayerText.text = "Portugueses: Aguardando...";
+
             foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
             {
                 if (player.CustomProperties.TryGetValue(TEAM_KEY, out object teamValue))
@@ -103,10 +105,12 @@ namespace MOBAGame.Lobby
                     switch ((int)teamValue)
                     {
                         case (int)Team.Indigenous:
-                            indigenousPlayerText.text = $"Indígenas: {player.NickName}{readyStatus}";
+                            if (indigenousPlayerText != null)
+                                indigenousPlayerText.text = $"Indígenas: {player.NickName}{readyStatus}";
                             break;
                         case (int)Team.Portuguese:
-                            portuguesePlayerText.text = $"Portugueses: {player.NickName}{readyStatus}";
+                            if (portuguesePlayerText != null)
+                                portuguesePlayerText.text = $"Portugueses: {player.NickName}{readyStatus}";
                             break;
                     }
                 }
@@ -119,7 +123,8 @@ namespace MOBAGame.Lobby
             if (!PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(TEAM_KEY, out object teamValue) ||
                 (int)teamValue == (int)Team.None)
             {
-                statusText.text = "Selecione um time primeiro!";
+                if (statusText != null)
+                    statusText.text = "Selecione um time primeiro!";
                 return;
             }
 
@@ -141,7 +146,6 @@ namespace MOBAGame.Lobby
             bool indigenousReady = false;
             bool portugueseReady = false;
 
-            // USA: Photon.Realtime.Player explicitamente
             foreach (Photon.Realtime.Player player in PhotonNetwork.PlayerList)
             {
                 if (player.CustomProperties.TryGetValue(TEAM_KEY, out object teamValue) &&
@@ -168,7 +172,6 @@ namespace MOBAGame.Lobby
             PhotonNetwork.LoadLevel(gameSceneName);
         }
 
-        // USA: Photon.Realtime.Player explicitamente
         public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
         {
             if (startGameButton != null)
