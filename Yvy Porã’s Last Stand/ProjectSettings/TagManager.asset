@@ -9,6 +9,10 @@ TagManager:
   - ReloadZone
   - Interactable
   - ShootingPoint
+  - Minion
+  - Base
+  - IndigenousSpawn
+  - PortugueseSpawn
   layers:
   - Default
   - TransparentFX
@@ -18,10 +22,10 @@ TagManager:
   - UI
   - enemyLayer
   - EnemyIgnore
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Minion
+  - Base
+  - Ground
   - 
   - 
   - 
