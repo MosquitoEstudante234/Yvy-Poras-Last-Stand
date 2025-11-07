@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // ADICIONADO: TextMeshPro
 using Photon.Pun;
 using System.Collections;
 using MOBAGame.Core;
@@ -36,9 +37,9 @@ namespace MOBAGame.Combat
         [SerializeField] private Transform attackPoint;
 
         [Header("UI")]
-        [SerializeField] private Text ammoText;
+        [SerializeField] private TextMeshProUGUI ammoText; // ALTERADO
         [SerializeField] private Image cooldownFillImage;
-        [SerializeField] private Text reloadText;
+        [SerializeField] private TextMeshProUGUI reloadText; // ALTERADO
 
         private Weapon currentWeapon;
         private int currentAmmo;
@@ -46,7 +47,6 @@ namespace MOBAGame.Combat
         private bool canSwitchWeapon = true;
         private float lastAttackTime = 0f;
         private Team playerTeam = Team.None;
-
         private PlayerAnimationController animationController;
 
         private void Start()
@@ -59,16 +59,21 @@ namespace MOBAGame.Combat
                 playerTeam = (Team)((int)teamValue);
             }
 
-            EquipWeapon(meleeWeapon);
-
-            if (!photonView.IsMine) return;
-
+            // Obtém o controlador de animações
             animationController = GetComponent<PlayerAnimationController>();
+
+            // Equipa arma inicial
+            EquipWeapon(meleeWeapon);
         }
+
+        /// <summary>
+        /// Retorna o tipo de arma atual equipada
+        /// </summary>
         public WeaponType GetCurrentWeaponType()
         {
             return currentWeapon != null ? currentWeapon.type : WeaponType.Melee;
         }
+
         private void Update()
         {
             if (!photonView.IsMine) return;
@@ -79,6 +84,9 @@ namespace MOBAGame.Combat
             UpdateUI();
         }
 
+        /// <summary>
+        /// Gerencia a troca de armas (Tecla 1 = Melee, Tecla 2 = Ranged)
+        /// </summary>
         private void HandleWeaponSwitch()
         {
             if (!canSwitchWeapon) return;
@@ -93,6 +101,9 @@ namespace MOBAGame.Combat
             }
         }
 
+        /// <summary>
+        /// Corrotina de troca de arma com cooldown
+        /// </summary>
         private IEnumerator SwitchWeaponCoroutine(Weapon newWeapon)
         {
             canSwitchWeapon = false;
@@ -102,6 +113,7 @@ namespace MOBAGame.Combat
             {
                 StopCoroutine("ReloadCoroutine");
                 isReloading = false;
+
                 if (reloadText != null)
                     reloadText.gameObject.SetActive(false);
             }
@@ -112,6 +124,9 @@ namespace MOBAGame.Combat
             canSwitchWeapon = true;
         }
 
+        /// <summary>
+        /// Equipa uma arma específica
+        /// </summary>
         private void EquipWeapon(Weapon weapon)
         {
             // Desativar todas as armas
@@ -131,9 +146,13 @@ namespace MOBAGame.Combat
                 currentAmmo = currentWeapon.maxAmmo;
             }
 
+            // Sincroniza com outros jogadores
             photonView.RPC("RPC_EquipWeapon", RpcTarget.Others, weapon == meleeWeapon);
         }
 
+        /// <summary>
+        /// RPC para sincronizar troca de arma entre clientes
+        /// </summary>
         [PunRPC]
         private void RPC_EquipWeapon(bool isMelee)
         {
@@ -143,6 +162,9 @@ namespace MOBAGame.Combat
                 rangedWeapon.weaponModel.SetActive(!isMelee);
         }
 
+        /// <summary>
+        /// Gerencia input de ataque
+        /// </summary>
         private void HandleAttack()
         {
             // Verificar cooldown de ataque (persistente entre trocas)
@@ -167,21 +189,12 @@ namespace MOBAGame.Combat
             }
         }
 
+        /// <summary>
+        /// Executa o ataque (raycast + dano + animação)
+        /// </summary>
         private void Attack()
         {
-            // Animação de ataque
-            Animator animator = GetComponent<Animator>();
-            if (animator != null)
-            {
-                animator.SetTrigger(currentWeapon.type == WeaponType.Melee ? "AttackMelee" : "AttackRanged");
-            }
-
-            // Raycast para detecção de hit
-            if (attackPoint == null)
-            {
-                Debug.LogWarning("AttackPoint não está configurado!");
-                return;
-            }
+            // Trigger de animação
             if (animationController != null)
             {
                 if (currentWeapon.type == WeaponType.Melee)
@@ -194,6 +207,14 @@ namespace MOBAGame.Combat
                 }
             }
 
+            // Validação do attack point
+            if (attackPoint == null)
+            {
+                Debug.LogWarning("WeaponSystem: AttackPoint não está configurado!");
+                return;
+            }
+
+            // Raycast para detecção de hit
             RaycastHit hit;
             if (Physics.Raycast(attackPoint.position, attackPoint.forward, out hit, currentWeapon.range, damageableLayers))
             {
@@ -205,11 +226,11 @@ namespace MOBAGame.Combat
                     if (playerHealth.GetTeam() != playerTeam && playerHealth.GetTeam() != Team.None)
                     {
                         playerHealth.TakeDamage((int)currentWeapon.damage, photonView);
-                        Debug.Log($"Causou {currentWeapon.damage} de dano em {hit.collider.name}");
+                        Debug.Log($"[WeaponSystem] Causou {currentWeapon.damage} de dano em jogador {hit.collider.name}");
                     }
                     else
                     {
-                        Debug.Log("Não pode atacar o próprio time!");
+                        Debug.Log("[WeaponSystem] Não pode atacar o próprio time!");
                     }
                 }
 
@@ -220,7 +241,7 @@ namespace MOBAGame.Combat
                     if (minionHealth.GetTeam() != playerTeam)
                     {
                         minionHealth.TakeDamage((int)currentWeapon.damage, playerTeam);
-                        Debug.Log($"Causou {currentWeapon.damage} de dano no minion {hit.collider.name}");
+                        Debug.Log($"[WeaponSystem] Causou {currentWeapon.damage} de dano no minion {hit.collider.name}");
                     }
                 }
             }
@@ -229,11 +250,16 @@ namespace MOBAGame.Combat
             if (currentWeapon.type == WeaponType.Ranged)
             {
                 currentAmmo--;
+
+                // Efeito visual de disparo
                 if (currentWeapon.muzzleFlash != null)
                     currentWeapon.muzzleFlash.Play();
             }
         }
 
+        /// <summary>
+        /// Gerencia input de recarga (Tecla R)
+        /// </summary>
         private void HandleReload()
         {
             if (currentWeapon.type != WeaponType.Ranged) return;
@@ -246,6 +272,9 @@ namespace MOBAGame.Combat
             }
         }
 
+        /// <summary>
+        /// Corrotina de recarga com duração de 4 segundos
+        /// </summary>
         private IEnumerator ReloadCoroutine()
         {
             isReloading = true;
@@ -262,7 +291,7 @@ namespace MOBAGame.Combat
                 elapsedTime += Time.deltaTime;
                 yield return null;
 
-                // Se trocar de arma, cancelar recarga
+                // Se trocar de arma durante recarga, cancela
                 if (currentWeapon != rangedWeapon)
                 {
                     isReloading = false;
@@ -272,6 +301,7 @@ namespace MOBAGame.Combat
                 }
             }
 
+            // Recarga completa
             currentAmmo = currentWeapon.maxAmmo;
             isReloading = false;
 
@@ -279,8 +309,12 @@ namespace MOBAGame.Combat
                 reloadText.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Atualiza a UI de munição e cooldown
+        /// </summary>
         private void UpdateUI()
         {
+            // UI de munição (apenas para arma ranged)
             if (currentWeapon.type == WeaponType.Ranged)
             {
                 if (ammoText != null)
@@ -295,7 +329,7 @@ namespace MOBAGame.Combat
                     ammoText.gameObject.SetActive(false);
             }
 
-            // Atualizar barra de cooldown
+            // UI de cooldown de ataque
             if (cooldownFillImage != null)
             {
                 float cooldownProgress = Mathf.Clamp01((Time.time - lastAttackTime) / currentWeapon.attackCooldown);
