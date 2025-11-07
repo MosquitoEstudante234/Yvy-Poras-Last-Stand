@@ -54,6 +54,14 @@ MonoBehaviour:
   - RPC_NotifyDeathToMaster
   - ApplyBurnEffectRPC
   - Shoot
+  - RPC_BaseDestroyed
+  - RPC_DealDamage
+  - RPC_Die
+  - RPC_EquipWeapon
+  - RPC_Respawn
+  - RPC_SetMinionTeam
+  - RPC_TakeDamage
+  - RPC_UpdateHealth
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
