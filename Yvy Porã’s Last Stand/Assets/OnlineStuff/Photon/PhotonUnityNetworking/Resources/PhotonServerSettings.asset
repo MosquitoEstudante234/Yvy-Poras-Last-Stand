@@ -62,6 +62,10 @@ MonoBehaviour:
   - RPC_SetMinionTeam
   - RPC_TakeDamage
   - RPC_UpdateHealth
+  - RPC_PlayDeath
+  - RPC_PlayMeleeAttack
+  - RPC_PlayRangedAttack
+  - RPC_ResetDeath
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

@@ -15,6 +15,7 @@ namespace MOBAGame.Player
         [SerializeField] private float gravity = -20f;
         [SerializeField] private float rotationSpeed = 10f;
 
+
         [Header("Ground Check")]
         [SerializeField] private Transform groundCheck;
         [SerializeField] private float groundDistance = 0.4f;
@@ -68,7 +69,14 @@ namespace MOBAGame.Player
                 networkRotation = transform.rotation;
             }
         }
-
+        public Vector3 GetVelocity()
+        {
+            return velocity;
+        }
+        public bool IsGrounded()
+        {
+            return isGrounded;
+        }
         private void Update()
         {
             if (photonView.IsMine && !IsDead)
@@ -82,6 +90,15 @@ namespace MOBAGame.Player
                 transform.position = Vector3.Lerp(transform.position, networkPosition, Time.deltaTime * 10f);
                 transform.rotation = Quaternion.Lerp(transform.rotation, networkRotation, Time.deltaTime * 10f);
             }
+            if (!photonView.IsMine) return;
+
+            // Atualiza isGrounded
+            isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+            // Resto do código de movimento...
+            // Certifique-se de armazenar a velocidade atual:
+            velocity = controller.velocity;
+
         }
 
         private void HandleMovement()

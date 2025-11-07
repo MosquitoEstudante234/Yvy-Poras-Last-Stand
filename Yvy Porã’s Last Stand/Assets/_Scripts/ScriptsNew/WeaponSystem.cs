@@ -47,6 +47,8 @@ namespace MOBAGame.Combat
         private float lastAttackTime = 0f;
         private Team playerTeam = Team.None;
 
+        private PlayerAnimationController animationController;
+
         private void Start()
         {
             if (!photonView.IsMine) return;
@@ -58,8 +60,15 @@ namespace MOBAGame.Combat
             }
 
             EquipWeapon(meleeWeapon);
-        }
 
+            if (!photonView.IsMine) return;
+
+            animationController = GetComponent<PlayerAnimationController>();
+        }
+        public WeaponType GetCurrentWeaponType()
+        {
+            return currentWeapon != null ? currentWeapon.type : WeaponType.Melee;
+        }
         private void Update()
         {
             if (!photonView.IsMine) return;
@@ -172,6 +181,17 @@ namespace MOBAGame.Combat
             {
                 Debug.LogWarning("AttackPoint não está configurado!");
                 return;
+            }
+            if (animationController != null)
+            {
+                if (currentWeapon.type == WeaponType.Melee)
+                {
+                    animationController.PlayMeleeAttack();
+                }
+                else
+                {
+                    animationController.PlayRangedAttack();
+                }
             }
 
             RaycastHit hit;

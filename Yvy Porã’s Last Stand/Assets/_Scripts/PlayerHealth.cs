@@ -33,11 +33,14 @@ namespace MOBAGame.Player
         public float respawnTime = 7f; // NOVO: Tempo de respawn (7 segundos)
         private float respawnTimer = 0f;
 
+        private PlayerAnimationController animationController;
+
         // NOVO: Referência ao time do jogador
         private Team playerTeam = Team.None;
 
         private void Start()
         {
+            animationController = GetComponent<PlayerAnimationController>();
             currentHealth = maxHealth;
             controller = GetComponent<CharacterController>();
             playerCollider = GetComponent<Collider>();
@@ -175,6 +178,18 @@ namespace MOBAGame.Player
             {
                 StartCoroutine(PassiveRegeneration());
             }
+            if (!photonView.IsMine) return;
+
+            currentHealth = maxHealth;
+            UpdateHealthText();
+
+            photonView.RPC(nameof(RPC_Respawn), RpcTarget.All);
+
+            // Reseta animação de morte
+            if (animationController != null)
+            {
+                animationController.ResetDeathAnimation();
+            }
         }
 
         [PunRPC]
@@ -197,6 +212,17 @@ namespace MOBAGame.Player
 
             if (photonView.IsMine && deathCanvas != null)
                 deathCanvas.SetActive(true);
+
+            if (isDead) return;
+
+            isDead = true;
+
+            // Trigger de animação de morte
+            if (animationController != null)
+            {
+                animationController.PlayDeathAnimation();
+            }
+
 
             // REMOVIDO: GameManager.PlayerDied() porque agora não é mais PvE wave-based
             // No MOBA, morte de jogador não afeta o jogo diretamente, só o respawn

@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 82188676}
   - component: {fileID: 82188675}
   - component: {fileID: 82188674}
+  - component: {fileID: 82188677}
   m_Layer: 5
   m_Name: IndigenousMinionSpawnPoint
   m_TagString: IndigenousSpawn
@@ -457,6 +458,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 82188672}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &82188677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82188672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09c53c66dc40cd24f840a1693df5faa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionSpawner
+  minionPrefab: {fileID: 0}
+  spawnPoint: {fileID: 82188673}
+  spawnerTeam: 1
+  spawnInterval: 8
+  maxActiveMinions: 7
 --- !u!1 &104589535
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,7 +1062,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 206420646}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1052,7 +1070,7 @@ Transform:
   - {fileID: 1893218179}
   - {fileID: 967666027}
   - {fileID: 1406059396}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1776906545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &212106690
 GameObject:
@@ -1949,7 +1967,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410773178}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1957,7 +1975,7 @@ Transform:
   - {fileID: 1266018750}
   - {fileID: 1522574624}
   - {fileID: 82188673}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1776906545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &415837854
 GameObject:
@@ -4422,7 +4440,7 @@ MonoBehaviour:
   victoryUI: {fileID: 1356207813}
   victoryText: {fileID: 791914669}
   indigenousSpawnPoint: {fileID: 1522574624}
-  portugueseSpawnPoint: {fileID: 0}
+  portugueseSpawnPoint: {fileID: 967666027}
 --- !u!4 &1319261276
 Transform:
   m_ObjectHideFlags: 0
@@ -4837,6 +4855,7 @@ GameObject:
   - component: {fileID: 1406059399}
   - component: {fileID: 1406059398}
   - component: {fileID: 1406059397}
+  - component: {fileID: 1406059400}
   m_Layer: 5
   m_Name: PortugueseMinionSpawnPoint
   m_TagString: IndigenousSpawn
@@ -4940,6 +4959,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1406059395}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1406059400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406059395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09c53c66dc40cd24f840a1693df5faa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionSpawner
+  minionPrefab: {fileID: 0}
+  spawnPoint: {fileID: 1406059396}
+  spawnerTeam: 2
+  spawnInterval: 8
+  maxActiveMinions: 7
 --- !u!1 &1423808876
 GameObject:
   m_ObjectHideFlags: 0
@@ -6150,6 +6186,39 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1776906544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1776906545}
+  m_Layer: 0
+  m_Name: -------<Player Bases>--------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1776906545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1776906544}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 410773179}
+  - {fileID: 206420647}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1783704565
 GameObject:
   m_ObjectHideFlags: 0
@@ -7508,5 +7577,4 @@ SceneRoots:
   - {fileID: 1383254201}
   - {fileID: 1004183795}
   - {fileID: 670094756}
-  - {fileID: 410773179}
-  - {fileID: 206420647}
+  - {fileID: 1776906545}

@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // ADICIONADO: TextMeshPro
+using TMPro;
 using Photon.Pun;
 using MOBAGame.Lobby;
 using MOBAGame.Player;
@@ -12,10 +12,13 @@ namespace MOBAGame
     {
         public static GameManager Instance { get; private set; }
 
-        [Header("References")]
-        [SerializeField] private GameObject playerPrefab;
+        [Header("Player Prefabs")] // ALTERADO
+        [SerializeField] private GameObject indigenousPlayerPrefab; // NOVO
+        [SerializeField] private GameObject portuguesePlayerPrefab; // NOVO
+
+        [Header("UI")]
         [SerializeField] private GameObject victoryUI;
-        [SerializeField] private TextMeshProUGUI victoryText; // ALTERADO
+        [SerializeField] private TextMeshProUGUI victoryText;
 
         [Header("Bases")]
         private BaseController indigenousBase;
@@ -25,12 +28,10 @@ namespace MOBAGame
         public Transform indigenousSpawnPoint;
         public Transform portugueseSpawnPoint;
 
-        // NOTA: Mantive 'instance' para compatibilidade, mas Instance já é o Singleton
         public static GameManager instance;
 
         private void Awake()
         {
-            // Singleton pattern
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -38,7 +39,6 @@ namespace MOBAGame
             }
             Instance = this;
 
-            // Compatibilidade com código antigo que usa 'instance'
             if (instance == null)
             {
                 instance = this;
@@ -56,24 +56,22 @@ namespace MOBAGame
             BaseController[] bases = FindObjectsOfType<BaseController>();
             foreach (BaseController baseCtrl in bases)
             {
-                if (baseCtrl.baseTeam == Team.Indigenous) // CORRIGIDO: baseTeam público
+                if (baseCtrl.baseTeam == Team.Indigenous)
                     indigenousBase = baseCtrl;
                 else if (baseCtrl.baseTeam == Team.Portuguese)
                     portugueseBase = baseCtrl;
             }
 
-            // Valida se as bases foram encontradas
             if (indigenousBase == null || portugueseBase == null)
             {
                 Debug.LogError("GameManager: Não foram encontradas ambas as bases na cena!");
             }
 
-            // Spawna o jogador local
             SpawnPlayer();
         }
 
         /// <summary>
-        /// Spawna o jogador no ponto de spawn do seu time
+        /// Spawna o jogador no ponto de spawn do seu time com o modelo correto
         /// </summary>
         private void SpawnPlayer()
         {
@@ -81,41 +79,54 @@ namespace MOBAGame
             {
                 Team playerTeam = (Team)((int)teamValue);
 
-                // Determina posição de spawn baseado no time
+                // Determina qual prefab usar baseado no time
+                GameObject prefabToSpawn = null;
                 Vector3 spawnPosition = Vector3.zero;
                 Quaternion spawnRotation = Quaternion.identity;
 
-                if (playerTeam == Team.Indigenous && indigenousBase != null)
+                if (playerTeam == Team.Indigenous)
                 {
-                    spawnPosition = indigenousBase.PlayerSpawnPoint != null
-                        ? indigenousBase.PlayerSpawnPoint.position
-                        : indigenousSpawnPoint.position;
-                    spawnRotation = indigenousBase.PlayerSpawnPoint != null
-                        ? indigenousBase.PlayerSpawnPoint.rotation
-                        : indigenousSpawnPoint.rotation;
+                    prefabToSpawn = indigenousPlayerPrefab; // ALTERADO
+
+                    if (indigenousBase != null && indigenousBase.PlayerSpawnPoint != null)
+                    {
+                        spawnPosition = indigenousBase.PlayerSpawnPoint.position;
+                        spawnRotation = indigenousBase.PlayerSpawnPoint.rotation;
+                    }
+                    else if (indigenousSpawnPoint != null)
+                    {
+                        spawnPosition = indigenousSpawnPoint.position;
+                        spawnRotation = indigenousSpawnPoint.rotation;
+                    }
                 }
-                else if (playerTeam == Team.Portuguese && portugueseBase != null)
+                else if (playerTeam == Team.Portuguese)
                 {
-                    spawnPosition = portugueseBase.PlayerSpawnPoint != null
-                        ? portugueseBase.PlayerSpawnPoint.position
-                        : portugueseSpawnPoint.position;
-                    spawnRotation = portugueseBase.PlayerSpawnPoint != null
-                        ? portugueseBase.PlayerSpawnPoint.rotation
-                        : portugueseSpawnPoint.rotation;
+                    prefabToSpawn = portuguesePlayerPrefab; // ALTERADO
+
+                    if (portugueseBase != null && portugueseBase.PlayerSpawnPoint != null)
+                    {
+                        spawnPosition = portugueseBase.PlayerSpawnPoint.position;
+                        spawnRotation = portugueseBase.PlayerSpawnPoint.rotation;
+                    }
+                    else if (portugueseSpawnPoint != null)
+                    {
+                        spawnPosition = portugueseSpawnPoint.position;
+                        spawnRotation = portugueseSpawnPoint.rotation;
+                    }
                 }
 
-                // Instantiate via Photon (precisa estar em Resources/)
-                if (playerPrefab != null)
+                // Valida se o prefab foi atribuído
+                if (prefabToSpawn != null)
                 {
                     PhotonNetwork.Instantiate(
-                        playerPrefab.name,
+                        prefabToSpawn.name,
                         spawnPosition,
                         spawnRotation
                     );
                 }
                 else
                 {
-                    Debug.LogError("GameManager: playerPrefab não está configurado!");
+                    Debug.LogError($"GameManager: Prefab do time {playerTeam} não está configurado!");
                 }
             }
             else
@@ -124,9 +135,6 @@ namespace MOBAGame
             }
         }
 
-        /// <summary>
-        /// Finaliza o jogo e mostra tela de vitória
-        /// </summary>
         public void EndGame(Team winnerTeam)
         {
             if (victoryUI != null)
@@ -135,29 +143,21 @@ namespace MOBAGame
             if (victoryText != null)
                 victoryText.text = $"{winnerTeam} venceu a partida!";
 
-            // Desabilitar controles do jogador local
             PlayerController localPlayer = FindObjectOfType<PlayerController>();
             if (localPlayer != null && localPlayer.GetComponent<PhotonView>().IsMine)
             {
                 localPlayer.enabled = false;
             }
 
-            // Opcional: Bloquear inputs globalmente
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
 
-        /// <summary>
-        /// Retorna a base do time especificado
-        /// </summary>
         public BaseController GetBaseForTeam(Team team)
         {
             return team == Team.Indigenous ? indigenousBase : portugueseBase;
         }
 
-        /// <summary>
-        /// Retorna o ponto de spawn do time especificado
-        /// </summary>
         public Transform GetSpawnPointForTeam(Team team)
         {
             if (team == Team.Indigenous)

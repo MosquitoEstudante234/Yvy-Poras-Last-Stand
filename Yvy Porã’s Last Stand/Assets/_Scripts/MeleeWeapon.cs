@@ -89,11 +89,7 @@ namespace MOBAGame.Weapons
             }
 
             // Trigger de animação
-            Animator animator = GetComponentInParent<Animator>();
-            if (animator != null)
-            {
-                animator.SetTrigger("AttackMelee");
-            }
+
 
             // Detecção de alvos
             Vector3 attackOrigin = attackPoint != null ? attackPoint.position : transform.position;
@@ -106,6 +102,7 @@ namespace MOBAGame.Weapons
             {
                 ProcessHits(hits);
             }
+
 
             // Inicia cooldown
             StartCoroutine(StartCooldown());
