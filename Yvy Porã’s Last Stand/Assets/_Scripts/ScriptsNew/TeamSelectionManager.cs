@@ -87,7 +87,7 @@ namespace MOBAGame.Lobby
             UpdateStartButton();
         }
 
-        private void UpdateTeamDisplay()
+        public void UpdateTeamDisplay()
         {
             if (indigenousPlayerText != null)
                 indigenousPlayerText.text = "Indígenas: Aguardando...";
