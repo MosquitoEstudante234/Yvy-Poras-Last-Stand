@@ -378,7 +378,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -116.35, y: 52.28009}
+  m_AnchoredPosition: {x: -116.35, y: 52.96}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!65 &82188674
@@ -470,7 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c53c66dc40cd24f840a1693df5faa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionSpawner
-  minionPrefab: {fileID: 0}
+  minionPrefab: {fileID: 2964832271416978218, guid: d183c1e47eaf5ab479a66a09ee3cbdf6, type: 3}
   spawnPoint: {fileID: 82188673}
   spawnerTeam: 1
   spawnInterval: 8
@@ -1063,7 +1063,7 @@ Transform:
   m_GameObject: {fileID: 206420646}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 108.7, y: 0, z: -13.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2300,7 +2300,7 @@ Transform:
   m_GameObject: {fileID: 410773178}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 108.7, y: 0, z: -13.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4239,7 +4239,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -114.69, y: 52.28009}
+  m_AnchoredPosition: {x: -114.69, y: 53.08}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!65 &967666028
@@ -5058,12 +5058,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1096680306}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.15, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.099998474, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2003027284}
+  m_Father: {fileID: 1973979339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1105064374
 GameObject:
@@ -6287,13 +6287,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1394116292}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.6587003, y: 0.052624557, z: 0.7318301, w: 0.16664083}
+  m_LocalPosition: {x: 0.18773463, y: 0.82951176, z: 0.47577786}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 543450652517721323}
-  m_Father: {fileID: 1973979339}
+  m_Father: {fileID: 8153021305304433736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1394116294
 MonoBehaviour:
@@ -6446,7 +6446,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -113.599976, y: 52.28009}
+  m_AnchoredPosition: {x: -113.599976, y: 53.44}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!65 &1406059397
@@ -6538,7 +6538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c53c66dc40cd24f840a1693df5faa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionSpawner
-  minionPrefab: {fileID: 0}
+  minionPrefab: {fileID: 4903762208479916160, guid: f66d6440e41c38f4aa6bfb694424d87f, type: 3}
   spawnPoint: {fileID: 1406059396}
   spawnerTeam: 2
   spawnInterval: 8
@@ -8880,7 +8880,6 @@ GameObject:
   - component: {fileID: 1973979345}
   - component: {fileID: 1973979344}
   - component: {fileID: 1973979343}
-  - component: {fileID: 1973979342}
   m_Layer: 8
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -8904,9 +8903,8 @@ Transform:
   - {fileID: 543450652134630661}
   - {fileID: 216825167}
   - {fileID: 634540790}
-  - {fileID: 1394116293}
-  - {fileID: 1989818056}
   - {fileID: 618293551}
+  - {fileID: 1096680307}
   m_Father: {fileID: 2003027284}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1973979340
@@ -8957,29 +8955,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &1973979342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1973979338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 1973979345}
-  sceneViewId: 4
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!114 &1973979343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9051,17 +9026,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edc972c157df00547b0b348197239797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Player.PlayerController
+  objectsToDeactivateWhenMine: []
   walkSpeed: 5
-  runSpeed: 8
-  jumpForce: 5
+  sprintSpeed: 8
+  jumpForce: 2.5
   gravity: -20
-  rotationSpeed: 10
+  cameraHolder: {fileID: 216825167}
+  playerCamera: {fileID: 1504480205}
+  mouseSensitivity: 2
+  verticalLookLimit: 80
   groundCheck: {fileID: 1096680307}
-  groundDistance: 0.4
+  groundDistance: 0.3
   groundMask:
     serializedVersion: 2
     m_Bits: 2048
-  cameraTransform: {fileID: 1504480205}
 --- !u!114 &1973979346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9080,8 +9058,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 1973979345}
+  ObservedComponents: []
   sceneViewId: 3
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -9110,14 +9087,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1989818055}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.6587003, y: 0.052624557, z: 0.7318301, w: 0.16664083}
+  m_LocalPosition: {x: 0.18773463, y: 0.82951176, z: 0.47577786}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3324303198242564082}
   - {fileID: 683281446}
-  m_Father: {fileID: 1973979339}
+  m_Father: {fileID: 8153021305304433736}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1989818057
 MonoBehaviour:
@@ -9284,12 +9261,11 @@ Transform:
   m_GameObject: {fileID: 2003027283}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -110.76611, y: 60.68306, z: 5.03745}
+  m_LocalPosition: {x: -15.1, y: 54.3, z: 4.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1973979339}
-  - {fileID: 1096680307}
   - {fileID: 1853724691}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10136,13 +10112,36 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 543450652134630661}
+  - component: {fileID: 919132148479311808}
   m_Layer: 0
-  m_Name: Model
+  m_Name: IndigenousModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &919132148479311808
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148479311807}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 28457fa291e721c41a900accf7488a59, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1031632035422642008
 Transform:
   m_ObjectHideFlags: 0
@@ -11845,6 +11844,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3742394133945629413}
+  - {fileID: 1394116293}
+  - {fileID: 1989818056}
   m_Father: {fileID: 1852576805696240934}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &8169382869703963310
