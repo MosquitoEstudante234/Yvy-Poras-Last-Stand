@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using TMPro;
 using System.Collections;
 using MOBAGame.Core;
 
@@ -19,10 +18,7 @@ namespace MOBAGame.Player
         private Collider playerCollider;
         private Renderer[] renderers;
 
-        [Header("UI References")]
-        public TextMeshProUGUI healthText;
-        public GameObject deathCanvas;
-        public TextMeshProUGUI respawnTimerText;
+        // REMOVIDO: healthText, deathCanvas, respawnTimerText
 
         [Header("Passive Regen Settings")]
         public bool enablePassiveRegen = false;
@@ -39,11 +35,9 @@ namespace MOBAGame.Player
         public Renderer playerRenderer;
         private Color originalColor;
         private Material playerMaterial;
-
         private PlayerAnimationController animationController;
         private Team playerTeam = Team.None;
 
-        // Componentes para desabilitar controle durante morte (obtidos dinamicamente)
         private MonoBehaviour[] controllableComponents;
 
         private void Start()
@@ -54,14 +48,8 @@ namespace MOBAGame.Player
             playerCollider = GetComponent<Collider>();
             renderers = GetComponentsInChildren<Renderer>();
 
-            // Obtém todos os componentes que podem ser desabilitados durante a morte
             CacheControllableComponents();
-
-            if (deathCanvas != null)
-                deathCanvas.SetActive(false);
-
-            UpdateHealthText();
-
+            // REMOVIDO: UpdateHealthText();
             StartCoroutine(InitializeTeam());
 
             if (playerRenderer != null)
@@ -73,7 +61,6 @@ namespace MOBAGame.Player
             if (photonView.IsMine)
             {
                 PhotonNetwork.LocalPlayer.TagObject = this;
-
                 if (enablePassiveRegen)
                 {
                     regenCoroutine = StartCoroutine(PassiveRegeneration());
@@ -81,32 +68,15 @@ namespace MOBAGame.Player
             }
         }
 
-        /// <summary>
-        /// Cacheia componentes que devem ser desabilitados durante morte
-        /// </summary>
         private void CacheControllableComponents()
         {
             System.Collections.Generic.List<MonoBehaviour> components = new System.Collections.Generic.List<MonoBehaviour>();
-
-            // Tenta encontrar FirstPersonController (pode ter namespace diferente)
-            MonoBehaviour fpsController = GetComponent("FirstPersonController") as MonoBehaviour;
-            if (fpsController != null)
-            {
-                components.Add(fpsController);
-            }
-
-            // Tenta encontrar WeaponSystem
             MonoBehaviour weaponSys = GetComponent("WeaponSystem") as MonoBehaviour;
             if (weaponSys != null)
             {
                 components.Add(weaponSys);
             }
-
-            // Adicione outros componentes manualmente no Inspector se necessário
-            // Exemplo: Se tiver um script de dash, parkour, etc.
-
             controllableComponents = components.ToArray();
-            Debug.Log($"[PlayerHealth] {controllableComponents.Length} componentes de controle encontrados");
         }
 
         private IEnumerator InitializeTeam()
@@ -119,54 +89,37 @@ namespace MOBAGame.Player
                 if (photonView.Owner != null && photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
                 {
                     playerTeam = (Team)((int)teamValue);
-                    Debug.Log($"[PlayerHealth] Time inicializado: {playerTeam} (Player: {photonView.Owner.NickName})");
+                    Debug.Log($"[PlayerHealth] Time inicializado: {playerTeam}");
                     yield break;
                 }
 
                 elapsed += 0.1f;
                 yield return new WaitForSeconds(0.1f);
             }
-
-            if (playerTeam == Team.None)
-            {
-                Debug.LogError($"[PlayerHealth] ERRO: Falha ao obter time do owner: {photonView.Owner?.NickName}");
-            }
         }
 
         [PunRPC]
         public void TakeDamage(int damage, int attackerViewID)
         {
-            if (isDead)
-            {
-                Debug.Log($"[PlayerHealth] Dano ignorado - jogador ja esta morto: {photonView.Owner.NickName}");
-                return;
-            }
+            if (isDead) return;
 
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-            PhotonView attackerView = PhotonView.Find(attackerViewID);
-            string attackerName = attackerView != null ? attackerView.Owner.NickName : "Desconhecido";
-
-            Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} recebeu {damage} de dano de {attackerName}. HP: {currentHealth}/{maxHealth}");
-
             if (photonView.IsMine)
             {
-                UpdateHealthText();
                 StartCoroutine(FlashDamage());
             }
 
             if (currentHealth <= 0 && !isDead)
             {
                 photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
-
                 if (photonView.IsMine)
                 {
                     if (respawnCoroutine != null)
                     {
                         StopCoroutine(respawnCoroutine);
                     }
-                    Debug.Log($"[PlayerHealth] Iniciando countdown de respawn para {photonView.Owner.NickName}");
                     respawnCoroutine = StartCoroutine(RespawnCountdown());
                 }
             }
@@ -183,7 +136,6 @@ namespace MOBAGame.Player
                     Team attackerTeam = (Team)((int)attackerTeamValue);
                     if (attackerTeam == playerTeam && attackerTeam != Team.None)
                     {
-                        Debug.Log($"[PlayerHealth] Friendly fire ignorado de {attacker.Owner.NickName}");
                         return;
                     }
                 }
@@ -191,12 +143,10 @@ namespace MOBAGame.Player
 
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-            UpdateHealthText();
 
             if (currentHealth <= 0 && !isDead)
             {
                 photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
-
                 if (photonView.IsMine)
                 {
                     if (respawnCoroutine != null)
@@ -218,69 +168,42 @@ namespace MOBAGame.Player
             }
         }
 
-        private void UpdateHealthText()
-        {
-            if (healthText != null)
-            {
-                healthText.text = "Vida: " + currentHealth.ToString();
-                Debug.Log($"[PlayerHealth] UI atualizada: {currentHealth}/{maxHealth}");
-            }
-        }
+        // REMOVIDO: UpdateHealthText()
 
         private IEnumerator PassiveRegeneration()
         {
             while (!isDead)
             {
                 yield return new WaitForSeconds(regenInterval);
-
                 if (currentHealth < maxHealth && !isDead)
                 {
                     currentHealth += Mathf.RoundToInt(regenRate);
                     currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-                    UpdateHealthText();
                 }
             }
         }
 
         private IEnumerator RespawnCountdown()
         {
-            Debug.Log($"[PlayerHealth] RespawnCountdown iniciado para {photonView.Owner.NickName}");
             float timer = respawnTime;
-
-            if (deathCanvas != null)
-                deathCanvas.SetActive(true);
 
             while (timer > 0)
             {
-                if (respawnTimerText != null)
-                {
-                    respawnTimerText.text = $"Respawn em: {Mathf.CeilToInt(timer)}s";
-                }
-
-                Debug.Log($"[PlayerHealth] Respawn em: {Mathf.CeilToInt(timer)}s");
                 timer -= Time.deltaTime;
                 yield return null;
             }
 
-            Debug.Log($"[PlayerHealth] Countdown finalizado! Chamando Respawn()");
             Respawn();
         }
 
         private void Respawn()
         {
-            if (!photonView.IsMine)
-            {
-                Debug.LogWarning($"[PlayerHealth] Respawn chamado mas nao e o owner!");
-                return;
-            }
-
-            Debug.Log($"[PlayerHealth] Iniciando respawn de {photonView.Owner.NickName}");
+            if (!photonView.IsMine) return;
 
             photonView.RPC(nameof(RPC_ResetHealth), RpcTarget.All);
             photonView.RPC(nameof(RPC_Respawn), RpcTarget.All);
 
             Transform spawnPoint = null;
-
             if (GameManager.instance != null)
             {
                 spawnPoint = GameManager.instance.GetSpawnPointForTeam(playerTeam);
@@ -292,20 +215,7 @@ namespace MOBAGame.Player
                 transform.position = spawnPoint.position;
                 transform.rotation = spawnPoint.rotation;
                 controller.enabled = true;
-                Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} respawnou no spawn do time {playerTeam}");
             }
-            else
-            {
-                Vector3 fallbackPosition = playerTeam == Team.Indigenous ? new Vector3(0, 1, -10) : new Vector3(0, 1, 10);
-                controller.enabled = false;
-                transform.position = fallbackPosition;
-                transform.rotation = Quaternion.identity;
-                controller.enabled = true;
-                Debug.LogWarning($"[PlayerHealth] GameManager nao encontrado! Respawn em posicao fallback: {fallbackPosition}");
-            }
-
-            if (deathCanvas != null)
-                deathCanvas.SetActive(false);
 
             if (enablePassiveRegen)
             {
@@ -322,166 +232,81 @@ namespace MOBAGame.Player
             }
 
             respawnCoroutine = null;
-
-            Debug.Log($"[PlayerHealth] Respawn de {photonView.Owner.NickName} concluido! HP: {currentHealth}/{maxHealth}");
         }
 
         [PunRPC]
         private void RPC_ResetHealth()
         {
             currentHealth = maxHealth;
-
-            if (photonView.IsMine)
-            {
-                UpdateHealthText();
-            }
-
-            Debug.Log($"[PlayerHealth] RPC_ResetHealth: {photonView.Owner.NickName} HP resetado para {currentHealth}/{maxHealth}");
         }
 
         [PunRPC]
         private void RPC_SetDead()
         {
-            if (isDead)
-            {
-                Debug.LogWarning($"[PlayerHealth] RPC_SetDead chamado mas ja esta morto!");
-                return;
-            }
+            if (isDead) return;
 
             isDead = true;
-
             if (playerCollider != null)
                 playerCollider.enabled = false;
-
             if (controller != null)
                 controller.detectCollisions = false;
 
-            // Desabilita controles do jogador (apenas no owner)
             if (photonView.IsMine)
             {
                 SetControllableComponents(false);
             }
 
-            // Toca animacao de morte
             if (animationController != null)
             {
                 animationController.PlayDeathAnimation();
             }
 
-            // Aguarda animacao de morte antes de esconder o corpo
             StartCoroutine(HideBodyAfterAnimation());
-
-            Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} morreu! isDead={isDead}");
         }
 
         private IEnumerator HideBodyAfterAnimation()
         {
-            Debug.Log($"[PlayerHealth] Aguardando {deathAnimationDuration}s para esconder corpo");
             yield return new WaitForSeconds(deathAnimationDuration);
-
             foreach (Renderer rend in renderers)
             {
                 rend.enabled = false;
             }
-
-            Debug.Log($"[PlayerHealth] Corpo escondido apos animacao");
         }
 
         [PunRPC]
         private void RPC_Respawn()
         {
             isDead = false;
-
             if (playerCollider != null)
                 playerCollider.enabled = true;
-
             foreach (Renderer rend in renderers)
             {
                 rend.enabled = true;
             }
-
             if (controller != null)
                 controller.detectCollisions = true;
 
-            // Reativa controles do jogador (apenas no owner)
             if (photonView.IsMine)
             {
                 SetControllableComponents(true);
             }
-
-            Debug.Log($"[PlayerHealth] RPC_Respawn executado para {photonView.Owner.NickName}. isDead={isDead}");
         }
 
-        /// <summary>
-        /// Habilita ou desabilita componentes de controle do jogador
-        /// </summary>
         private void SetControllableComponents(bool enabled)
         {
             if (controllableComponents == null) return;
-
             foreach (MonoBehaviour component in controllableComponents)
             {
                 if (component != null)
                 {
                     component.enabled = enabled;
-                    Debug.Log($"[PlayerHealth] Componente {component.GetType().Name} {(enabled ? "ativado" : "desativado")}");
                 }
             }
         }
 
-        public void SetMaxHealth(int value)
-        {
-            maxHealth = value;
-            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-            UpdateHealthText();
-        }
-
-        public void EnablePassiveRegen(bool enable)
-        {
-            enablePassiveRegen = enable;
-
-            if (enable && photonView.IsMine && !isDead)
-            {
-                if (regenCoroutine != null)
-                {
-                    StopCoroutine(regenCoroutine);
-                }
-                regenCoroutine = StartCoroutine(PassiveRegeneration());
-            }
-            else
-            {
-                if (regenCoroutine != null)
-                {
-                    StopCoroutine(regenCoroutine);
-                    regenCoroutine = null;
-                }
-            }
-        }
-
-        public Team GetTeam()
-        {
-            return playerTeam;
-        }
-
-        public void SetTeam(Team team)
-        {
-            playerTeam = team;
-            Debug.Log($"[PlayerHealth] Time definido manualmente: {team}");
-        }
-
-        public int GetCurrentHealth()
-        {
-            return currentHealth;
-        }
-
-        public int GetMaxHealth()
-        {
-            return maxHealth;
-        }
-
-        public float GetHealthPercentage()
-        {
-            return (float)currentHealth / maxHealth;
-        }
+        public Team GetTeam() => playerTeam;
+        public int GetCurrentHealth() => currentHealth;
+        public int GetMaxHealth() => maxHealth;
+        public float GetHealthPercentage() => (float)currentHealth / maxHealth;
     }
 }

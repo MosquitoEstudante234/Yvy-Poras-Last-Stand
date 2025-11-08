@@ -1,6 +1,4 @@
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using Photon.Pun;
 using System.Collections;
 using MOBAGame.Core;
@@ -24,34 +22,23 @@ namespace MOBAGame.Weapons
         private bool isReloading = false;
         private Coroutine reloadCoroutine;
 
-        [Header("References - External Canvas")]
+        [Header("References")]
         public Camera fpsCam;
-        public TextMeshProUGUI ammoText;
-        public Slider reloadSlider;
         public GameObject muzzleFlashEffect;
 
-        [Header("Team")]
-        private Team ownerTeam = Team.None;
+        // REMOVIDO: ammoText, reloadSlider
 
         [Header("Audio")]
         public string shootSoundName = "Shoot";
         public string reloadSoundName = "Reload";
         public string emptyClickSoundName = "EmptyClick";
 
+        private Team ownerTeam = Team.None;
+
         private void OnEnable()
         {
-            // Reseta municao ao equipar
             currentAmmo = maxAmmo;
-            UpdateAmmoUI();
 
-            if (reloadSlider != null)
-                reloadSlider.gameObject.SetActive(false);
-
-            // Mostra UI de municao
-            if (ammoText != null)
-                ammoText.gameObject.SetActive(true);
-
-            // Inicializa team se necessario
             if (ownerTeam == Team.None && photonView.Owner != null)
             {
                 if (photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
@@ -63,21 +50,13 @@ namespace MOBAGame.Weapons
 
         private void OnDisable()
         {
-            // Cancela recarga ao desequipar
             CancelReload();
-
-            // Esconde UI
-            if (ammoText != null)
-                ammoText.gameObject.SetActive(false);
-
-            if (reloadSlider != null)
-                reloadSlider.gameObject.SetActive(false);
         }
 
         private void Update()
         {
             if (!photonView.IsMine) return;
-            if (!enabled) return; // Nao atira se script desabilitado
+            if (!enabled) return;
 
             if (Input.GetButtonDown("Fire1"))
             {
@@ -92,16 +71,8 @@ namespace MOBAGame.Weapons
 
         private void TryShoot()
         {
-            if (isReloading)
-            {
-                Debug.Log("Recarregando! Nao pode atirar.");
-                return;
-            }
-
-            if (Time.time < nextFireTime)
-            {
-                return;
-            }
+            if (isReloading) return;
+            if (Time.time < nextFireTime) return;
 
             if (currentAmmo <= 0)
             {
@@ -109,7 +80,6 @@ namespace MOBAGame.Weapons
                 {
                     AudioManager.instance.Play(emptyClickSoundName);
                 }
-                Debug.Log("Sem municao! Pressione R para recarregar.");
                 return;
             }
 
@@ -120,7 +90,6 @@ namespace MOBAGame.Weapons
         {
             nextFireTime = Time.time + fireRate;
             currentAmmo--;
-            UpdateAmmoUI();
 
             if (muzzleFlashEffect != null)
             {
@@ -137,15 +106,12 @@ namespace MOBAGame.Weapons
 
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out RaycastHit hit, range, layerMask))
             {
-                Debug.Log($"Acertou: {hit.transform.name}");
-
                 PlayerHealth playerHealth = hit.transform.GetComponent<PlayerHealth>();
                 if (playerHealth != null)
                 {
                     if (playerHealth.GetTeam() != ownerTeam && playerHealth.GetTeam() != Team.None)
                     {
                         playerHealth.photonView.RPC("TakeDamage", RpcTarget.All, damage, photonView.ViewID);
-                        Debug.Log($"Causou {damage} de dano em {hit.transform.name}");
                     }
                     return;
                 }
@@ -156,7 +122,6 @@ namespace MOBAGame.Weapons
                     if (minionHealth.GetTeam() != ownerTeam)
                     {
                         minionHealth.TakeDamage(damage, ownerTeam);
-                        Debug.Log($"Causou {damage} de dano no minion {hit.transform.name}");
                     }
                     return;
                 }
@@ -171,21 +136,9 @@ namespace MOBAGame.Weapons
         private void StartReload()
         {
             if (isReloading) return;
-
-            if (currentAmmo >= maxAmmo)
-            {
-                Debug.Log("Municao ja esta cheia!");
-                return;
-            }
+            if (currentAmmo >= maxAmmo) return;
 
             isReloading = true;
-
-            if (reloadSlider != null)
-            {
-                reloadSlider.gameObject.SetActive(true);
-                reloadSlider.maxValue = reloadDuration;
-                reloadSlider.value = 0f;
-            }
 
             if (AudioManager.instance != null)
             {
@@ -197,30 +150,10 @@ namespace MOBAGame.Weapons
 
         private IEnumerator ReloadCoroutine()
         {
-            float elapsed = 0f;
-
-            while (elapsed < reloadDuration)
-            {
-                elapsed += Time.deltaTime;
-
-                if (reloadSlider != null)
-                {
-                    reloadSlider.value = elapsed;
-                }
-
-                yield return null;
-            }
+            yield return new WaitForSeconds(reloadDuration);
 
             currentAmmo = maxAmmo;
             isReloading = false;
-            UpdateAmmoUI();
-
-            if (reloadSlider != null)
-            {
-                reloadSlider.gameObject.SetActive(false);
-            }
-
-            Debug.Log("Recarga completa!");
         }
 
         public void CancelReload()
@@ -234,26 +167,12 @@ namespace MOBAGame.Weapons
                 StopCoroutine(reloadCoroutine);
                 reloadCoroutine = null;
             }
-
-            if (reloadSlider != null)
-            {
-                reloadSlider.gameObject.SetActive(false);
-            }
-
-            Debug.Log("Recarga cancelada!");
         }
 
-        private void UpdateAmmoUI()
-        {
-            if (ammoText != null)
-            {
-                ammoText.text = $"{currentAmmo}/{maxAmmo}";
-            }
-        }
+        // REMOVIDO: UpdateAmmoUI()
 
-        public bool IsReloading()
-        {
-            return isReloading;
-        }
+        public bool IsReloading() => isReloading;
+        public int GetCurrentAmmo() => currentAmmo;
+        public int GetMaxAmmo() => maxAmmo;
     }
 }
