@@ -2412,6 +2412,7 @@ GameObject:
   - component: {fileID: 792257284052636423}
   - component: {fileID: 2551822961093336027}
   - component: {fileID: 8856392866161519186}
+  - component: {fileID: 376715044332214110}
   m_Layer: 8
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -2505,7 +2506,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 376715044332214110}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -2647,6 +2649,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: PhotonUnityNetworking.Demos::Photon.Pun.Demo.PunBasics.PlayerAnimatorManager
   directionDampTime: 0.25
   animator: {fileID: 1028263587890145863}
+--- !u!114 &376715044332214110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4724181080743192162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformView
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &4766574673705933822
 GameObject:
   m_ObjectHideFlags: 0
