@@ -69,6 +69,7 @@ MonoBehaviour:
   - RPC_ResetHealth
   - RPC_SetAnimation
   - RPC_TriggerAnimation
+  - RPC_SyncAnimationState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
