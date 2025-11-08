@@ -660,7 +660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 304a572c403c40245b9d0090a4b2bafe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionAI
-  maxHealth: 100
+  maxHealth: 110
   damage: 25
   attackRange: 2
   attackCooldown: 4
@@ -679,7 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637563fe0779cc64bab56efc168fb79c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionHealth
-  maxHealth: 100
+  maxHealth: 110
   damage: 25
   attackCooldown: 4
   minionTeam: 2
