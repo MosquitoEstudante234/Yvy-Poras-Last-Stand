@@ -35,7 +35,7 @@ namespace MOBAGame.Minions
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
-            animator = GetComponent<Animator>();
+           // animator = GetComponent<Animator>();
             currentHealth = maxHealth;
         }
 
