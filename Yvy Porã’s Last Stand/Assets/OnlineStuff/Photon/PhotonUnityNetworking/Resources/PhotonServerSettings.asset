@@ -67,6 +67,8 @@ MonoBehaviour:
   - RPC_PlayRangedAttack
   - RPC_ResetDeath
   - RPC_ResetHealth
+  - RPC_SetAnimation
+  - RPC_TriggerAnimation
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
