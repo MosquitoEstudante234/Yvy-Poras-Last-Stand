@@ -661,9 +661,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionAI
   maxHealth: 100
-  damage: 50
+  damage: 25
   attackRange: 2
-  attackCooldown: 1.5
+  attackCooldown: 4
   detectionRange: 10
   minionTeam: 2
   animator: {fileID: 1856950476961469120}
@@ -679,9 +679,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 637563fe0779cc64bab56efc168fb79c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionHealth
-  maxHealth: 50
-  damage: 10
-  attackCooldown: 2
+  maxHealth: 100
+  damage: 25
+  attackCooldown: 4
   minionTeam: 2
   hitSoundName: HitEnemy
   deathSoundName: EnemyDeath
