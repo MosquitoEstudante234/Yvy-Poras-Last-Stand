@@ -250,14 +250,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208304027293896213}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9065121037666272708}
   - {fileID: 6297485373935464341}
-  m_Father: {fileID: 6536029305174540270}
+  m_Father: {fileID: 863923378297050918}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8889374223630006746
 Animator:
@@ -493,9 +493,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1796305644051994955}
   - {fileID: 863923378297050918}
-  - {fileID: 455434777664700122}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6155665535972293283
@@ -736,12 +734,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4355009754888980190}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6536029305174540270}
+  m_Father: {fileID: 863923378297050918}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &5876893284781221271
 SphereCollider:
@@ -1430,7 +1428,6 @@ GameObject:
   - component: {fileID: 879803846671874135}
   - component: {fileID: 6379570856922180294}
   - component: {fileID: 8886881525403557908}
-  - component: {fileID: 6377795195334983748}
   m_Layer: 9
   m_Name: MinionCapsule
   m_TagString: Minion
@@ -1450,7 +1447,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 455434777664700122}
+  - {fileID: 1796305644051994955}
   m_Father: {fileID: 6536029305174540270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &5240762288194114734
@@ -1578,18 +1577,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &6377795195334983748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7886706751713141949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cc0059d2eaa48f4cad1569afbf6c834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionTrigger
 --- !u!1 &7909287905572488250
 GameObject:
   m_ObjectHideFlags: 0
