@@ -2719,7 +2719,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Weapons.MeleeWeapon
   damage: 25
   attackRange: 4
-  attackCooldown: 0.4
+  attackCooldown: 4
   damageableLayers:
     serializedVersion: 2
     m_Bits: 768
