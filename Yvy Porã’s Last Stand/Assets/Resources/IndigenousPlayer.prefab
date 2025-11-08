@@ -786,9 +786,6 @@ MonoBehaviour:
   maxTargets: 3
   damageReductionPerTarget: 0.5
   attackPoint: {fileID: 1543898239894620336}
-  cooldownSlider: {fileID: 2981756832918092138}
-  cooldownCanvasGroup: {fileID: 6033645597575014164}
-  fadeSpeed: 5
   attackSoundName: Spear
 --- !u!114 &7951492724343365416
 MonoBehaviour:
@@ -2591,9 +2588,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Player.PlayerHealth
   maxHealth: 100
-  healthText: {fileID: 741336372888384260}
-  deathCanvas: {fileID: 7093890334497857595}
-  respawnTimerText: {fileID: 6770804399103421570}
   enablePassiveRegen: 0
   regenRate: 1
   regenInterval: 1
@@ -2760,7 +2754,7 @@ RectTransform:
   m_Father: {fileID: 271825893645932152}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3451,8 +3445,6 @@ MonoBehaviour:
   fireRate: 0.5
   reloadDuration: 4
   fpsCam: {fileID: 1740688562118503775}
-  ammoText: {fileID: 1317933084558921157}
-  reloadSlider: {fileID: 4378671324847219571}
   muzzleFlashEffect: {fileID: 0}
   shootSoundName: Shoot
   reloadSoundName: Reload
@@ -4282,7 +4274,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3814156086386518422
 RectTransform:
   m_ObjectHideFlags: 0

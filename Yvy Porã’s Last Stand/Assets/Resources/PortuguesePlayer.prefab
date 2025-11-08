@@ -1779,9 +1779,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Player.PlayerHealth
   maxHealth: 100
-  healthText: {fileID: 5551192110450997587}
-  deathCanvas: {fileID: 5100932235508070926}
-  respawnTimerText: {fileID: 3631971283926955112}
   enablePassiveRegen: 0
   regenRate: 1
   regenInterval: 1
@@ -1804,12 +1801,12 @@ MonoBehaviour:
     weaponName: Spear
     type: 0
     weaponModel: {fileID: 1768963541618353809}
-    weaponScript: {fileID: 0}
+    weaponScript: {fileID: 7079358579482105671}
   rangedWeapon:
     weaponName: Bow
     type: 1
     weaponModel: {fileID: 8538810859788399338}
-    weaponScript: {fileID: 0}
+    weaponScript: {fileID: 7232305533261545050}
   weaponSwitchCooldown: 0.5
   weaponUICanvas: {fileID: 0}
 --- !u!95 &5938201143415413438
@@ -2714,9 +2711,6 @@ MonoBehaviour:
   maxTargets: 3
   damageReductionPerTarget: 0.5
   attackPoint: {fileID: 7261373816100566849}
-  cooldownSlider: {fileID: 6149975798873758348}
-  cooldownCanvasGroup: {fileID: 5730342257745564685}
-  fadeSpeed: 5
   attackSoundName: Spear
 --- !u!1 &2845261403154791998
 GameObject:
@@ -5998,8 +5992,6 @@ MonoBehaviour:
   fireRate: 0.5
   reloadDuration: 4
   fpsCam: {fileID: 4441251974942427930}
-  ammoText: {fileID: 3485601487104741032}
-  reloadSlider: {fileID: 2362220161172021891}
   muzzleFlashEffect: {fileID: 0}
   shootSoundName: Shoot
   reloadSoundName: Reload
