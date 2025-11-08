@@ -28,11 +28,11 @@ namespace MOBAGame.Player
         public bool enablePassiveRegen = false;
         public float regenRate = 1f;
         public float regenInterval = 1f;
-        private Coroutine regenCoroutine; // Guarda referência da coroutine
+        private Coroutine regenCoroutine;
 
         [Header("Respawn Settings")]
         public float respawnTime = 7f;
-        private float respawnTimer = 0f;
+        private Coroutine respawnCoroutine; // NOVO: Guarda referência para evitar múltiplas coroutines
 
         [Header("Visual Feedback")]
         public Renderer playerRenderer;
@@ -55,10 +55,8 @@ namespace MOBAGame.Player
 
             UpdateHealthText();
 
-            // Inicializa time com retry para garantir sincronização
             StartCoroutine(InitializeTeam());
 
-            // Configura material para feedback visual de dano
             if (playerRenderer != null)
             {
                 playerMaterial = playerRenderer.material;
@@ -100,6 +98,9 @@ namespace MOBAGame.Player
             }
         }
 
+        /// <summary>
+        ///  CORRIGIDO: Agora sincroniza a vida via RPC
+        /// </summary>
         [PunRPC]
         public void TakeDamage(int damage, int attackerViewID)
         {
@@ -109,6 +110,7 @@ namespace MOBAGame.Player
                 return;
             }
 
+            // Aplica dano (executa em TODOS os clientes via RPC)
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
@@ -117,28 +119,34 @@ namespace MOBAGame.Player
 
             Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} recebeu {damage} de dano de {attackerName}. HP: {currentHealth}/{maxHealth}");
 
+            // Atualiza UI (apenas no owner)
             if (photonView.IsMine)
             {
                 UpdateHealthText();
-            }
-
-            if (photonView.IsMine)
-            {
                 StartCoroutine(FlashDamage());
             }
 
-            if (currentHealth <= 0)
+            // Verifica morte
+            if (currentHealth <= 0 && !isDead) // Adiciona verificação !isDead
             {
                 photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
 
+                // Inicia respawn APENAS no owner e cancela respawn anterior
                 if (photonView.IsMine)
                 {
+                    if (respawnCoroutine != null)
+                    {
+                        StopCoroutine(respawnCoroutine);
+                    }
                     Debug.Log($"[PlayerHealth] Iniciando countdown de respawn para {photonView.Owner.NickName}");
-                    StartCoroutine(RespawnCountdown());
+                    respawnCoroutine = StartCoroutine(RespawnCountdown());
                 }
             }
         }
 
+        /// <summary>
+        /// MÉTODO LEGADO (mantido para compatibilidade)
+        /// </summary>
         public void TakeDamage(int damage, PhotonView attacker = null)
         {
             if (!photonView.IsMine || isDead) return;
@@ -160,13 +168,17 @@ namespace MOBAGame.Player
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
             UpdateHealthText();
 
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 && !isDead)
             {
                 photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
 
                 if (photonView.IsMine)
                 {
-                    StartCoroutine(RespawnCountdown());
+                    if (respawnCoroutine != null)
+                    {
+                        StopCoroutine(respawnCoroutine);
+                    }
+                    respawnCoroutine = StartCoroutine(RespawnCountdown());
                 }
             }
         }
@@ -186,6 +198,7 @@ namespace MOBAGame.Player
             if (healthText != null)
             {
                 healthText.text = "Vida: " + currentHealth.ToString();
+                Debug.Log($"[PlayerHealth] UI atualizada: {currentHealth}/{maxHealth}");
             }
         }
 
@@ -205,22 +218,22 @@ namespace MOBAGame.Player
         }
 
         /// <summary>
-        /// Sistema de countdown para respawn
+        ///  Sistema de countdown CORRIGIDO
         /// </summary>
         private IEnumerator RespawnCountdown()
         {
             Debug.Log($"[PlayerHealth] RespawnCountdown iniciado para {photonView.Owner.NickName}");
-            respawnTimer = respawnTime;
+            float timer = respawnTime;
 
-            while (respawnTimer > 0)
+            while (timer > 0)
             {
                 if (respawnTimerText != null)
                 {
-                    respawnTimerText.text = $"Respawn em: {Mathf.CeilToInt(respawnTimer)}s";
+                    respawnTimerText.text = $"Respawn em: {Mathf.CeilToInt(timer)}s";
                 }
 
-                Debug.Log($"[PlayerHealth] Respawn em: {Mathf.CeilToInt(respawnTimer)}s");
-                respawnTimer -= Time.deltaTime;
+                Debug.Log($"[PlayerHealth] Respawn em: {Mathf.CeilToInt(timer)}s");
+                timer -= Time.deltaTime;
                 yield return null;
             }
 
@@ -229,7 +242,7 @@ namespace MOBAGame.Player
         }
 
         /// <summary>
-        /// Sistema de respawn CORRIGIDO
+        /// Sistema de respawn COMPLETAMENTE CORRIGIDO
         /// </summary>
         private void Respawn()
         {
@@ -241,14 +254,13 @@ namespace MOBAGame.Player
 
             Debug.Log($"[PlayerHealth] Iniciando respawn de {photonView.Owner.NickName}");
 
-            // Reseta vida
-            currentHealth = maxHealth;
-            UpdateHealthText();
+            // Reseta vida VIA RPC para sincronizar entre todos os clientes
+            photonView.RPC(nameof(RPC_ResetHealth), RpcTarget.All);
 
             // Reativa componentes via RPC
             photonView.RPC(nameof(RPC_Respawn), RpcTarget.All);
 
-            // Teleporta para spawn point do time (com fallback)
+            // Teleporta para spawn point do time
             Transform spawnPoint = null;
 
             if (GameManager.instance != null)
@@ -266,7 +278,6 @@ namespace MOBAGame.Player
             }
             else
             {
-                // FALLBACK: Se não tiver GameManager, usa posição padrão por time
                 Vector3 fallbackPosition = playerTeam == Team.Indigenous ? new Vector3(0, 1, -10) : new Vector3(0, 1, 10);
                 controller.enabled = false;
                 transform.position = fallbackPosition;
@@ -279,7 +290,7 @@ namespace MOBAGame.Player
             if (deathCanvas != null)
                 deathCanvas.SetActive(false);
 
-            // Reinicia regeneração passiva (CORRIGIDO)
+            // Reinicia regeneração passiva
             if (enablePassiveRegen)
             {
                 if (regenCoroutine != null)
@@ -295,13 +306,37 @@ namespace MOBAGame.Player
                 animationController.ResetDeathAnimation();
             }
 
-            Debug.Log($"[PlayerHealth] Respawn de {photonView.Owner.NickName} concluído!");
+            // Limpa referência da coroutine de respawn
+            respawnCoroutine = null;
+
+            Debug.Log($"[PlayerHealth] Respawn de {photonView.Owner.NickName} concluído! HP: {currentHealth}/{maxHealth}");
+        }
+
+        /// <summary>
+        /// NOVO RPC: Reseta a vida sincronizando entre todos os clientes
+        /// </summary>
+        [PunRPC]
+        private void RPC_ResetHealth()
+        {
+            currentHealth = maxHealth;
+
+            // Atualiza UI apenas no owner
+            if (photonView.IsMine)
+            {
+                UpdateHealthText();
+            }
+
+            Debug.Log($"[PlayerHealth] RPC_ResetHealth: {photonView.Owner.NickName} HP resetado para {currentHealth}/{maxHealth}");
         }
 
         [PunRPC]
         private void RPC_SetDead()
         {
-            if (isDead) return;
+            if (isDead)
+            {
+                Debug.LogWarning($"[PlayerHealth] RPC_SetDead chamado mas já está morto!");
+                return;
+            }
 
             isDead = true;
 
@@ -324,7 +359,7 @@ namespace MOBAGame.Player
                 animationController.PlayDeathAnimation();
             }
 
-            Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} morreu!");
+            Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} morreu! isDead={isDead}");
         }
 
         [PunRPC]
@@ -343,7 +378,7 @@ namespace MOBAGame.Player
             if (controller != null)
                 controller.detectCollisions = true;
 
-            Debug.Log($"[PlayerHealth] RPC_Respawn executado para {photonView.Owner.NickName}");
+            Debug.Log($"[PlayerHealth] RPC_Respawn executado para {photonView.Owner.NickName}. isDead={isDead}");
         }
 
         public void SetMaxHealth(int value)
