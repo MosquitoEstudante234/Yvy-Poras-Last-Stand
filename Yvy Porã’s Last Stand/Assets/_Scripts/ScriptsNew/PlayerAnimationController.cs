@@ -8,7 +8,7 @@ namespace MOBAGame.Player
     [RequireComponent(typeof(Animator))]
     public class PlayerAnimationController : MonoBehaviourPun
     {
-        private Animator animator;
+        public Animator animator;
         private PlayerController playerController;
         private PlayerHealth playerHealth;
         private WeaponSystem weaponSystem;
@@ -24,7 +24,7 @@ namespace MOBAGame.Player
 
         private void Awake()
         {
-            animator = GetComponent<Animator>();
+           // animator = GetComponent<Animator>();
             playerController = GetComponent<PlayerController>();
             playerHealth = GetComponent<PlayerHealth>();
             weaponSystem = GetComponent<WeaponSystem>();
