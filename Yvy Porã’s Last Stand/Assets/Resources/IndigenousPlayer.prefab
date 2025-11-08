@@ -2616,29 +2616,14 @@ MonoBehaviour:
     weaponName: Spear
     type: 0
     weaponModel: {fileID: 3867316779912565924}
-    damage: 50
-    range: 5
-    attackCooldown: 3
-    maxAmmo: 0
-    muzzleFlash: {fileID: 0}
+    weaponScript: {fileID: 4585836756754927753}
   rangedWeapon:
     weaponName: Bow
     type: 1
     weaponModel: {fileID: 3293046242194356194}
-    damage: 75
-    range: 100
-    attackCooldown: 6
-    maxAmmo: 10
-    muzzleFlash: {fileID: 0}
+    weaponScript: {fileID: 5012720837421638782}
   weaponSwitchCooldown: 0.5
-  reloadDuration: 4
-  damageableLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  attackPoint: {fileID: 3102829069695785777}
-  ammoText: {fileID: 1317933084558921157}
-  cooldownFillImage: {fileID: 2922920644331700930}
-  reloadText: {fileID: 8481880173018382366}
+  weaponUICanvas: {fileID: 1089090171414215362}
 --- !u!95 &792257284052636423
 Animator:
   serializedVersion: 7
@@ -2677,6 +2662,8 @@ MonoBehaviour:
   playerController: {fileID: 3671387331140386536}
   characterController: {fileID: 4673339043620111830}
   speedSmoothTime: 0.08
+  syncInterval: 0.1
+  speedThreshold: 0.1
   debugLogs: 1
 --- !u!114 &8856392866161519186
 MonoBehaviour:

@@ -24,7 +24,7 @@ namespace MOBAGame.Weapons
         [Header("Attack Point")]
         public Transform attackPoint;
 
-        [Header("Cooldown UI")]
+        [Header("Cooldown UI - External Canvas")]
         public Slider cooldownSlider;
         public CanvasGroup cooldownCanvasGroup;
         public float fadeSpeed = 5f;
@@ -38,28 +38,34 @@ namespace MOBAGame.Weapons
         private float currentCooldown = 0f;
         private Team ownerTeam = Team.None;
 
-        private void Start()
+        private void OnEnable()
         {
-            // Aguarda sincronização de Custom Properties
-            StartCoroutine(InitializeTeam());
+            // Reseta estado ao equipar
+            canAttack = true;
 
-            // Configura UI inicial
             if (cooldownSlider != null)
-            {
                 cooldownSlider.gameObject.SetActive(false);
-                cooldownSlider.maxValue = attackCooldown;
-                cooldownSlider.value = 0f;
-            }
 
             if (cooldownCanvasGroup != null)
-            {
                 cooldownCanvasGroup.alpha = 0f;
+
+            // Inicializa time se ainda nao foi feito
+            if (ownerTeam == Team.None)
+            {
+                StartCoroutine(InitializeTeam());
             }
         }
 
-        /// <summary>
-        /// Inicializa o time com delay para garantir sincronização
-        /// </summary>
+        private void OnDisable()
+        {
+            // Esconde UI ao desequipar
+            if (cooldownSlider != null)
+                cooldownSlider.gameObject.SetActive(false);
+
+            if (cooldownCanvasGroup != null)
+                cooldownCanvasGroup.alpha = 0f;
+        }
+
         private IEnumerator InitializeTeam()
         {
             float timeout = 5f;
@@ -86,41 +92,31 @@ namespace MOBAGame.Weapons
 
         private void Update()
         {
-            // Apenas o dono da arma pode atacar
             if (!photonView.IsMine) return;
+            if (!enabled) return; // Nao ataca se script desabilitado
 
-            // Detecta ataque
             if (Input.GetMouseButtonDown(0) && canAttack)
             {
                 Attack();
             }
 
-            // Atualiza cooldown UI
             UpdateCooldownUI();
         }
 
-        /// <summary>
-        /// Executa o ataque melee (spherecast para detectar alvos)
-        /// </summary>
         private void Attack()
         {
             canAttack = false;
 
-            // Toca som de ataque
             if (AudioManager.instance != null)
             {
                 AudioManager.instance.Play(attackSoundName);
             }
 
-            // TODO: Trigger de animação (se houver Animator)
-            // animator.SetTrigger("Attack");
-
-            // Detecção de alvos
             Vector3 attackOrigin = attackPoint != null ? attackPoint.position : transform.position;
             Vector3 attackDirection = attackPoint != null ? attackPoint.forward : transform.forward;
 
-            // SphereCast para detectar múltiplos alvos
-            RaycastHit[] hits = Physics.SphereCastAll(attackOrigin, 0.5f, attackDirection, attackRange, damageableLayers);
+            // SphereCast com raio de 1.0 (aumentado para melhor deteccao)
+            RaycastHit[] hits = Physics.SphereCastAll(attackOrigin, 1.0f, attackDirection, attackRange, damageableLayers);
 
             if (hits.Length > 0)
             {
@@ -128,16 +124,12 @@ namespace MOBAGame.Weapons
             }
             else
             {
-                Debug.Log("[Melee] Ataque não detectou nenhum collider na área");
+                Debug.Log("[Melee] Ataque nao detectou nenhum collider");
             }
 
-            // Inicia cooldown
             StartCoroutine(StartCooldown());
         }
 
-        /// <summary>
-        /// Processa os alvos atingidos aplicando dano (COM SINCRONIZAÇÃO RPC)
-        /// </summary>
         private void ProcessHits(RaycastHit[] hits)
         {
             int targetsHit = 0;
@@ -145,48 +137,32 @@ namespace MOBAGame.Weapons
 
             foreach (RaycastHit hit in hits)
             {
-                // Limita número de alvos
                 if (allowMultiHit && targetsHit >= maxTargets)
                     break;
 
-                // Calcula dano (primeiro alvo recebe dano total, demais recebem reduzido)
                 int damageAmount = isFirstHit ? damage : Mathf.RoundToInt(damage * damageReductionPerTarget);
 
-                // ========== VERIFICA JOGADORES ==========
                 PlayerHealth playerHealth = hit.collider.GetComponent<PlayerHealth>();
                 if (playerHealth != null)
                 {
-                    // Valida friendly fire
                     if (playerHealth.GetTeam() != ownerTeam && playerHealth.GetTeam() != Team.None)
                     {
-                        //  CORREÇÃO: Usa RPC através do PhotonView do alvo
                         PhotonView targetPhotonView = playerHealth.GetComponent<PhotonView>();
                         if (targetPhotonView != null)
                         {
-                            // Envia RPC para todos os clientes aplicarem dano
                             targetPhotonView.RPC("TakeDamage", RpcTarget.AllBuffered, damageAmount, photonView.ViewID);
-                            Debug.Log($"[Melee] RPC enviado: {damageAmount} dano para jogador {hit.collider.name} (ViewID: {targetPhotonView.ViewID})");
-                        }
-                        else
-                        {
-                            Debug.LogError($"[Melee] PlayerHealth sem PhotonView: {hit.collider.name}");
+                            Debug.Log($"[Melee] Causou {damageAmount} de dano em {hit.collider.name}");
                         }
 
                         targetsHit++;
                         isFirstHit = false;
                         continue;
                     }
-                    else
-                    {
-                        Debug.Log($"[Melee] Ignorado (mesmo time ou Team.None): {hit.collider.name}");
-                    }
                 }
 
-                // ========== VERIFICA MINIONS ==========
                 MinionHealth minionHealth = hit.collider.GetComponent<MinionHealth>();
                 if (minionHealth != null)
                 {
-                    // Valida se é inimigo
                     if (minionHealth.GetTeam() != ownerTeam && minionHealth.GetTeam() != Team.None)
                     {
                         minionHealth.TakeDamage(damageAmount, ownerTeam);
@@ -201,13 +177,10 @@ namespace MOBAGame.Weapons
 
             if (targetsHit == 0)
             {
-                Debug.Log("[Melee] Ataque não acertou nenhum alvo válido (verificar layers e teams)");
+                Debug.Log("[Melee] Nenhum alvo valido atingido");
             }
         }
 
-        /// <summary>
-        /// Inicia o cooldown do ataque
-        /// </summary>
         private IEnumerator StartCooldown()
         {
             isFadingIn = true;
@@ -216,6 +189,7 @@ namespace MOBAGame.Weapons
             if (cooldownSlider != null)
             {
                 cooldownSlider.gameObject.SetActive(true);
+                cooldownSlider.maxValue = attackCooldown;
                 cooldownSlider.value = 0f;
             }
 
@@ -233,9 +207,6 @@ namespace MOBAGame.Weapons
             isFadingOut = true;
         }
 
-        /// <summary>
-        /// Atualiza a UI de cooldown com fade in/out
-        /// </summary>
         private void UpdateCooldownUI()
         {
             if (!canAttack)
@@ -247,7 +218,6 @@ namespace MOBAGame.Weapons
                     cooldownSlider.value = currentCooldown;
                 }
 
-                // Fade in
                 if (isFadingIn && cooldownCanvasGroup != null)
                 {
                     if (cooldownCanvasGroup.alpha < 1)
@@ -258,7 +228,6 @@ namespace MOBAGame.Weapons
             }
             else
             {
-                // Fade out
                 if (isFadingOut && cooldownCanvasGroup != null)
                 {
                     if (cooldownCanvasGroup.alpha > 0.01f)
@@ -280,33 +249,14 @@ namespace MOBAGame.Weapons
             }
         }
 
-        /// <summary>
-        /// Ativa/desativa a arma (chamado pelo WeaponSystem)
-        /// </summary>
-        public void SetActive(bool active)
-        {
-            gameObject.SetActive(active);
-        }
-
-        /// <summary>
-        /// Getter para verificar se pode atacar
-        /// </summary>
-        public bool CanAttack()
-        {
-            return canAttack;
-        }
-
-        /// <summary>
-        /// Debug visual do alcance de ataque (Gizmos no Editor)
-        /// </summary>
         private void OnDrawGizmosSelected()
         {
             if (attackPoint != null)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(attackPoint.position, 0.5f);
+                Gizmos.DrawWireSphere(attackPoint.position, 1.0f);
                 Gizmos.DrawRay(attackPoint.position, attackPoint.forward * attackRange);
-                Gizmos.DrawWireSphere(attackPoint.position + attackPoint.forward * attackRange, 0.5f);
+                Gizmos.DrawWireSphere(attackPoint.position + attackPoint.forward * attackRange, 1.0f);
             }
         }
     }
