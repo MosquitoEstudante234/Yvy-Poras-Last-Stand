@@ -2557,6 +2557,7 @@ MonoBehaviour:
   regenRate: 1
   regenInterval: 1
   respawnTime: 7
+  deathAnimationDuration: 2
   playerRenderer: {fileID: 0}
 --- !u!114 &4787448014895338114
 MonoBehaviour:
@@ -2731,7 +2732,7 @@ RectTransform:
   m_Father: {fileID: 271825893645932152}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3386,7 +3387,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2522231503101403055
 Transform:
   m_ObjectHideFlags: 0
