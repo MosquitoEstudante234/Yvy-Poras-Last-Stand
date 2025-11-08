@@ -355,6 +355,7 @@ GameObject:
   - component: {fileID: 82188675}
   - component: {fileID: 82188674}
   - component: {fileID: 82188677}
+  - component: {fileID: 82188678}
   m_Layer: 5
   m_Name: IndigenousMinionSpawnPoint
   m_TagString: IndigenousSpawn
@@ -475,6 +476,28 @@ MonoBehaviour:
   spawnerTeam: 1
   spawnInterval: 8
   maxActiveMinions: 7
+--- !u!114 &82188678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82188672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 3
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &104589535
 GameObject:
   m_ObjectHideFlags: 0
@@ -4857,6 +4880,7 @@ GameObject:
   - component: {fileID: 1406059398}
   - component: {fileID: 1406059397}
   - component: {fileID: 1406059400}
+  - component: {fileID: 1406059401}
   m_Layer: 5
   m_Name: PortugueseMinionSpawnPoint
   m_TagString: IndigenousSpawn
@@ -4977,6 +5001,28 @@ MonoBehaviour:
   spawnerTeam: 2
   spawnInterval: 8
   maxActiveMinions: 7
+--- !u!114 &1406059401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406059395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 4
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1423808876
 GameObject:
   m_ObjectHideFlags: 0
