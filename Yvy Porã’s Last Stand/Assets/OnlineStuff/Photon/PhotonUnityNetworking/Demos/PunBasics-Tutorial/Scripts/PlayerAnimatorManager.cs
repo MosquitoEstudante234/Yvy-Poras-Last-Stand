@@ -18,7 +18,7 @@ namespace Photon.Pun.Demo.PunBasics
 
         [SerializeField]
 	    private float directionDampTime = 0.25f;
-        Animator animator;
+        public Animator animator;
 
 		#endregion
 
@@ -29,7 +29,7 @@ namespace Photon.Pun.Demo.PunBasics
 		/// </summary>
 	    void Start () 
 	    {
-	        animator = GetComponent<Animator>();
+	        //animator = GetComponent<Animator>();
 	    }
 	        
 		/// <summary>

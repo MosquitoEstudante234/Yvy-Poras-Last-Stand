@@ -8882,7 +8882,7 @@ GameObject:
   - component: {fileID: 1973979343}
   - component: {fileID: 1973979349}
   - component: {fileID: 1973979348}
-  - component: {fileID: 1973979347}
+  - component: {fileID: 1973979350}
   m_Layer: 8
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -9065,19 +9065,6 @@ MonoBehaviour:
   sceneViewId: 3
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1973979347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1973979338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 507e5741cec8a42dc964c8e0a4b55bd6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking.Demos::Photon.Pun.Demo.PunBasics.PlayerAnimatorManager
-  directionDampTime: 0.25
 --- !u!114 &1973979348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9091,6 +9078,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Player.PlayerAnimationController
   animator: {fileID: 919132148479311808}
+  playerController: {fileID: 1973979345}
+  characterController: {fileID: 1973979340}
 --- !u!95 &1973979349
 Animator:
   serializedVersion: 7
@@ -9113,6 +9102,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1973979350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1973979338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 507e5741cec8a42dc964c8e0a4b55bd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking.Demos::Photon.Pun.Demo.PunBasics.PlayerAnimatorManager
+  directionDampTime: 0.25
+  animator: {fileID: 919132148479311808}
 --- !u!1 &1989818055
 GameObject:
   m_ObjectHideFlags: 0
