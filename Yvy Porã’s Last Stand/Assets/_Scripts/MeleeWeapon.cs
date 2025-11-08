@@ -17,12 +17,12 @@ namespace MOBAGame.Weapons
         public LayerMask damageableLayers;
 
         [Header("Multi-hit Settings")]
-        public bool allowMultiHit = true; // Permite atingir múltiplos alvos
-        public int maxTargets = 3; // Máximo de alvos por ataque
-        public float damageReductionPerTarget = 0.5f; // Redução de dano após primeiro alvo (50%)
+        public bool allowMultiHit = true;
+        public int maxTargets = 3;
+        public float damageReductionPerTarget = 0.5f;
 
         [Header("Attack Point")]
-        public Transform attackPoint; // Ponto de onde sai o raycast/spherecast
+        public Transform attackPoint;
 
         [Header("Cooldown UI")]
         public Slider cooldownSlider;
@@ -40,11 +40,8 @@ namespace MOBAGame.Weapons
 
         private void Start()
         {
-            // Obtém o time do dono da arma
-            if (photonView.Owner != null && photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
-            {
-                ownerTeam = (Team)((int)teamValue);
-            }
+            // Aguarda sincronização de Custom Properties
+            StartCoroutine(InitializeTeam());
 
             // Configura UI inicial
             if (cooldownSlider != null)
@@ -57,6 +54,33 @@ namespace MOBAGame.Weapons
             if (cooldownCanvasGroup != null)
             {
                 cooldownCanvasGroup.alpha = 0f;
+            }
+        }
+
+        /// <summary>
+        /// Inicializa o time com delay para garantir sincronização
+        /// </summary>
+        private IEnumerator InitializeTeam()
+        {
+            float timeout = 5f;
+            float elapsed = 0f;
+
+            while (ownerTeam == Team.None && elapsed < timeout)
+            {
+                if (photonView.Owner != null && photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
+                {
+                    ownerTeam = (Team)((int)teamValue);
+                    Debug.Log($"[MeleeWeapon] Time inicializado: {ownerTeam}");
+                    yield break;
+                }
+
+                elapsed += 0.1f;
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            if (ownerTeam == Team.None)
+            {
+                Debug.LogError("[MeleeWeapon] Falha ao obter time do owner!");
             }
         }
 
@@ -76,7 +100,7 @@ namespace MOBAGame.Weapons
         }
 
         /// <summary>
-        /// Executa o ataque melee (raycast/spherecast para detectar alvos)
+        /// Executa o ataque melee (spherecast para detectar alvos)
         /// </summary>
         private void Attack()
         {
@@ -88,8 +112,8 @@ namespace MOBAGame.Weapons
                 AudioManager.instance.Play(attackSoundName);
             }
 
-            // Trigger de animação
-
+            // TODO: Trigger de animação (se houver Animator)
+            // animator.SetTrigger("Attack");
 
             // Detecção de alvos
             Vector3 attackOrigin = attackPoint != null ? attackPoint.position : transform.position;
@@ -102,14 +126,17 @@ namespace MOBAGame.Weapons
             {
                 ProcessHits(hits);
             }
-
+            else
+            {
+                Debug.Log("[Melee] Ataque não detectou nenhum collider na área");
+            }
 
             // Inicia cooldown
             StartCoroutine(StartCooldown());
         }
 
         /// <summary>
-        /// Processa os alvos atingidos aplicando dano
+        /// Processa os alvos atingidos aplicando dano (COM SINCRONIZAÇÃO RPC)
         /// </summary>
         private void ProcessHits(RaycastHit[] hits)
         {
@@ -125,23 +152,37 @@ namespace MOBAGame.Weapons
                 // Calcula dano (primeiro alvo recebe dano total, demais recebem reduzido)
                 int damageAmount = isFirstHit ? damage : Mathf.RoundToInt(damage * damageReductionPerTarget);
 
-                // Verifica se acertou um jogador
+                // ========== VERIFICA JOGADORES ==========
                 PlayerHealth playerHealth = hit.collider.GetComponent<PlayerHealth>();
                 if (playerHealth != null)
                 {
                     // Valida friendly fire
                     if (playerHealth.GetTeam() != ownerTeam && playerHealth.GetTeam() != Team.None)
                     {
-                        playerHealth.TakeDamage(damageAmount, photonView);
-                        Debug.Log($"[Melee] Causou {damageAmount} de dano em jogador {hit.collider.name}");
+                        //  CORREÇÃO: Usa RPC através do PhotonView do alvo
+                        PhotonView targetPhotonView = playerHealth.GetComponent<PhotonView>();
+                        if (targetPhotonView != null)
+                        {
+                            // Envia RPC para todos os clientes aplicarem dano
+                            targetPhotonView.RPC("TakeDamage", RpcTarget.AllBuffered, damageAmount, photonView.ViewID);
+                            Debug.Log($"[Melee] RPC enviado: {damageAmount} dano para jogador {hit.collider.name} (ViewID: {targetPhotonView.ViewID})");
+                        }
+                        else
+                        {
+                            Debug.LogError($"[Melee] PlayerHealth sem PhotonView: {hit.collider.name}");
+                        }
 
                         targetsHit++;
                         isFirstHit = false;
                         continue;
                     }
+                    else
+                    {
+                        Debug.Log($"[Melee] Ignorado (mesmo time ou Team.None): {hit.collider.name}");
+                    }
                 }
 
-                // Verifica se acertou um minion
+                // ========== VERIFICA MINIONS ==========
                 MinionHealth minionHealth = hit.collider.GetComponent<MinionHealth>();
                 if (minionHealth != null)
                 {
@@ -160,7 +201,7 @@ namespace MOBAGame.Weapons
 
             if (targetsHit == 0)
             {
-                Debug.Log("[Melee] Ataque não acertou nenhum alvo válido");
+                Debug.Log("[Melee] Ataque não acertou nenhum alvo válido (verificar layers e teams)");
             }
         }
 

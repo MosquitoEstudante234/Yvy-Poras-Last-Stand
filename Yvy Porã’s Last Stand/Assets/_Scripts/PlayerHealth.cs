@@ -2,7 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using System.Collections;
-using MOBAGame.Core; // NOVO: Para acessar o enum Team
+using MOBAGame.Core;
 
 namespace MOBAGame.Player
 {
@@ -22,20 +22,24 @@ namespace MOBAGame.Player
         [Header("UI References")]
         public TextMeshProUGUI healthText;
         public GameObject deathCanvas;
-        public TextMeshProUGUI respawnTimerText; // NOVO: Para mostrar countdown
+        public TextMeshProUGUI respawnTimerText;
 
         [Header("Passive Regen Settings")]
         public bool enablePassiveRegen = false;
         public float regenRate = 1f;
         public float regenInterval = 1f;
+        private Coroutine regenCoroutine; // Guarda referência da coroutine
 
         [Header("Respawn Settings")]
-        public float respawnTime = 7f; // NOVO: Tempo de respawn (7 segundos)
+        public float respawnTime = 7f;
         private float respawnTimer = 0f;
 
-        private PlayerAnimationController animationController;
+        [Header("Visual Feedback")]
+        public Renderer playerRenderer;
+        private Color originalColor;
+        private Material playerMaterial;
 
-        // NOVO: Referência ao time do jogador
+        private PlayerAnimationController animationController;
         private Team playerTeam = Team.None;
 
         private void Start()
@@ -51,31 +55,94 @@ namespace MOBAGame.Player
 
             UpdateHealthText();
 
+            // Inicializa time com retry para garantir sincronização
+            StartCoroutine(InitializeTeam());
+
+            // Configura material para feedback visual de dano
+            if (playerRenderer != null)
+            {
+                playerMaterial = playerRenderer.material;
+                originalColor = playerMaterial.color;
+            }
+
             if (photonView.IsMine)
             {
                 PhotonNetwork.LocalPlayer.TagObject = this;
 
-                // NOVO: Obtém o time do jogador das propriedades customizadas
-                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
-                {
-                    playerTeam = (Team)((int)teamValue);
-                }
-
                 if (enablePassiveRegen)
                 {
-                    StartCoroutine(PassiveRegeneration());
+                    regenCoroutine = StartCoroutine(PassiveRegeneration());
                 }
             }
         }
 
-        /// <summary>
-        /// MODIFICADO: Agora recebe quem causou o dano para validar PvP
-        /// </summary>
+        private IEnumerator InitializeTeam()
+        {
+            float timeout = 5f;
+            float elapsed = 0f;
+
+            while (playerTeam == Team.None && elapsed < timeout)
+            {
+                if (photonView.Owner != null && photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
+                {
+                    playerTeam = (Team)((int)teamValue);
+                    Debug.Log($"[PlayerHealth] Time inicializado: {playerTeam} (Player: {photonView.Owner.NickName})");
+                    yield break;
+                }
+
+                elapsed += 0.1f;
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            if (playerTeam == Team.None)
+            {
+                Debug.LogError($"[PlayerHealth] ERRO: Falha ao obter time do owner: {photonView.Owner?.NickName}");
+            }
+        }
+
+        [PunRPC]
+        public void TakeDamage(int damage, int attackerViewID)
+        {
+            if (isDead)
+            {
+                Debug.Log($"[PlayerHealth] Dano ignorado - jogador já está morto: {photonView.Owner.NickName}");
+                return;
+            }
+
+            currentHealth -= damage;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+            PhotonView attackerView = PhotonView.Find(attackerViewID);
+            string attackerName = attackerView != null ? attackerView.Owner.NickName : "Desconhecido";
+
+            Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} recebeu {damage} de dano de {attackerName}. HP: {currentHealth}/{maxHealth}");
+
+            if (photonView.IsMine)
+            {
+                UpdateHealthText();
+            }
+
+            if (photonView.IsMine)
+            {
+                StartCoroutine(FlashDamage());
+            }
+
+            if (currentHealth <= 0)
+            {
+                photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
+
+                if (photonView.IsMine)
+                {
+                    Debug.Log($"[PlayerHealth] Iniciando countdown de respawn para {photonView.Owner.NickName}");
+                    StartCoroutine(RespawnCountdown());
+                }
+            }
+        }
+
         public void TakeDamage(int damage, PhotonView attacker = null)
         {
             if (!photonView.IsMine || isDead) return;
 
-            // NOVO: Validação de friendly fire (jogadores do mesmo time não podem se atacar)
             if (attacker != null && attacker.Owner != null)
             {
                 if (attacker.Owner.CustomProperties.TryGetValue("Team", out object attackerTeamValue))
@@ -83,7 +150,7 @@ namespace MOBAGame.Player
                     Team attackerTeam = (Team)((int)attackerTeamValue);
                     if (attackerTeam == playerTeam && attackerTeam != Team.None)
                     {
-                        // Mesmo time, ignora dano
+                        Debug.Log($"[PlayerHealth] Friendly fire ignorado de {attacker.Owner.NickName}");
                         return;
                     }
                 }
@@ -97,11 +164,20 @@ namespace MOBAGame.Player
             {
                 photonView.RPC(nameof(RPC_SetDead), RpcTarget.All);
 
-                // NOVO: Inicia sistema de respawn
                 if (photonView.IsMine)
                 {
                     StartCoroutine(RespawnCountdown());
                 }
+            }
+        }
+
+        private IEnumerator FlashDamage()
+        {
+            if (playerMaterial != null)
+            {
+                playerMaterial.color = Color.red;
+                yield return new WaitForSeconds(0.2f);
+                playerMaterial.color = originalColor;
             }
         }
 
@@ -119,7 +195,7 @@ namespace MOBAGame.Player
             {
                 yield return new WaitForSeconds(regenInterval);
 
-                if (currentHealth < maxHealth)
+                if (currentHealth < maxHealth && !isDead)
                 {
                     currentHealth += Mathf.RoundToInt(regenRate);
                     currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
@@ -128,9 +204,12 @@ namespace MOBAGame.Player
             }
         }
 
-        // NOVO: Sistema de countdown para respawn
+        /// <summary>
+        /// Sistema de countdown para respawn
+        /// </summary>
         private IEnumerator RespawnCountdown()
         {
+            Debug.Log($"[PlayerHealth] RespawnCountdown iniciado para {photonView.Owner.NickName}");
             respawnTimer = respawnTime;
 
             while (respawnTimer > 0)
@@ -140,56 +219,83 @@ namespace MOBAGame.Player
                     respawnTimerText.text = $"Respawn em: {Mathf.CeilToInt(respawnTimer)}s";
                 }
 
+                Debug.Log($"[PlayerHealth] Respawn em: {Mathf.CeilToInt(respawnTimer)}s");
                 respawnTimer -= Time.deltaTime;
                 yield return null;
             }
 
-            // Após 7 segundos, respawna na base do time
+            Debug.Log($"[PlayerHealth] Countdown finalizado! Chamando Respawn()");
             Respawn();
         }
 
-        // NOVO: Sistema de respawn
+        /// <summary>
+        /// Sistema de respawn CORRIGIDO
+        /// </summary>
         private void Respawn()
         {
-            if (!photonView.IsMine) return;
+            if (!photonView.IsMine)
+            {
+                Debug.LogWarning($"[PlayerHealth] Respawn chamado mas não é o owner!");
+                return;
+            }
+
+            Debug.Log($"[PlayerHealth] Iniciando respawn de {photonView.Owner.NickName}");
 
             // Reseta vida
             currentHealth = maxHealth;
             UpdateHealthText();
 
-            // Reativa componentes
+            // Reativa componentes via RPC
             photonView.RPC(nameof(RPC_Respawn), RpcTarget.All);
 
-            // NOVO: Teleporta para spawn point do time
-            Transform spawnPoint = GameManager.instance.GetSpawnPointForTeam(playerTeam);
+            // Teleporta para spawn point do time (com fallback)
+            Transform spawnPoint = null;
+
+            if (GameManager.instance != null)
+            {
+                spawnPoint = GameManager.instance.GetSpawnPointForTeam(playerTeam);
+            }
+
             if (spawnPoint != null)
             {
                 controller.enabled = false;
                 transform.position = spawnPoint.position;
                 transform.rotation = spawnPoint.rotation;
                 controller.enabled = true;
+                Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} respawnou no spawn do time {playerTeam}");
+            }
+            else
+            {
+                // FALLBACK: Se não tiver GameManager, usa posição padrão por time
+                Vector3 fallbackPosition = playerTeam == Team.Indigenous ? new Vector3(0, 1, -10) : new Vector3(0, 1, 10);
+                controller.enabled = false;
+                transform.position = fallbackPosition;
+                transform.rotation = Quaternion.identity;
+                controller.enabled = true;
+                Debug.LogWarning($"[PlayerHealth] GameManager não encontrado! Respawn em posição fallback: {fallbackPosition}");
             }
 
+            // Esconde canvas de morte
             if (deathCanvas != null)
                 deathCanvas.SetActive(false);
 
-            // Reinicia regeneração passiva se estava ativa
+            // Reinicia regeneração passiva (CORRIGIDO)
             if (enablePassiveRegen)
             {
-                StartCoroutine(PassiveRegeneration());
+                if (regenCoroutine != null)
+                {
+                    StopCoroutine(regenCoroutine);
+                }
+                regenCoroutine = StartCoroutine(PassiveRegeneration());
             }
-            if (!photonView.IsMine) return;
-
-            currentHealth = maxHealth;
-            UpdateHealthText();
-
-            photonView.RPC(nameof(RPC_Respawn), RpcTarget.All);
 
             // Reseta animação de morte
             if (animationController != null)
             {
                 animationController.ResetDeathAnimation();
             }
+
+            Debug.Log($"[PlayerHealth] Respawn de {photonView.Owner.NickName} concluído!");
         }
 
         [PunRPC]
@@ -213,19 +319,12 @@ namespace MOBAGame.Player
             if (photonView.IsMine && deathCanvas != null)
                 deathCanvas.SetActive(true);
 
-            if (isDead) return;
-
-            isDead = true;
-
-            // Trigger de animação de morte
             if (animationController != null)
             {
                 animationController.PlayDeathAnimation();
             }
 
-
-            // REMOVIDO: GameManager.PlayerDied() porque agora não é mais PvE wave-based
-            // No MOBA, morte de jogador não afeta o jogo diretamente, só o respawn
+            Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} morreu!");
         }
 
         [PunRPC]
@@ -243,9 +342,9 @@ namespace MOBAGame.Player
 
             if (controller != null)
                 controller.detectCollisions = true;
-        }
 
-        // REMOVIDO: RPC_NotifyDeathToMaster (não necessário no sistema MOBA)
+            Debug.Log($"[PlayerHealth] RPC_Respawn executado para {photonView.Owner.NickName}");
+        }
 
         public void SetMaxHealth(int value)
         {
@@ -260,24 +359,46 @@ namespace MOBAGame.Player
 
             if (enable && photonView.IsMine && !isDead)
             {
-                StartCoroutine(PassiveRegeneration());
+                if (regenCoroutine != null)
+                {
+                    StopCoroutine(regenCoroutine);
+                }
+                regenCoroutine = StartCoroutine(PassiveRegeneration());
             }
             else
             {
-                StopCoroutine(PassiveRegeneration());
+                if (regenCoroutine != null)
+                {
+                    StopCoroutine(regenCoroutine);
+                    regenCoroutine = null;
+                }
             }
         }
 
-        // NOVO: Getter para o time do jogador
         public Team GetTeam()
         {
             return playerTeam;
         }
 
-        // NOVO: Setter para o time (chamado pelo PlayerController no Start)
         public void SetTeam(Team team)
         {
             playerTeam = team;
+            Debug.Log($"[PlayerHealth] Time definido manualmente: {team}");
+        }
+
+        public int GetCurrentHealth()
+        {
+            return currentHealth;
+        }
+
+        public int GetMaxHealth()
+        {
+            return maxHealth;
+        }
+
+        public float GetHealthPercentage()
+        {
+            return (float)currentHealth / maxHealth;
         }
     }
 }

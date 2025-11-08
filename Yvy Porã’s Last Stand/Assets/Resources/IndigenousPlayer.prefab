@@ -2557,6 +2557,7 @@ MonoBehaviour:
   regenRate: 1
   regenInterval: 1
   respawnTime: 7
+  playerRenderer: {fileID: 0}
 --- !u!114 &4787448014895338114
 MonoBehaviour:
   m_ObjectHideFlags: 0
