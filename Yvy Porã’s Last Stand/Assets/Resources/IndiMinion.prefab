@@ -1059,7 +1059,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: ec5738c20e79f5b4fbc9a61073bce6c4, type: 3}
+  - {fileID: 2100000, guid: 7418b6c0dda1b7d40bba7333fbaa76b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1536,7 +1536,7 @@ MonoBehaviour:
   attackRange: 2
   attackCooldown: 1.5
   detectionRange: 10
-  minionTeam: 2
+  minionTeam: 1
 --- !u!114 &6379570856922180294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1552,7 +1552,7 @@ MonoBehaviour:
   maxHealth: 50
   damage: 10
   attackCooldown: 2
-  minionTeam: 2
+  minionTeam: 1
   hitSoundName: HitEnemy
   deathSoundName: EnemyDeath
 --- !u!114 &8886881525403557908
