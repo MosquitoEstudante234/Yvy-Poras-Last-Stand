@@ -324,16 +324,26 @@ namespace MOBAGame.Player
             if (controller != null)
                 controller.detectCollisions = false;
 
+            // Desabilita controles do jogador (apenas no owner)
             if (photonView.IsMine)
             {
                 SetControllableComponents(false);
+
+                // NOVO: Desativa armas
+                Combat.WeaponSystem weaponSystem = GetComponent<Combat.WeaponSystem>();
+                if (weaponSystem != null)
+                {
+                    weaponSystem.DisableAllWeapons();
+                }
             }
 
+            // Toca animacao de morte
             if (animationController != null)
             {
                 animationController.PlayDeathAnimation();
             }
 
+            // Aguarda animacao de morte antes de esconder o corpo
             StartCoroutine(HideBodyAfterAnimation());
 
             Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} morreu! isDead={isDead}");
@@ -368,9 +378,17 @@ namespace MOBAGame.Player
             if (controller != null)
                 controller.detectCollisions = true;
 
+            // Reativa controles do jogador (apenas no owner)
             if (photonView.IsMine)
             {
                 SetControllableComponents(true);
+
+                // NOVO: Reativa armas
+                Combat.WeaponSystem weaponSystem = GetComponent<Combat.WeaponSystem>();
+                if (weaponSystem != null)
+                {
+                    weaponSystem.EnableCurrentWeapon();
+                }
             }
 
             Debug.Log($"[PlayerHealth] RPC_Respawn executado para {photonView.Owner.NickName}. isDead={isDead}");

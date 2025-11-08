@@ -33,6 +33,7 @@ namespace MOBAGame.Combat
 
         private Weapon currentWeapon;
         private bool canSwitchWeapon = true;
+        private bool isPlayerDead = false; // NOVO
         private Team playerTeam = Team.None;
         private PlayerAnimationController animationController;
 
@@ -66,6 +67,7 @@ namespace MOBAGame.Combat
         private void Update()
         {
             if (!photonView.IsMine) return;
+            if (isPlayerDead) return; // NOVO: Bloqueia input se morto
 
             HandleWeaponSwitch();
         }
@@ -112,9 +114,13 @@ namespace MOBAGame.Combat
                 DisableWeapon(currentWeapon);
             }
 
-            // Ativa nova arma
+            // Ativa nova arma (apenas se jogador não estiver morto)
             currentWeapon = weapon;
-            EnableWeapon(currentWeapon);
+
+            if (!isPlayerDead)
+            {
+                EnableWeapon(currentWeapon);
+            }
 
             // Sincroniza com outros jogadores
             photonView.RPC("RPC_EquipWeapon", RpcTarget.Others, weapon == meleeWeapon);
@@ -138,6 +144,47 @@ namespace MOBAGame.Combat
 
             if (weapon.weaponScript != null)
                 weapon.weaponScript.enabled = false;
+        }
+
+        /// <summary>
+        /// Desativa todas as armas quando o jogador morre
+        /// Chamado pelo PlayerHealth
+        /// </summary>
+        public void DisableAllWeapons()
+        {
+            isPlayerDead = true;
+
+            if (currentWeapon != null)
+            {
+                DisableWeapon(currentWeapon);
+            }
+
+            // Garante que ambas estão desativadas
+            DisableWeapon(meleeWeapon);
+            DisableWeapon(rangedWeapon);
+
+            Debug.Log("[WeaponSystem] Todas as armas desativadas (jogador morto)");
+        }
+
+        /// <summary>
+        /// Reativa a arma atual quando o jogador respawna
+        /// Chamado pelo PlayerHealth
+        /// </summary>
+        public void EnableCurrentWeapon()
+        {
+            isPlayerDead = false;
+
+            if (currentWeapon != null)
+            {
+                EnableWeapon(currentWeapon);
+                Debug.Log($"[WeaponSystem] Arma reativada: {currentWeapon.weaponName}");
+            }
+            else
+            {
+                // Se não houver arma equipada, equipa a melee por padrão
+                EquipWeapon(meleeWeapon);
+                Debug.Log("[WeaponSystem] Equipando arma padrão (Melee) após respawn");
+            }
         }
 
         [PunRPC]
