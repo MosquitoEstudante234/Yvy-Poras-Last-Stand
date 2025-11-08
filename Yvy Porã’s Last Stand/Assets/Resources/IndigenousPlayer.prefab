@@ -2413,7 +2413,6 @@ GameObject:
   - component: {fileID: 2551822961093336027}
   - component: {fileID: 8856392866161519186}
   - component: {fileID: 376715044332214110}
-  - component: {fileID: 7295225079606048887}
   m_Layer: 8
   m_Name: PlayerCapsule
   m_TagString: Player
@@ -2509,7 +2508,6 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 376715044332214110}
-  - {fileID: 7295225079606048887}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -2667,22 +2665,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &7295225079606048887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4724181080743192162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonAnimatorView
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters: []
-  m_SynchronizeLayers: []
 --- !u!1 &4766574673705933822
 GameObject:
   m_ObjectHideFlags: 0
