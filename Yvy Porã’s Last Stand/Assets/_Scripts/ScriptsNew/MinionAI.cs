@@ -32,23 +32,18 @@ namespace MOBAGame.Minions
 
         public Team MinionTeam => minionTeam;
 
-        private List<Transform> targetsInRange = new List<Transform>();
-
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            // animator = GetComponent<Animator>();
             currentHealth = maxHealth;
         }
 
         private void Start()
         {
-            // Clientes nao-master desabilitam o NavMeshAgent para evitar conflitos
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                agent.enabled = false;
-                return;
-            }
+            if (!PhotonNetwork.IsMasterClient) return;
 
+            // Encontrar base inimiga
             FindEnemyBase();
         }
 
@@ -56,6 +51,7 @@ namespace MOBAGame.Minions
         {
             if (!PhotonNetwork.IsMasterClient || isDead) return;
 
+            // Procurar minions inimigos próximos
             Transform nearestEnemy = FindNearestEnemyMinion();
 
             if (nearestEnemy != null)
@@ -73,31 +69,34 @@ namespace MOBAGame.Minions
 
                 if (distanceToTarget <= attackRange)
                 {
+                    // Atacar
                     agent.isStopped = true;
-
-                    // Rotaciona para o alvo
-                    Vector3 direction = (currentTarget.position - transform.position).normalized;
-                    direction.y = 0;
-                    if (direction != Vector3.zero)
-                    {
-                        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 5f);
-                    }
-
-                    // Sincroniza animacao de ataque
-                    photonView.RPC("RPC_SetAnimation", RpcTarget.All, "IsAttacking", true);
+                    animator?.SetBool("IsAttacking", true);
                     AttackTarget();
                 }
                 else
                 {
+                    // Mover em direção ao alvo
                     agent.isStopped = false;
                     agent.SetDestination(currentTarget.position);
-
-                    // Sincroniza animacao de caminhada
-                    photonView.RPC("RPC_SetAnimation", RpcTarget.All, "IsAttacking", false);
+                    animator?.SetBool("IsAttacking", false);
                 }
+            }
+
+            // Dentro do Update() do MinionAI, quando detectar um alvo próximo:
+            if (currentTarget != null && Vector3.Distance(transform.position, currentTarget.position) < attackRange)
+            {
+                agent.isStopped = true;
+                GetComponent<MinionHealth>().AttackTarget(currentTarget.gameObject);
             }
         }
 
+        // Adicione estas variáveis no topo da classe MinionAI
+        private List<Transform> targetsInRange = new List<Transform>();
+
+        /// <summary>
+        /// Chamado quando um alvo entra no alcance de detecção
+        /// </summary>
         public void OnTargetEnterRange(Transform target)
         {
             if (!targetsInRange.Contains(target))
@@ -107,12 +106,16 @@ namespace MOBAGame.Minions
             }
         }
 
+        /// <summary>
+        /// Chamado quando um alvo sai do alcance de detecção
+        /// </summary>
         public void OnTargetExitRange(Transform target)
         {
             if (targetsInRange.Contains(target))
             {
                 targetsInRange.Remove(target);
 
+                // Se o alvo atual saiu, busca novo alvo
                 if (currentTarget == target)
                 {
                     UpdateCurrentTarget();
@@ -120,8 +123,12 @@ namespace MOBAGame.Minions
             }
         }
 
+        /// <summary>
+        /// Atualiza o alvo atual com base na lista de alvos no alcance
+        /// </summary>
         private void UpdateCurrentTarget()
         {
+            // Remove alvos nulos (destruídos)
             targetsInRange.RemoveAll(t => t == null);
 
             if (targetsInRange.Count == 0)
@@ -129,6 +136,11 @@ namespace MOBAGame.Minions
                 currentTarget = null;
                 return;
             }
+
+            // Prioridade de alvos:
+            // 1. Base inimiga (se estiver no alcance)
+            // 2. Minion inimigo mais próximo
+            // 3. Jogador inimigo mais próximo
 
             Transform closestBase = null;
             Transform closestMinion = null;
@@ -140,13 +152,15 @@ namespace MOBAGame.Minions
             {
                 if (target == null) continue;
 
+                // Verifica se é uma base
                 BaseController baseController = target.GetComponent<BaseController>();
                 if (baseController != null && baseController.baseTeam != minionTeam)
                 {
                     closestBase = target;
-                    break;
+                    break; // Base tem prioridade máxima
                 }
 
+                // Verifica se é um minion
                 MinionHealth minionHealth = target.GetComponent<MinionHealth>();
                 if (minionHealth != null && minionHealth.GetTeam() != minionTeam)
                 {
@@ -158,6 +172,7 @@ namespace MOBAGame.Minions
                     }
                 }
 
+                // Verifica se é um jogador
                 PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
                 if (playerHealth != null && playerHealth.GetTeam() != minionTeam)
                 {
@@ -170,6 +185,7 @@ namespace MOBAGame.Minions
                 }
             }
 
+            // Define alvo com base na prioridade
             if (closestBase != null)
                 currentTarget = closestBase;
             else if (closestMinion != null)
@@ -220,10 +236,9 @@ namespace MOBAGame.Minions
             if (Time.time < lastAttackTime + attackCooldown) return;
 
             lastAttackTime = Time.time;
+            animator?.SetTrigger("Attack");
 
-            // Sincroniza trigger de ataque
-            photonView.RPC("RPC_TriggerAnimation", RpcTarget.All, "Attack");
-
+            // Aplicar dano
             IDamageable damageable = currentTarget.GetComponent<IDamageable>();
             if (damageable != null)
             {
@@ -232,24 +247,6 @@ namespace MOBAGame.Minions
                 {
                     photonView.RPC("RPC_DealDamage", RpcTarget.All, targetView.ViewID, damage);
                 }
-            }
-        }
-
-        [PunRPC]
-        private void RPC_SetAnimation(string parameterName, bool value)
-        {
-            if (animator != null)
-            {
-                animator.SetBool(parameterName, value);
-            }
-        }
-
-        [PunRPC]
-        private void RPC_TriggerAnimation(string triggerName)
-        {
-            if (animator != null)
-            {
-                animator.SetTrigger(triggerName);
             }
         }
 
@@ -268,9 +265,6 @@ namespace MOBAGame.Minions
         {
             if (isDead) return;
 
-            // Apenas MasterClient processa dano
-            if (!PhotonNetwork.IsMasterClient) return;
-
             currentHealth -= damageAmount;
             photonView.RPC("RPC_UpdateHealth", RpcTarget.All, currentHealth);
 
@@ -284,7 +278,7 @@ namespace MOBAGame.Minions
         private void RPC_UpdateHealth(float newHealth)
         {
             currentHealth = newHealth;
-            // Feedback visual aqui se necessario
+            // Feedback visual (flash vermelho, etc)
         }
 
         private void Die()
@@ -296,6 +290,7 @@ namespace MOBAGame.Minions
 
             if (PhotonNetwork.IsMasterClient)
             {
+                // Destruir após animação de morte
                 Destroy(gameObject, 2f);
             }
         }
@@ -305,13 +300,8 @@ namespace MOBAGame.Minions
         {
             isDead = true;
             agent.isStopped = true;
-
-            Collider col = GetComponent<Collider>();
-            if (col != null)
-                col.enabled = false;
-
-            if (animator != null)
-                animator.SetTrigger("Die");
+            GetComponent<Collider>().enabled = false;
+            animator?.SetTrigger("Die");
         }
     }
 }

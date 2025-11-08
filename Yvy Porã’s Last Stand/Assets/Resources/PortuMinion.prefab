@@ -555,7 +555,7 @@ GameObject:
   - component: {fileID: 4954443881277211059}
   - component: {fileID: 1975002584832520780}
   - component: {fileID: 4764985721466052586}
-  - component: {fileID: 6345240881408369257}
+  - component: {fileID: 6332989386443412794}
   m_Layer: 9
   m_Name: MinionCapsule
   m_TagString: Minion
@@ -643,7 +643,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 6332989386443412794}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -684,7 +685,7 @@ MonoBehaviour:
   minionTeam: 2
   hitSoundName: HitEnemy
   deathSoundName: EnemyDeath
---- !u!114 &6345240881408369257
+--- !u!114 &6332989386443412794
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -693,19 +694,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1583017400808271637}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformView
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &1663537155084085639
 GameObject:
   m_ObjectHideFlags: 0
