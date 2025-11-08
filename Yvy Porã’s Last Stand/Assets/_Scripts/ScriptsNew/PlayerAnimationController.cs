@@ -119,7 +119,7 @@ namespace MOBAGame.Player
             // DEBUG: imprime valores para diagnosticar
             if (debugLogs)
             {
-                Debug.Log($"[Anim] localVel: {localVelocity}, worldVel: {worldVelocity}, speedA:{speedA:F3}, speedB:{speedB:F3}, speedC:{speedC:F3}, chosen:{chosenSpeed:F3}, current:{currentSpeed:F3}");
+               // Debug.Log($"[Anim] localVel: {localVelocity}, worldVel: {worldVelocity}, speedA:{speedA:F3}, speedB:{speedB:F3}, speedC:{speedC:F3}, chosen:{chosenSpeed:F3}, current:{currentSpeed:F3}");
             }
         }
 

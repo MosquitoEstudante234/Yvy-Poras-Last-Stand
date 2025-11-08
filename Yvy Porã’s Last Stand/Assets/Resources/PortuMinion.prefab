@@ -556,6 +556,7 @@ GameObject:
   - component: {fileID: 1975002584832520780}
   - component: {fileID: 4764985721466052586}
   - component: {fileID: 6345240881408369257}
+  - component: {fileID: 6584202962394909216}
   m_Layer: 9
   m_Name: MinionCapsule
   m_TagString: Minion
@@ -703,6 +704,18 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &6584202962394909216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583017400808271637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc0059d2eaa48f4cad1569afbf6c834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.Minions.MinionTrigger
 --- !u!1 &1663537155084085639
 GameObject:
   m_ObjectHideFlags: 0
