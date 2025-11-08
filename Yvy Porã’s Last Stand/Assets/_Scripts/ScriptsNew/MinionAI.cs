@@ -23,7 +23,7 @@ namespace MOBAGame.Minions
         [SerializeField] private Team minionTeam;
 
         private NavMeshAgent agent;
-        private Animator animator;
+        public Animator animator;
         private float currentHealth;
         private Transform targetBase;
         private Transform currentTarget;
@@ -71,6 +71,7 @@ namespace MOBAGame.Minions
                 {
                     // Atacar
                     agent.isStopped = true;
+                    animator?.SetBool("IsAttacking", true);
                     AttackTarget();
                 }
                 else
@@ -78,9 +79,10 @@ namespace MOBAGame.Minions
                     // Mover em direção ao alvo
                     agent.isStopped = false;
                     agent.SetDestination(currentTarget.position);
-                    animator?.SetBool("IsRunning", true);
+                    animator?.SetBool("IsAttacking", false);
                 }
             }
+
             // Dentro do Update() do MinionAI, quando detectar um alvo próximo:
             if (currentTarget != null && Vector3.Distance(transform.position, currentTarget.position) < attackRange)
             {
@@ -88,6 +90,7 @@ namespace MOBAGame.Minions
                 GetComponent<MinionHealth>().AttackTarget(currentTarget.gameObject);
             }
         }
+
         // Adicione estas variáveis no topo da classe MinionAI
         private List<Transform> targetsInRange = new List<Transform>();
 
@@ -192,6 +195,7 @@ namespace MOBAGame.Minions
             else
                 currentTarget = null;
         }
+
         private void FindEnemyBase()
         {
             BaseController[] bases = FindObjectsOfType<BaseController>();

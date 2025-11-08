@@ -665,6 +665,7 @@ MonoBehaviour:
   attackCooldown: 1.5
   detectionRange: 10
   minionTeam: 2
+  animator: {fileID: 1856950476961469120}
 --- !u!114 &4764985721466052586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2650,7 +2651,7 @@ GameObject:
   - component: {fileID: 1856950476961469120}
   - component: {fileID: 3308318278295462071}
   m_Layer: 0
-  m_Name: PortuMinionRun
+  m_Name: PortuMinionModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2683,7 +2684,7 @@ Animator:
   m_GameObject: {fileID: 6790713237638067394}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f2104212acb3f75458d43b6729e6874c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

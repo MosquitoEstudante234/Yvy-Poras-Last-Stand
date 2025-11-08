@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 8889374223630006746}
   - component: {fileID: 6780923394807960251}
   m_Layer: 0
-  m_Name: IndiMinionRun
+  m_Name: IndiMinionModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -269,7 +269,7 @@ Animator:
   m_GameObject: {fileID: 1208304027293896213}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a4fa69ebf7c325941a81f61e7608acba, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1555,6 +1555,7 @@ MonoBehaviour:
   attackCooldown: 1.5
   detectionRange: 10
   minionTeam: 1
+  animator: {fileID: 8889374223630006746}
 --- !u!114 &6379570856922180294
 MonoBehaviour:
   m_ObjectHideFlags: 0
