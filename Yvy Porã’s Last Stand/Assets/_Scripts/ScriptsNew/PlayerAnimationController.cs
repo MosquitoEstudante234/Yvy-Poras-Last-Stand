@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace MOBAGame.Player
 {
-    public class PlayerAnimationController : MonoBehaviourPunCallbacks
+    [RequireComponent(typeof(Animator))]
+    public class PlayerAnimationController : MonoBehaviourPun
     {
         public Animator animator;
         public PlayerController playerController;
@@ -29,7 +30,6 @@ namespace MOBAGame.Player
         [SerializeField] private float speedThreshold = 0.1f;
         private float lastSyncTime = 0f;
         private float lastSyncedSpeed = 0f;
-        [SerializeField] PhotonAnimatorView animPhoto;
 
         [Header("Debug")]
         [Tooltip("Ativa logs detalhados para debug")]
