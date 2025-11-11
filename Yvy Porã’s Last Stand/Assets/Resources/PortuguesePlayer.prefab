@@ -1730,7 +1730,7 @@ MonoBehaviour:
     SynchronizeType: 0
     Name: AttackRanged
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: IsJumping
   m_SynchronizeLayers:
   - SynchronizeType: 2
