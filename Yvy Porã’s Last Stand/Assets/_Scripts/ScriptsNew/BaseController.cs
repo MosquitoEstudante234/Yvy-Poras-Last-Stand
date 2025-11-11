@@ -17,7 +17,11 @@ namespace MOBAGame
 
         [Header("UI")]
         [SerializeField] private Slider healthBar;
+        [SerializeField] private GameObject icon;
         [SerializeField] private TextMeshProUGUI healthText;
+
+        [SerializeField] float animDurationSlider;
+        [SerializeField] float animDurationIcon;
 
         private float currentHealth;
 
@@ -64,7 +68,7 @@ namespace MOBAGame
                 // Animação de feedback ao atualizar a barra
                 healthBar.transform.DOKill();
                 healthBar.transform.localScale = Vector3.one;
-                healthBar.transform.DOPunchScale(Vector3.one * 0.15f, 0.25f, 8, 1f)
+                healthBar.transform.DOPunchScale(Vector3.one * 0.15f, animDurationSlider, 8, 1f)
                     .SetEase(Ease.OutQuad);
             }
 
@@ -75,7 +79,15 @@ namespace MOBAGame
                 // Animação opcional para o texto
                 healthText.transform.DOKill();
                 healthText.transform.localScale = Vector3.one;
-                healthText.transform.DOPunchScale(Vector3.one * 0.1f, 0.25f, 8, 1f)
+                healthText.transform.DOPunchScale(Vector3.one * 0.1f, animDurationSlider, 8, 1f)
+                    .SetEase(Ease.OutQuad);
+            }
+
+            if(icon != null)
+            {
+                icon.transform.DOKill();
+                icon.transform.localScale = Vector3.one;
+                icon.transform.DOPunchScale(Vector3.one * 0.3f, animDurationIcon, 8, 1f)
                     .SetEase(Ease.OutQuad);
             }
         }

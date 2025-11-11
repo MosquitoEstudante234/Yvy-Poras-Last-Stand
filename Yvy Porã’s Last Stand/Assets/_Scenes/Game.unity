@@ -4583,7 +4583,10 @@ MonoBehaviour:
   playerSpawnPoint: {fileID: 1522574624}
   minionSpawnPoint: {fileID: 82188673}
   healthBar: {fileID: 938860623}
+  icon: {fileID: 1959914904}
   healthText: {fileID: 201148774}
+  animDurationSlider: 0.2
+  animDurationIcon: 1
 --- !u!65 &1266018753
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6911,7 +6914,10 @@ MonoBehaviour:
   playerSpawnPoint: {fileID: 967666027}
   minionSpawnPoint: {fileID: 1406059396}
   healthBar: {fileID: 384625527}
+  icon: {fileID: 1690097120}
   healthText: {fileID: 181456357}
+  animDurationSlider: 0.2
+  animDurationIcon: 1
 --- !u!65 &1893218182
 BoxCollider:
   m_ObjectHideFlags: 0
