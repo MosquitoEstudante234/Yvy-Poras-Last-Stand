@@ -485,19 +485,19 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: Speed
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: IsRunning
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: IsDead
   - Type: 3
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: WeaponType
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: AttackMelee
   - Type: 9
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: AttackRanged
   - Type: 4
     SynchronizeType: 2
