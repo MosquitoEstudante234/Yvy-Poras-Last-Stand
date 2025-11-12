@@ -407,7 +407,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 2964832271416978218, guid: d183c1e47eaf5ab479a66a09ee3cbdf6, type: 3}
   spawnPoint: {fileID: 82188673}
   spawnerTeam: 1
-  spawnInterval: 8
+  spawnInterval: 5
   maxActiveMinions: 99999
 --- !u!114 &82188678
 MonoBehaviour:
@@ -4320,7 +4320,7 @@ MonoBehaviour:
   minionPrefab: {fileID: 4903762208479916160, guid: f66d6440e41c38f4aa6bfb694424d87f, type: 3}
   spawnPoint: {fileID: 1406059396}
   spawnerTeam: 2
-  spawnInterval: 8
+  spawnInterval: 5
   maxActiveMinions: 999999
 --- !u!114 &1406059401
 MonoBehaviour:
