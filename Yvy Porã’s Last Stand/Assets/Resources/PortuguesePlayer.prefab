@@ -1724,10 +1724,10 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: WeaponType
   - Type: 9
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: AttackMelee
   - Type: 9
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: AttackRanged
   - Type: 4
     SynchronizeType: 2
