@@ -26,8 +26,6 @@ namespace MOBAGame.Weapons
         public Camera fpsCam;
         public GameObject muzzleFlashEffect;
 
-        // REMOVIDO: ammoText, reloadSlider
-
         [Header("Audio")]
         public string shootSoundName = "Shoot";
         public string reloadSoundName = "Reload";
@@ -44,6 +42,7 @@ namespace MOBAGame.Weapons
                 if (photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
                 {
                     ownerTeam = (Team)((int)teamValue);
+                    Debug.Log($"[RangedWeapon] Time inicializado: {ownerTeam}");
                 }
             }
         }
@@ -71,7 +70,12 @@ namespace MOBAGame.Weapons
 
         private void TryShoot()
         {
-            if (isReloading) return;
+            if (isReloading)
+            {
+                Debug.Log("[RangedWeapon] Recarregando! Nao pode atirar.");
+                return;
+            }
+
             if (Time.time < nextFireTime) return;
 
             if (currentAmmo <= 0)
@@ -80,6 +84,7 @@ namespace MOBAGame.Weapons
                 {
                     AudioManager.instance.Play(emptyClickSoundName);
                 }
+                Debug.Log("[RangedWeapon] Sem municao! Pressione R para recarregar.");
                 return;
             }
 
@@ -102,31 +107,79 @@ namespace MOBAGame.Weapons
                 AudioManager.instance.Play(shootSoundName);
             }
 
+            // Raycast para detectar alvos
             int layerMask = ~LayerMask.GetMask("Ignore Raycast");
 
             if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out RaycastHit hit, range, layerMask))
             {
+                Debug.Log($"[RangedWeapon] Raycast acertou: {hit.transform.name}");
+
+                // Tenta encontrar PlayerHealth
                 PlayerHealth playerHealth = hit.transform.GetComponent<PlayerHealth>();
                 if (playerHealth != null)
                 {
                     if (playerHealth.GetTeam() != ownerTeam && playerHealth.GetTeam() != Team.None)
                     {
                         playerHealth.photonView.RPC("TakeDamage", RpcTarget.All, damage, photonView.ViewID);
+                        Debug.Log($"[RangedWeapon] Causou {damage} de dano no jogador {hit.transform.name}");
+
+                        // Auto-reload se ficou sem munição
+                        if (currentAmmo <= 0)
+                        {
+                            StartReload();
+                        }
+                        return;
                     }
-                    return;
+                    else
+                    {
+                        Debug.Log($"[RangedWeapon] Jogador do mesmo time ignorado: {hit.transform.name}");
+                        return;
+                    }
                 }
 
+                // Tenta encontrar MinionHealth (primeiro no próprio objeto)
                 MinionHealth minionHealth = hit.transform.GetComponent<MinionHealth>();
+
+                // Se não encontrou, tenta no pai (caso tenha acertado um collider filho)
+                if (minionHealth == null)
+                {
+                    minionHealth = hit.transform.GetComponentInParent<MinionHealth>();
+                }
+
                 if (minionHealth != null)
                 {
-                    if (minionHealth.GetTeam() != ownerTeam)
+                    Team minionTeam = minionHealth.GetTeam();
+
+                    Debug.Log($"[RangedWeapon] Minion detectado: {hit.transform.name}, Time: {minionTeam}, OwnerTeam: {ownerTeam}");
+
+                    if (minionTeam != ownerTeam && minionTeam != Team.None)
                     {
                         minionHealth.TakeDamage(damage, ownerTeam);
+                        Debug.Log($"[RangedWeapon] Causou {damage} de dano no minion {hit.transform.name}");
+
+                        // Auto-reload se ficou sem munição
+                        if (currentAmmo <= 0)
+                        {
+                            StartReload();
+                        }
+                        return;
                     }
-                    return;
+                    else
+                    {
+                        Debug.Log($"[RangedWeapon] Minion do mesmo time ignorado: {hit.transform.name}");
+                        return;
+                    }
                 }
+
+                // Se não acertou nada válido
+                Debug.Log($"[RangedWeapon] Acertou objeto sem componente de dano: {hit.transform.name}");
+            }
+            else
+            {
+                Debug.Log("[RangedWeapon] Raycast nao acertou nada");
             }
 
+            // Auto-reload se ficou sem munição
             if (currentAmmo <= 0)
             {
                 StartReload();
@@ -136,7 +189,11 @@ namespace MOBAGame.Weapons
         private void StartReload()
         {
             if (isReloading) return;
-            if (currentAmmo >= maxAmmo) return;
+            if (currentAmmo >= maxAmmo)
+            {
+                Debug.Log("[RangedWeapon] Municao ja esta cheia!");
+                return;
+            }
 
             isReloading = true;
 
@@ -145,6 +202,7 @@ namespace MOBAGame.Weapons
                 AudioManager.instance.Play(reloadSoundName);
             }
 
+            Debug.Log($"[RangedWeapon] Iniciando recarga... ({reloadDuration}s)");
             reloadCoroutine = StartCoroutine(ReloadCoroutine());
         }
 
@@ -154,6 +212,8 @@ namespace MOBAGame.Weapons
 
             currentAmmo = maxAmmo;
             isReloading = false;
+
+            Debug.Log("[RangedWeapon] Recarga completa!");
         }
 
         public void CancelReload()
@@ -167,9 +227,9 @@ namespace MOBAGame.Weapons
                 StopCoroutine(reloadCoroutine);
                 reloadCoroutine = null;
             }
-        }
 
-        // REMOVIDO: UpdateAmmoUI()
+            Debug.Log("[RangedWeapon] Recarga cancelada!");
+        }
 
         public bool IsReloading() => isReloading;
         public int GetCurrentAmmo() => currentAmmo;
