@@ -1581,6 +1581,7 @@ MonoBehaviour:
   attackRange: 2
   attackCooldown: 4
   detectionRange: 10
+  deathAnimationDuration: 2
   minionTeam: 1
   animator: {fileID: 8889374223630006746}
 --- !u!114 &6379570856922180294
