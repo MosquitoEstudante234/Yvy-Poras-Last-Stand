@@ -23,17 +23,22 @@ namespace MOBAGame.Weapons
         [Header("Attack Point")]
         public Transform attackPoint;
 
-        // REMOVIDO: cooldownSlider, cooldownCanvasGroup
-
         [Header("Audio")]
         public string attackSoundName = "Spear";
 
         private bool canAttack = true;
         private Team ownerTeam = Team.None;
+        private PlayerAnimationController animationController; // NOVO
 
         private void OnEnable()
         {
             canAttack = true;
+
+            // NOVO: Busca o animation controller
+            if (animationController == null)
+            {
+                animationController = GetComponentInParent<PlayerAnimationController>();
+            }
 
             if (ownerTeam == Team.None)
             {
@@ -51,6 +56,7 @@ namespace MOBAGame.Weapons
                 if (photonView.Owner != null && photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
                 {
                     ownerTeam = (Team)((int)teamValue);
+                    Debug.Log($"[MeleeWeapon] Time inicializado: {ownerTeam}");
                     yield break;
                 }
 
@@ -74,6 +80,13 @@ namespace MOBAGame.Weapons
         {
             canAttack = false;
 
+            // NOVO: Toca animação de ataque
+            if (animationController != null)
+            {
+                animationController.PlayMeleeAttack();
+                Debug.Log("[MeleeWeapon] Animacao de ataque melee disparada");
+            }
+
             if (AudioManager.instance != null)
             {
                 AudioManager.instance.Play(attackSoundName);
@@ -87,6 +100,10 @@ namespace MOBAGame.Weapons
             if (hits.Length > 0)
             {
                 ProcessHits(hits);
+            }
+            else
+            {
+                Debug.Log("[MeleeWeapon] Ataque nao detectou alvos");
             }
 
             StartCoroutine(StartCooldown());
@@ -113,6 +130,7 @@ namespace MOBAGame.Weapons
                         if (targetPhotonView != null)
                         {
                             targetPhotonView.RPC("TakeDamage", RpcTarget.AllBuffered, damageAmount, photonView.ViewID);
+                            Debug.Log($"[MeleeWeapon] Causou {damageAmount} de dano em {hit.collider.name}");
                         }
 
                         targetsHit++;
@@ -127,12 +145,18 @@ namespace MOBAGame.Weapons
                     if (minionHealth.GetTeam() != ownerTeam && minionHealth.GetTeam() != Team.None)
                     {
                         minionHealth.TakeDamage(damageAmount, ownerTeam);
+                        Debug.Log($"[MeleeWeapon] Causou {damageAmount} de dano no minion {hit.collider.name}");
 
                         targetsHit++;
                         isFirstHit = false;
                         continue;
                     }
                 }
+            }
+
+            if (targetsHit == 0)
+            {
+                Debug.Log("[MeleeWeapon] Nenhum alvo valido atingido");
             }
         }
 
@@ -142,10 +166,8 @@ namespace MOBAGame.Weapons
             canAttack = true;
         }
 
-        // REMOVIDO: UpdateCooldownUI()
-
         public bool CanAttack() => canAttack;
-        public float GetCooldownProgress() => canAttack ? 1f : 0f; // Simplificado
+        public float GetCooldownProgress() => canAttack ? 1f : 0f;
 
         private void OnDrawGizmosSelected()
         {

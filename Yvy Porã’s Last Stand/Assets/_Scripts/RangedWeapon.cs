@@ -32,10 +32,17 @@ namespace MOBAGame.Weapons
         public string emptyClickSoundName = "EmptyClick";
 
         private Team ownerTeam = Team.None;
+        private PlayerAnimationController animationController; // NOVO
 
         private void OnEnable()
         {
             currentAmmo = maxAmmo;
+
+            // NOVO: Busca o animation controller
+            if (animationController == null)
+            {
+                animationController = GetComponentInParent<PlayerAnimationController>();
+            }
 
             if (ownerTeam == Team.None && photonView.Owner != null)
             {
@@ -95,6 +102,13 @@ namespace MOBAGame.Weapons
         {
             nextFireTime = Time.time + fireRate;
             currentAmmo--;
+
+            // NOVO: Toca animação de ataque
+            if (animationController != null)
+            {
+                animationController.PlayRangedAttack();
+                Debug.Log("[RangedWeapon] Animacao de ataque ranged disparada");
+            }
 
             if (muzzleFlashEffect != null)
             {
