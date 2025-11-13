@@ -67,15 +67,17 @@ namespace MOBAGame.Player
         {
             if (playerController == null || playerHealth == null) return;
 
+            // PRIORIDADE MÁXIMA: Se morto, força todos os parâmetros e retorna
             if (playerHealth.isDead)
             {
                 if (photonView.IsMine)
                 {
                     SetSpeed(0f);
+                    animator.SetBool(IsJumping, false); // NOVO: Força IsJumping = false
+                    animator.SetBool(IsRunning, false);
                 }
                 animator.SetBool(IsDead, true);
-                animator.SetBool(IsRunning, false);
-                return;
+                return; // Retorna imediatamente, não processa mais nada
             }
             else
             {
@@ -132,6 +134,12 @@ namespace MOBAGame.Player
         [PunRPC]
         private void RPC_SyncAnimationState(float speed, bool isRunning, bool isJumping)
         {
+            // NOVO: Ignora sincronização se o jogador estiver morto
+            if (playerHealth != null && playerHealth.isDead)
+            {
+                return;
+            }
+
             currentSpeed = speed;
             animator.SetFloat(Speed, speed);
             animator.SetBool(IsRunning, isRunning);
@@ -173,8 +181,15 @@ namespace MOBAGame.Player
         {
             if (animator != null)
             {
+                // NOVO: Força todos os parâmetros ao iniciar animação de morte
+                animator.SetFloat(Speed, 0f);
+                animator.SetBool(IsRunning, false);
+                animator.SetBool(IsJumping, false); // CRÍTICO: Desativa IsJumping
                 animator.SetBool(IsDead, true);
+
                 photonView.RPC("RPC_PlayDeath", RpcTarget.Others);
+
+                Debug.Log($"[PlayerAnimationController] Animacao de morte ativada para {photonView.Owner.NickName}");
             }
         }
 
@@ -183,7 +198,10 @@ namespace MOBAGame.Player
             if (animator != null)
             {
                 animator.SetBool(IsDead, false);
+                animator.SetBool(IsJumping, false); // NOVO: Garante reset
                 photonView.RPC("RPC_ResetDeath", RpcTarget.Others);
+
+                Debug.Log($"[PlayerAnimationController] Animacao de morte resetada para {photonView.Owner.NickName}");
             }
         }
 
@@ -205,14 +223,23 @@ namespace MOBAGame.Player
         private void RPC_PlayDeath()
         {
             if (animator != null)
+            {
+                // NOVO: Força todos os parâmetros remotamente também
+                animator.SetFloat(Speed, 0f);
+                animator.SetBool(IsRunning, false);
+                animator.SetBool(IsJumping, false); // CRÍTICO
                 animator.SetBool(IsDead, true);
+            }
         }
 
         [PunRPC]
         private void RPC_ResetDeath()
         {
             if (animator != null)
+            {
                 animator.SetBool(IsDead, false);
+                animator.SetBool(IsJumping, false); // NOVO: Garante reset remoto
+            }
         }
     }
 }
