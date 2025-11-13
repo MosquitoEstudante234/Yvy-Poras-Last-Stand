@@ -684,6 +684,7 @@ MonoBehaviour:
   damage: 25
   attackCooldown: 4
   minionTeam: 2
+  deathAnimationDuration: 2
   hitSoundName: HitEnemy
   deathSoundName: EnemyDeath
 --- !u!114 &6332989386443412794
@@ -2732,13 +2733,13 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 4
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: IsAttacking
   - Type: 9
-    SynchronizeType: 2
+    SynchronizeType: 1
     Name: Die
   m_SynchronizeLayers:
-  - SynchronizeType: 0
+  - SynchronizeType: 2
     LayerIndex: 0
 --- !u!1 &6947138969550782589
 GameObject:
