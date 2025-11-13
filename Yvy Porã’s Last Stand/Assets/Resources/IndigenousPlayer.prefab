@@ -1924,6 +1924,7 @@ MonoBehaviour:
   speedSmoothTime: 0.08
   syncInterval: 0.1
   speedThreshold: 0.1
+  attackBlockDuration: 0.5
   debugLogs: 1
 --- !u!114 &8856392866161519186
 MonoBehaviour:
