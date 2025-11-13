@@ -271,6 +271,14 @@ namespace MOBAGame.Minions
         {
             if (isDead) return;
 
+            // NOVO: Verifica se MinionHealth também está marcado como morto
+            MinionHealth minionHealth = GetComponent<MinionHealth>();
+            if (minionHealth != null && minionHealth.IsDead())
+            {
+                Debug.Log("[MinionAI] MinionHealth já está processando a morte");
+                return;
+            }
+
             // CRÍTICO: Só o MasterClient deve chamar Die()
             if (!PhotonNetwork.IsMasterClient) return;
 

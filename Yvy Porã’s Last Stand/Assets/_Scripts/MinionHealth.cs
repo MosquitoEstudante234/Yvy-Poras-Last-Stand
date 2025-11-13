@@ -20,6 +20,9 @@ namespace MOBAGame.Minions
         [Header("Team")]
         public Team minionTeam = Team.None;
 
+        [Header("Death Settings")]
+        [SerializeField] private float deathAnimationDuration = 2f; // NOVO
+
         [Header("Visual Feedback")]
         private Renderer minionRenderer;
         private Color originalColor;
@@ -31,6 +34,8 @@ namespace MOBAGame.Minions
         public delegate void DeathDelegate();
         public event DeathDelegate OnDeath;
 
+        private bool isDead = false; // NOVO
+
         private void Start()
         {
             currentHealth = maxHealth;
@@ -38,18 +43,12 @@ namespace MOBAGame.Minions
             minionRenderer = GetComponent<Renderer>();
             if (minionRenderer != null)
             {
-                // Cria material único para este minion (evita compartilhamento)
                 minionRenderer.material = new Material(minionRenderer.material);
                 originalColor = minionRenderer.material.color;
-
-                // Define cor baseada no time
                 SetTeamColor();
             }
         }
 
-        /// <summary>
-        /// Define a cor visual do minion baseado no time
-        /// </summary>
         private void SetTeamColor()
         {
             if (minionRenderer == null) return;
@@ -57,11 +56,9 @@ namespace MOBAGame.Minions
             switch (minionTeam)
             {
                 case Team.Indigenous:
-                    // Tom verde/marrom para indígenas
                     minionRenderer.material.color = new Color(0.4f, 0.6f, 0.3f);
                     break;
                 case Team.Portuguese:
-                    // Tom azul/cinza para portugueses
                     minionRenderer.material.color = new Color(0.3f, 0.4f, 0.6f);
                     break;
             }
@@ -69,26 +66,24 @@ namespace MOBAGame.Minions
             originalColor = minionRenderer.material.color;
         }
 
-        /// <summary>
-        /// Recebe dano de jogador ou outro minion
-        /// </summary>
         public void TakeDamage(int damageAmount, Team attackerTeam)
         {
-            // Validação: não pode receber dano do mesmo time
+            if (isDead) return; // NOVO: Previne dano após morte
+
             if (attackerTeam == minionTeam && attackerTeam != Team.None)
                 return;
 
-            // Sincroniza dano via RPC
             photonView.RPC(nameof(RPC_TakeDamage), RpcTarget.All, damageAmount);
         }
 
         [PunRPC]
         private void RPC_TakeDamage(int damageAmount)
         {
+            if (isDead) return; // NOVO: Previne dano após morte
+
             currentHealth -= damageAmount;
             StartCoroutine(FlashRed());
 
-            // Toca som de hit
             if (AudioManager.instance != null)
             {
                 AudioManager.instance.Play(hitSoundName);
@@ -96,14 +91,10 @@ namespace MOBAGame.Minions
 
             if (currentHealth <= 0 && PhotonNetwork.IsMasterClient)
             {
-                // Apenas o MasterClient destrói o minion
                 Die();
             }
         }
 
-        /// <summary>
-        /// Efeito visual de feedback ao receber dano
-        /// </summary>
         private IEnumerator FlashRed()
         {
             if (minionRenderer != null)
@@ -114,11 +105,12 @@ namespace MOBAGame.Minions
             }
         }
 
-        /// <summary>
-        /// Morte do minion
-        /// </summary>
+        // MODIFICADO: Agora aguarda a animação antes de destruir
         private void Die()
         {
+            if (isDead) return; // NOVO: Previne múltiplas chamadas
+            isDead = true;
+
             // Invoca evento de morte (para MinionAI descontar do limite de spawns)
             OnDeath?.Invoke();
 
@@ -128,16 +120,24 @@ namespace MOBAGame.Minions
                 AudioManager.instance.Play(deathSoundName);
             }
 
-            // Destrói via Photon
+            // NOVO: Aguarda animação antes de destruir
+            StartCoroutine(DestroyAfterAnimation());
+        }
+
+        // NOVO: Coroutine para aguardar animação
+        private IEnumerator DestroyAfterAnimation()
+        {
+            Debug.Log($"[MinionHealth] Aguardando {deathAnimationDuration}s para destruir minion");
+
+            yield return new WaitForSeconds(deathAnimationDuration);
+
             if (PhotonNetwork.IsMasterClient)
             {
+                Debug.Log("[MinionHealth] Destruindo minion via PhotonNetwork.Destroy");
                 PhotonNetwork.Destroy(gameObject);
             }
         }
 
-        /// <summary>
-        /// Ataca um alvo (Base ou outro Minion)
-        /// </summary>
         public void AttackTarget(GameObject target)
         {
             if (Time.time < lastAttackTime + attackCooldown)
@@ -145,11 +145,9 @@ namespace MOBAGame.Minions
 
             lastAttackTime = Time.time;
 
-            // Verifica se é uma Base
             BaseController baseController = target.GetComponent<BaseController>();
             if (baseController != null)
             {
-                // Apenas MasterClient processa dano em bases
                 if (PhotonNetwork.IsMasterClient)
                 {
                     baseController.TakeDamage(damage);
@@ -157,11 +155,9 @@ namespace MOBAGame.Minions
                 return;
             }
 
-            // Verifica se é outro Minion
             MinionHealth enemyMinion = target.GetComponent<MinionHealth>();
             if (enemyMinion != null)
             {
-                // Valida se é inimigo
                 if (enemyMinion.minionTeam != this.minionTeam)
                 {
                     enemyMinion.TakeDamage(damage, this.minionTeam);
@@ -169,7 +165,6 @@ namespace MOBAGame.Minions
                 return;
             }
 
-            // OPCIONAL: Se quiser que minions possam atacar jogadores também
             PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
@@ -180,21 +175,18 @@ namespace MOBAGame.Minions
             }
         }
 
-        /// <summary>
-        /// Getter do time do minion
-        /// </summary>
         public Team GetTeam()
         {
             return minionTeam;
         }
 
-        /// <summary>
-        /// Setter do time do minion (chamado pelo MinionSpawner)
-        /// </summary>
         public void SetTeam(Team team)
         {
             minionTeam = team;
             SetTeamColor();
         }
+
+        // NOVO: Getter para verificar se está morto
+        public bool IsDead() => isDead;
     }
 }
