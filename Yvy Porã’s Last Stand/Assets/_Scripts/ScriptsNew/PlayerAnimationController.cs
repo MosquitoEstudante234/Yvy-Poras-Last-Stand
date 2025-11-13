@@ -31,6 +31,11 @@ namespace MOBAGame.Player
         private float lastSyncTime = 0f;
         private float lastSyncedSpeed = 0f;
 
+        [Header("Attack Priority Settings")]
+        [Tooltip("Duração em que o ataque bloqueia a animação de pulo")]
+        [SerializeField] private float attackBlockDuration = 0.5f;
+        private float lastAttackTime = -999f; // NOVO
+
         [Header("Debug")]
         [Tooltip("Ativa logs detalhados para debug")]
         public bool debugLogs = false;
@@ -73,11 +78,11 @@ namespace MOBAGame.Player
                 if (photonView.IsMine)
                 {
                     SetSpeed(0f);
-                    animator.SetBool(IsJumping, false); // NOVO: Força IsJumping = false
+                    animator.SetBool(IsJumping, false);
                     animator.SetBool(IsRunning, false);
                 }
                 animator.SetBool(IsDead, true);
-                return; // Retorna imediatamente, não processa mais nada
+                return;
             }
             else
             {
@@ -104,14 +109,31 @@ namespace MOBAGame.Player
                 animator.SetFloat(Speed, currentSpeed);
                 animator.SetBool(IsRunning, currentSpeed > 0.1f);
 
+                // NOVO: Verifica se está atacando
+                bool isAttacking = Time.time - lastAttackTime < attackBlockDuration;
                 bool isGrounded = playerController.IsGrounded();
-                animator.SetBool(IsJumping, !isGrounded);
+
+                // Se estiver atacando, força IsJumping = false (prioridade do ataque)
+                if (isAttacking)
+                {
+                    animator.SetBool(IsJumping, false);
+
+                    if (debugLogs)
+                    {
+                        Debug.Log($"[AnimController] Ataque ativo - IsJumping bloqueado (tempo restante: {attackBlockDuration - (Time.time - lastAttackTime):F2}s)");
+                    }
+                }
+                else
+                {
+                    // Comportamento normal quando não está atacando
+                    animator.SetBool(IsJumping, !isGrounded);
+                }
 
                 if (Time.time - lastSyncTime >= syncInterval)
                 {
                     if (Mathf.Abs(currentSpeed - lastSyncedSpeed) > speedThreshold)
                     {
-                        photonView.RPC("RPC_SyncAnimationState", RpcTarget.Others, currentSpeed, currentSpeed > 0.1f, !isGrounded);
+                        photonView.RPC("RPC_SyncAnimationState", RpcTarget.Others, currentSpeed, currentSpeed > 0.1f, !isGrounded, isAttacking);
                         lastSyncedSpeed = currentSpeed;
                         lastSyncTime = Time.time;
 
@@ -132,9 +154,8 @@ namespace MOBAGame.Player
         }
 
         [PunRPC]
-        private void RPC_SyncAnimationState(float speed, bool isRunning, bool isJumping)
+        private void RPC_SyncAnimationState(float speed, bool isRunning, bool isJumping, bool isAttacking)
         {
-            // NOVO: Ignora sincronização se o jogador estiver morto
             if (playerHealth != null && playerHealth.isDead)
             {
                 return;
@@ -143,11 +164,20 @@ namespace MOBAGame.Player
             currentSpeed = speed;
             animator.SetFloat(Speed, speed);
             animator.SetBool(IsRunning, isRunning);
-            animator.SetBool(IsJumping, isJumping);
+
+            // NOVO: Se estiver atacando remotamente, bloqueia IsJumping também
+            if (isAttacking)
+            {
+                animator.SetBool(IsJumping, false);
+            }
+            else
+            {
+                animator.SetBool(IsJumping, isJumping);
+            }
 
             if (debugLogs)
             {
-                Debug.Log($"[AnimSync] Recebido Speed: {speed:F2}, IsRunning: {isRunning}, IsJumping: {isJumping}");
+                Debug.Log($"[AnimSync] Recebido Speed: {speed:F2}, IsRunning: {isRunning}, IsJumping: {isJumping}, IsAttacking: {isAttacking}");
             }
         }
 
@@ -163,8 +193,14 @@ namespace MOBAGame.Player
         {
             if (animator != null)
             {
+                lastAttackTime = Time.time; // NOVO: Marca timestamp do ataque
                 animator.SetTrigger(AttackMelee);
                 photonView.RPC("RPC_PlayMeleeAttack", RpcTarget.Others);
+
+                if (debugLogs)
+                {
+                    Debug.Log("[AnimController] Animacao Melee disparada - IsJumping bloqueado");
+                }
             }
         }
 
@@ -172,8 +208,14 @@ namespace MOBAGame.Player
         {
             if (animator != null)
             {
+                lastAttackTime = Time.time; // NOVO: Marca timestamp do ataque
                 animator.SetTrigger(AttackRanged);
                 photonView.RPC("RPC_PlayRangedAttack", RpcTarget.Others);
+
+                if (debugLogs)
+                {
+                    Debug.Log("[AnimController] Animacao Ranged disparada - IsJumping bloqueado");
+                }
             }
         }
 
@@ -181,10 +223,9 @@ namespace MOBAGame.Player
         {
             if (animator != null)
             {
-                // NOVO: Força todos os parâmetros ao iniciar animação de morte
                 animator.SetFloat(Speed, 0f);
                 animator.SetBool(IsRunning, false);
-                animator.SetBool(IsJumping, false); // CRÍTICO: Desativa IsJumping
+                animator.SetBool(IsJumping, false);
                 animator.SetBool(IsDead, true);
 
                 photonView.RPC("RPC_PlayDeath", RpcTarget.Others);
@@ -198,7 +239,7 @@ namespace MOBAGame.Player
             if (animator != null)
             {
                 animator.SetBool(IsDead, false);
-                animator.SetBool(IsJumping, false); // NOVO: Garante reset
+                animator.SetBool(IsJumping, false);
                 photonView.RPC("RPC_ResetDeath", RpcTarget.Others);
 
                 Debug.Log($"[PlayerAnimationController] Animacao de morte resetada para {photonView.Owner.NickName}");
@@ -209,14 +250,20 @@ namespace MOBAGame.Player
         private void RPC_PlayMeleeAttack()
         {
             if (animator != null)
+            {
+                lastAttackTime = Time.time; // NOVO: Sincroniza timestamp nos outros clientes
                 animator.SetTrigger(AttackMelee);
+            }
         }
 
         [PunRPC]
         private void RPC_PlayRangedAttack()
         {
             if (animator != null)
+            {
+                lastAttackTime = Time.time; // NOVO: Sincroniza timestamp nos outros clientes
                 animator.SetTrigger(AttackRanged);
+            }
         }
 
         [PunRPC]
@@ -224,10 +271,9 @@ namespace MOBAGame.Player
         {
             if (animator != null)
             {
-                // NOVO: Força todos os parâmetros remotamente também
                 animator.SetFloat(Speed, 0f);
                 animator.SetBool(IsRunning, false);
-                animator.SetBool(IsJumping, false); // CRÍTICO
+                animator.SetBool(IsJumping, false);
                 animator.SetBool(IsDead, true);
             }
         }
@@ -238,7 +284,7 @@ namespace MOBAGame.Player
             if (animator != null)
             {
                 animator.SetBool(IsDead, false);
-                animator.SetBool(IsJumping, false); // NOVO: Garante reset remoto
+                animator.SetBool(IsJumping, false);
             }
         }
     }
