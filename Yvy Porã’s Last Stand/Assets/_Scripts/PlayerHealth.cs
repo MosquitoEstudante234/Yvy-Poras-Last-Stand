@@ -39,6 +39,8 @@ namespace MOBAGame.Player
         private Color originalColor;
         private Material playerMaterial;
 
+        [SerializeField] private DamageVignette damageVignette;
+
         private PlayerAnimationController animationController;
         private Team playerTeam = Team.None;
         private MonoBehaviour[] controllableComponents;
@@ -139,6 +141,12 @@ namespace MOBAGame.Player
             if (photonView.IsMine)
             {
                 StartCoroutine(FlashDamage());
+
+                // Efeito de vinheta de dano
+                if (damageVignette != null)
+                {
+                    damageVignette.TriggerDamageEffect(damage, maxHealth);
+                }
             }
 
             if (currentHealth <= 0 && !isDead)
@@ -176,6 +184,12 @@ namespace MOBAGame.Player
 
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+            // Efeito de vinheta de dano
+            if (damageVignette != null)
+            {
+                damageVignette.TriggerDamageEffect(damage, maxHealth);
+            }
 
             if (currentHealth <= 0 && !isDead)
             {
