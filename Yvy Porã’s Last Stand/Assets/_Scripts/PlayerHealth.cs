@@ -5,6 +5,7 @@ using System.Collections;
 using MOBAGame.Core;
 using UnityEngine.Rendering;
 using DG.Tweening;
+using UnityEngine.Events;
 
 namespace MOBAGame.Player
 {
@@ -40,6 +41,7 @@ namespace MOBAGame.Player
         public Renderer playerRenderer;
         private Color originalColor;
         private Material playerMaterial;
+        [SerializeField] UnityEvent OnTakeDamage;
 
         [SerializeField] private Volume damageVignette;
 
@@ -49,7 +51,6 @@ namespace MOBAGame.Player
 
         private void Start()
         {
-            DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1f, .25f).OnComplete(ResetTween);
             animationController = GetComponent<PlayerAnimationController>();
             currentHealth = maxHealth;
             controller = GetComponent<CharacterController>();
@@ -148,9 +149,9 @@ namespace MOBAGame.Player
                 // Efeito de vinheta de dano
                 if (damageVignette != null)
                 {
-                    DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1f, .25f).OnComplete(ResetTween);
+                    OnTakeDamage.Invoke();
                     print("vignette");
-                }
+;                }
             }
 
             if (currentHealth <= 0 && !isDead)
@@ -193,7 +194,7 @@ namespace MOBAGame.Player
             if (damageVignette != null)
             {
                 print("vignette");
-                DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1f, .25f).OnComplete(ResetTween);
+                OnTakeDamage.Invoke();
             }
 
             if (currentHealth <= 0 && !isDead)
@@ -209,11 +210,6 @@ namespace MOBAGame.Player
                     respawnCoroutine = StartCoroutine(RespawnCountdown());
                 }
             }
-        }
-        void ResetTween()
-        {
-            DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 0f, .25f);
-            print("vignetteRseted");
         }
         private IEnumerator FlashDamage()
         {
