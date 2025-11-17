@@ -41,7 +41,10 @@ namespace MOBAGame.Player
         public Renderer playerRenderer;
         private Color originalColor;
         private Material playerMaterial;
-        [SerializeField] UnityEvent OnTakeDamage;
+
+        [Header("Damage Events")]
+        [SerializeField] UnityEvent OnTakeDamage; // Evento visível para TODOS os jogadores
+        [SerializeField] UnityEvent OnTakeDamageLocal; // Evento visível APENAS para o próprio player
 
         [SerializeField] private Volume damageVignette;
 
@@ -199,18 +202,25 @@ namespace MOBAGame.Player
             }
         }
 
-        // NOVO MÉTODO RPC PARA SINCRONIZAR EFEITOS VISUAIS
+        // MÉTODO RPC PARA SINCRONIZAR EFEITOS VISUAIS
         [PunRPC]
         private void RPC_ShowDamageEffect()
         {
             // Flash de dano no material (visível para todos)
             StartCoroutine(FlashDamage());
 
-            // Efeito de vinheta de dano (visível para todos)
+            // Efeito de vinheta de dano - VISÍVEL PARA TODOS
             if (damageVignette != null)
             {
                 OnTakeDamage.Invoke();
-                Debug.Log($"[PlayerHealth] Efeito de vinheta ativado para {photonView.Owner.NickName}");
+                Debug.Log($"[PlayerHealth] Efeito de vinheta ativado para TODOS (personagem: {photonView.Owner.NickName})");
+            }
+
+            // Efeito local - VISÍVEL APENAS PARA O PRÓPRIO PLAYER
+            if (photonView.IsMine)
+            {
+                OnTakeDamageLocal.Invoke();
+                Debug.Log($"[PlayerHealth] Efeito LOCAL ativado apenas para {photonView.Owner.NickName}");
             }
         }
 
