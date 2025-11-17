@@ -49,6 +49,7 @@ namespace MOBAGame.Player
 
         private void Start()
         {
+            DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1f, .25f).OnComplete(ResetTween);
             animationController = GetComponent<PlayerAnimationController>();
             currentHealth = maxHealth;
             controller = GetComponent<CharacterController>();
@@ -147,7 +148,7 @@ namespace MOBAGame.Player
                 // Efeito de vinheta de dano
                 if (damageVignette != null)
                 {
-                    DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1, .25f).OnComplete(ResetTween);
+                    DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1f, .25f).OnComplete(ResetTween);
                     print("vignette");
                 }
             }
@@ -192,7 +193,7 @@ namespace MOBAGame.Player
             if (damageVignette != null)
             {
                 print("vignette");
-                DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1, .25f).OnComplete(ResetTween);
+                DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1f, .25f).OnComplete(ResetTween);
             }
 
             if (currentHealth <= 0 && !isDead)
