@@ -1594,7 +1594,7 @@ MonoBehaviour:
   respawnTime: 7
   deathAnimationDuration: 4
   playerRenderer: {fileID: 2299140707888117432}
-  damageVignette: {fileID: 2629979632514043516}
+  damageVignette: {fileID: 388320770894233197}
 --- !u!114 &4005593008657399000
 MonoBehaviour:
   m_ObjectHideFlags: 0

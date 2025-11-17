@@ -3,6 +3,8 @@ using Photon.Pun;
 using TMPro;
 using System.Collections;
 using MOBAGame.Core;
+using UnityEngine.Rendering;
+using DG.Tweening;
 
 namespace MOBAGame.Player
 {
@@ -39,7 +41,7 @@ namespace MOBAGame.Player
         private Color originalColor;
         private Material playerMaterial;
 
-        [SerializeField] private DamageVignette damageVignette;
+        [SerializeField] private Volume damageVignette;
 
         private PlayerAnimationController animationController;
         private Team playerTeam = Team.None;
@@ -145,7 +147,7 @@ namespace MOBAGame.Player
                 // Efeito de vinheta de dano
                 if (damageVignette != null)
                 {
-                    damageVignette.TriggerDamageEffect(damage, maxHealth);
+                    DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, Mathf.Clamp01(damage / (maxHealth * 0.3f)), .25f).OnComplete(ResetTween);
                 }
             }
 
@@ -188,7 +190,7 @@ namespace MOBAGame.Player
             // Efeito de vinheta de dano
             if (damageVignette != null)
             {
-                damageVignette.TriggerDamageEffect(damage, maxHealth);
+                DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, Mathf.Clamp01(damage / (maxHealth * 0.3f)), .25f).OnComplete(ResetTween);
             }
 
             if (currentHealth <= 0 && !isDead)
@@ -205,7 +207,10 @@ namespace MOBAGame.Player
                 }
             }
         }
-
+        void ResetTween()
+        {
+            DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 0f, .25f);
+        }
         private IEnumerator FlashDamage()
         {
             if (playerMaterial != null)
