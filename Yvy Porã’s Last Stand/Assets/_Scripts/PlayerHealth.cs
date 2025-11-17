@@ -148,6 +148,7 @@ namespace MOBAGame.Player
                 if (damageVignette != null)
                 {
                     DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1, .25f).OnComplete(ResetTween);
+                    print("vignette");
                 }
             }
 
@@ -190,6 +191,7 @@ namespace MOBAGame.Player
             // Efeito de vinheta de dano
             if (damageVignette != null)
             {
+                print("vignette");
                 DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1, .25f).OnComplete(ResetTween);
             }
 
@@ -210,6 +212,7 @@ namespace MOBAGame.Player
         void ResetTween()
         {
             DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 0f, .25f);
+            print("vignetteRseted");
         }
         private IEnumerator FlashDamage()
         {
