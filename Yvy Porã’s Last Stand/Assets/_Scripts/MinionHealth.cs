@@ -3,6 +3,7 @@ using UnityEngine;
 using Photon.Pun;
 using MOBAGame.Core;
 using MOBAGame.Player;
+using UnityEngine.Events;
 
 namespace MOBAGame.Minions
 {
@@ -26,6 +27,10 @@ namespace MOBAGame.Minions
         [Header("Visual Feedback")]
         private Renderer minionRenderer;
         private Color originalColor;
+        private Material minionMaterial;
+
+        [Header("Damage Events")]
+        [SerializeField] UnityEvent OnTakeDamageEvent; // Evento visível para TODOS os jogadores
 
         [Header("Audio")]
         public string hitSoundName = "HitEnemy";
@@ -44,8 +49,9 @@ namespace MOBAGame.Minions
             if (minionRenderer != null)
             {
                 // Cria material único para este minion (evita compartilhamento)
-                minionRenderer.material = new Material(minionRenderer.material);
-                originalColor = minionRenderer.material.color;
+                minionMaterial = new Material(minionRenderer.material);
+                minionRenderer.material = minionMaterial;
+                originalColor = minionMaterial.color;
 
                 // Define cor baseada no time
                 SetTeamColor();
@@ -57,21 +63,21 @@ namespace MOBAGame.Minions
         /// </summary>
         private void SetTeamColor()
         {
-            if (minionRenderer == null) return;
+            if (minionMaterial == null) return;
 
             switch (minionTeam)
             {
                 case Team.Indigenous:
                     // Tom verde/marrom para indígenas
-                    minionRenderer.material.color = new Color(0.4f, 0.6f, 0.3f);
+                    minionMaterial.color = new Color(0.4f, 0.6f, 0.3f);
                     break;
                 case Team.Portuguese:
                     // Tom azul/cinza para portugueses
-                    minionRenderer.material.color = new Color(0.3f, 0.4f, 0.6f);
+                    minionMaterial.color = new Color(0.3f, 0.4f, 0.6f);
                     break;
             }
 
-            originalColor = minionRenderer.material.color;
+            originalColor = minionMaterial.color;
         }
 
         /// <summary>
@@ -101,13 +107,8 @@ namespace MOBAGame.Minions
 
             Debug.Log($"[MinionHealth] {gameObject.name} recebeu {damageAmount} de dano. HP: {currentHealth}/{maxHealth}");
 
-            StartCoroutine(FlashRed());
-
-            // Toca som de hit
-            if (AudioManager.instance != null)
-            {
-                AudioManager.instance.Play(hitSoundName);
-            }
+            // CHAMA O RPC PARA SINCRONIZAR EFEITOS VISUAIS
+            photonView.RPC(nameof(RPC_ShowDamageEffect), RpcTarget.All);
 
             // Apenas o MasterClient processa a morte
             if (currentHealth <= 0 && PhotonNetwork.IsMasterClient && !isDead)
@@ -118,15 +119,38 @@ namespace MOBAGame.Minions
         }
 
         /// <summary>
-        /// Efeito visual de feedback ao receber dano
+        /// RPC que sincroniza os efeitos visuais de dano para todos os jogadores
+        /// </summary>
+        [PunRPC]
+        private void RPC_ShowDamageEffect()
+        {
+            // Efeito visual de piscar vermelho (visível para todos)
+            StartCoroutine(FlashRed());
+
+            // Invoca o UnityEvent (visível para todos)
+            if (OnTakeDamageEvent != null)
+            {
+                OnTakeDamageEvent.Invoke();
+                Debug.Log($"[MinionHealth] Evento OnTakeDamage invocado para {gameObject.name}");
+            }
+
+            // Toca som de hit (todos ouvem)
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.Play(hitSoundName);
+            }
+        }
+
+        /// <summary>
+        /// Efeito visual de feedback ao receber dano - pisca vermelho
         /// </summary>
         private IEnumerator FlashRed()
         {
-            if (minionRenderer != null)
+            if (minionMaterial != null)
             {
-                minionRenderer.material.color = Color.red;
+                minionMaterial.color = Color.red;
                 yield return new WaitForSeconds(0.2f);
-                minionRenderer.material.color = originalColor;
+                minionMaterial.color = originalColor;
             }
         }
 
@@ -259,6 +283,15 @@ namespace MOBAGame.Minions
         public float GetHealthPercentage()
         {
             return (float)currentHealth / maxHealth;
+        }
+
+        private void OnDestroy()
+        {
+            // Limpa o material para evitar memory leak
+            if (minionMaterial != null)
+            {
+                Destroy(minionMaterial);
+            }
         }
     }
 }
