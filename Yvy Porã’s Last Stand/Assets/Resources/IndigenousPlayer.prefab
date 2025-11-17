@@ -1949,9 +1949,9 @@ MonoBehaviour:
   maxHealth: 100
   deathCanvas: {fileID: 7093890334497857595}
   respawnTimerText: {fileID: 6770804399103421570}
-  enablePassiveRegen: 0
-  regenRate: 1
-  regenInterval: 1
+  enablePassiveRegen: 1
+  regenRate: 2
+  regenInterval: 4
   respawnTime: 8
   deathAnimationDuration: 2
   playerRenderer: {fileID: 3879493533452864065}
