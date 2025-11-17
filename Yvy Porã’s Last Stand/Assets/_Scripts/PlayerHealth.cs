@@ -142,17 +142,8 @@ namespace MOBAGame.Player
 
             Debug.Log($"[PlayerHealth] {photonView.Owner.NickName} recebeu {damage} de dano de {attackerName}. HP: {currentHealth}/{maxHealth}");
 
-            if (photonView.IsMine)
-            {
-                StartCoroutine(FlashDamage());
-
-                // Efeito de vinheta de dano
-                if (damageVignette != null)
-                {
-                    OnTakeDamage.Invoke();
-                    print("vignette");
-;                }
-            }
+            // CHAMADA DO RPC PARA SINCRONIZAR EFEITOS VISUAIS EM TODOS OS CLIENTES
+            photonView.RPC(nameof(RPC_ShowDamageEffect), RpcTarget.All);
 
             if (currentHealth <= 0 && !isDead)
             {
@@ -190,12 +181,8 @@ namespace MOBAGame.Player
             currentHealth -= damage;
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-            // Efeito de vinheta de dano
-            if (damageVignette != null)
-            {
-                print("vignette");
-                OnTakeDamage.Invoke();
-            }
+            // CHAMADA DO RPC PARA SINCRONIZAR EFEITOS VISUAIS EM TODOS OS CLIENTES
+            photonView.RPC(nameof(RPC_ShowDamageEffect), RpcTarget.All);
 
             if (currentHealth <= 0 && !isDead)
             {
@@ -211,6 +198,22 @@ namespace MOBAGame.Player
                 }
             }
         }
+
+        // NOVO MÉTODO RPC PARA SINCRONIZAR EFEITOS VISUAIS
+        [PunRPC]
+        private void RPC_ShowDamageEffect()
+        {
+            // Flash de dano no material (visível para todos)
+            StartCoroutine(FlashDamage());
+
+            // Efeito de vinheta de dano (visível para todos)
+            if (damageVignette != null)
+            {
+                OnTakeDamage.Invoke();
+                Debug.Log($"[PlayerHealth] Efeito de vinheta ativado para {photonView.Owner.NickName}");
+            }
+        }
+
         private IEnumerator FlashDamage()
         {
             if (playerMaterial != null)

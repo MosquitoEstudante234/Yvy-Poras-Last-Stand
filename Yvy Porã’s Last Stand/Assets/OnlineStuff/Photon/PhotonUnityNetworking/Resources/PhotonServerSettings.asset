@@ -72,6 +72,7 @@ MonoBehaviour:
   - RPC_SyncAnimationState
   - RPC_PlayDeathSound
   - RPC_PlayerQuit
+  - RPC_ShowDamageEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
