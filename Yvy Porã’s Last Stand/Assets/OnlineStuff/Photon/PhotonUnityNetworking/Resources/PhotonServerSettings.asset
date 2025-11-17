@@ -73,6 +73,7 @@ MonoBehaviour:
   - RPC_PlayDeathSound
   - RPC_PlayerQuit
   - RPC_ShowDamageEffect
+  - RPC_ShowBulletTrail
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

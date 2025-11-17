@@ -26,19 +26,23 @@ namespace MOBAGame.Weapons
         public Camera fpsCam;
         public GameObject muzzleFlashEffect;
 
+        [Header("Visual Effects")]
+        public LineRenderer bulletTrailPrefab; // Prefab do LineRenderer para o trajeto
+        public GameObject impactEffectPrefab; // Efeito de impacto (faíscas, sangue, etc)
+        public float trailDuration = 0.1f; // Duração do trajeto visível
+
         [Header("Audio")]
         public string shootSoundName = "Shoot";
         public string reloadSoundName = "Reload";
         public string emptyClickSoundName = "EmptyClick";
 
         private Team ownerTeam = Team.None;
-        private PlayerAnimationController animationController; // NOVO
+        private PlayerAnimationController animationController;
 
         private void OnEnable()
         {
             currentAmmo = maxAmmo;
 
-            // NOVO: Busca o animation controller
             if (animationController == null)
             {
                 animationController = GetComponentInParent<PlayerAnimationController>();
@@ -103,7 +107,7 @@ namespace MOBAGame.Weapons
             nextFireTime = Time.time + fireRate;
             currentAmmo--;
 
-            // NOVO: Toca animação de ataque
+            // Toca animação de ataque
             if (animationController != null)
             {
                 animationController.PlayRangedAttack();
@@ -121,11 +125,20 @@ namespace MOBAGame.Weapons
                 AudioManager.instance.Play(shootSoundName);
             }
 
+            // Ponto de origem do tiro (posição da câmera)
+            Vector3 shootOrigin = fpsCam.transform.position;
+            Vector3 shootDirection = fpsCam.transform.forward;
+
             // Raycast para detectar alvos
             int layerMask = ~LayerMask.GetMask("Ignore Raycast");
+            Vector3 hitPoint;
+            bool hitSomething = false;
 
-            if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out RaycastHit hit, range, layerMask))
+            if (Physics.Raycast(shootOrigin, shootDirection, out RaycastHit hit, range, layerMask))
             {
+                hitPoint = hit.point;
+                hitSomething = true;
+
                 Debug.Log($"[RangedWeapon] Raycast acertou: {hit.transform.name}");
 
                 // Tenta encontrar PlayerHealth
@@ -136,61 +149,55 @@ namespace MOBAGame.Weapons
                     {
                         playerHealth.photonView.RPC("TakeDamage", RpcTarget.All, damage, photonView.ViewID);
                         Debug.Log($"[RangedWeapon] Causou {damage} de dano no jogador {hit.transform.name}");
-
-                        // Auto-reload se ficou sem munição
-                        if (currentAmmo <= 0)
-                        {
-                            StartReload();
-                        }
-                        return;
                     }
                     else
                     {
                         Debug.Log($"[RangedWeapon] Jogador do mesmo time ignorado: {hit.transform.name}");
-                        return;
                     }
                 }
-
-                // Tenta encontrar MinionHealth (primeiro no próprio objeto)
-                MinionHealth minionHealth = hit.transform.GetComponent<MinionHealth>();
-
-                // Se não encontrou, tenta no pai (caso tenha acertado um collider filho)
-                if (minionHealth == null)
+                else
                 {
-                    minionHealth = hit.transform.GetComponentInParent<MinionHealth>();
-                }
+                    // Tenta encontrar MinionHealth
+                    MinionHealth minionHealth = hit.transform.GetComponent<MinionHealth>();
 
-                if (minionHealth != null)
-                {
-                    Team minionTeam = minionHealth.GetTeam();
-
-                    Debug.Log($"[RangedWeapon] Minion detectado: {hit.transform.name}, Time: {minionTeam}, OwnerTeam: {ownerTeam}");
-
-                    if (minionTeam != ownerTeam && minionTeam != Team.None)
+                    if (minionHealth == null)
                     {
-                        minionHealth.TakeDamage(damage, ownerTeam);
-                        Debug.Log($"[RangedWeapon] Causou {damage} de dano no minion {hit.transform.name}");
+                        minionHealth = hit.transform.GetComponentInParent<MinionHealth>();
+                    }
 
-                        // Auto-reload se ficou sem munição
-                        if (currentAmmo <= 0)
+                    if (minionHealth != null)
+                    {
+                        Team minionTeam = minionHealth.GetTeam();
+
+                        Debug.Log($"[RangedWeapon] Minion detectado: {hit.transform.name}, Time: {minionTeam}, OwnerTeam: {ownerTeam}");
+
+                        if (minionTeam != ownerTeam && minionTeam != Team.None)
                         {
-                            StartReload();
+                            minionHealth.TakeDamage(damage, ownerTeam);
+                            Debug.Log($"[RangedWeapon] Causou {damage} de dano no minion {hit.transform.name}");
                         }
-                        return;
+                        else
+                        {
+                            Debug.Log($"[RangedWeapon] Minion do mesmo time ignorado: {hit.transform.name}");
+                        }
                     }
                     else
                     {
-                        Debug.Log($"[RangedWeapon] Minion do mesmo time ignorado: {hit.transform.name}");
-                        return;
+                        Debug.Log($"[RangedWeapon] Acertou objeto sem componente de dano: {hit.transform.name}");
                     }
                 }
 
-                // Se não acertou nada válido
-                Debug.Log($"[RangedWeapon] Acertou objeto sem componente de dano: {hit.transform.name}");
+                // Sincroniza efeitos visuais via RPC
+                photonView.RPC(nameof(RPC_ShowBulletTrail), RpcTarget.All, shootOrigin, hitPoint, true);
             }
             else
             {
+                // Não acertou nada, trajeto vai até o alcance máximo
+                hitPoint = shootOrigin + shootDirection * range;
                 Debug.Log("[RangedWeapon] Raycast nao acertou nada");
+
+                // Sincroniza efeitos visuais via RPC
+                photonView.RPC(nameof(RPC_ShowBulletTrail), RpcTarget.All, shootOrigin, hitPoint, false);
             }
 
             // Auto-reload se ficou sem munição
@@ -198,6 +205,54 @@ namespace MOBAGame.Weapons
             {
                 StartReload();
             }
+        }
+
+        /// <summary>
+        /// RPC para mostrar o trajeto da bala e efeito de impacto para todos os jogadores
+        /// </summary>
+        [PunRPC]
+        private void RPC_ShowBulletTrail(Vector3 startPoint, Vector3 endPoint, bool hitTarget)
+        {
+            // Desenha o trajeto da bala
+            if (bulletTrailPrefab != null)
+            {
+                LineRenderer trail = Instantiate(bulletTrailPrefab);
+                trail.SetPosition(0, startPoint);
+                trail.SetPosition(1, endPoint);
+
+                // Destrói o trajeto após alguns frames
+                StartCoroutine(FadeTrail(trail));
+            }
+
+            // Instancia efeito de impacto se acertou algo
+            if (hitTarget && impactEffectPrefab != null)
+            {
+                GameObject impact = Instantiate(impactEffectPrefab, endPoint, Quaternion.LookRotation(startPoint - endPoint));
+                Destroy(impact, 2f); // Remove após 2 segundos
+            }
+        }
+
+        /// <summary>
+        /// Corrotina para fazer o trajeto desaparecer gradualmente
+        /// </summary>
+        private IEnumerator FadeTrail(LineRenderer trail)
+        {
+            float elapsed = 0f;
+            Color startColor = trail.startColor;
+            Color endColor = trail.endColor;
+
+            while (elapsed < trailDuration)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = 1f - (elapsed / trailDuration);
+
+                trail.startColor = new Color(startColor.r, startColor.g, startColor.b, alpha);
+                trail.endColor = new Color(endColor.r, endColor.g, endColor.b, alpha);
+
+                yield return null;
+            }
+
+            Destroy(trail.gameObject);
         }
 
         private void StartReload()
