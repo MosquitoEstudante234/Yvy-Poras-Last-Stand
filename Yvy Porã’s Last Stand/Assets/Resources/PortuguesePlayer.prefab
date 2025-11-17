@@ -9672,6 +9672,9 @@ MonoBehaviour:
   reloadDuration: 4
   fpsCam: {fileID: 4441251974942427930}
   muzzleFlashEffect: {fileID: 0}
+  bulletTrailPrefab: {fileID: 9073218715595908836, guid: 116f1cb3b10e98c4babf95dc2452032a, type: 3}
+  impactEffectPrefab: {fileID: 5011289393336422773, guid: 3283199e4e139334e884dfcbf0a7c6a6, type: 3}
+  trailDuration: 0.1
   shootSoundName: Shoot
   reloadSoundName: Reload
   emptyClickSoundName: EmptyClick
