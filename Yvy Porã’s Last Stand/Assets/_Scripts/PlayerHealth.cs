@@ -147,7 +147,7 @@ namespace MOBAGame.Player
                 // Efeito de vinheta de dano
                 if (damageVignette != null)
                 {
-                    DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, Mathf.Clamp01(damage / (maxHealth * 0.3f)), .25f).OnComplete(ResetTween);
+                    DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1, .25f).OnComplete(ResetTween);
                 }
             }
 
@@ -190,7 +190,7 @@ namespace MOBAGame.Player
             // Efeito de vinheta de dano
             if (damageVignette != null)
             {
-                DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, Mathf.Clamp01(damage / (maxHealth * 0.3f)), .25f).OnComplete(ResetTween);
+                DOTween.To(() => damageVignette.weight, x => x = damageVignette.weight, 1, .25f).OnComplete(ResetTween);
             }
 
             if (currentHealth <= 0 && !isDead)
