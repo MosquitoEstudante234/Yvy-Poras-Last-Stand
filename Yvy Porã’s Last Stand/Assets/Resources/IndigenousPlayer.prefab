@@ -1952,7 +1952,7 @@ MonoBehaviour:
   enablePassiveRegen: 0
   regenRate: 1
   regenInterval: 1
-  respawnTime: 7
+  respawnTime: 8
   deathAnimationDuration: 2
   playerRenderer: {fileID: 3879493533452864065}
   OnTakeDamage:
