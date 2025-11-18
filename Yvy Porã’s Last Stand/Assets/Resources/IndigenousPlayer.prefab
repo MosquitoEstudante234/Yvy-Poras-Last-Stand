@@ -1954,7 +1954,7 @@ MonoBehaviour:
   regenRate: 2
   regenInterval: 4
   respawnTime: 8
-  deathAnimationDuration: 2
+  deathAnimationDuration: 4
   playerRenderer: {fileID: 3879493533452864065}
   OnTakeDamage:
     m_PersistentCalls:

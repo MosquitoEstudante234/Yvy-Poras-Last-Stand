@@ -9910,7 +9910,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.BaseController
   baseTeam: 1
-  maxHealth: 250
+  maxHealth: 350
   playerSpawnPoint: {fileID: 1522574624}
   minionSpawnPoint: {fileID: 82188673}
   healthBar: {fileID: 938860623}
@@ -14520,7 +14520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MOBAGame.BaseController
   baseTeam: 2
-  maxHealth: 250
+  maxHealth: 350
   playerSpawnPoint: {fileID: 967666027}
   minionSpawnPoint: {fileID: 1406059396}
   healthBar: {fileID: 384625527}
