@@ -906,7 +906,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Colonizador minion
+  m_text: "Portugu\xEAs minion"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -1146,7 +1146,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Esse pessoal n\xE3o parece gente boa... Preciso avisar os outros agora!"
+  m_text: "Esse pessoal n\xE3o parece gente boa\u2026 Preciso avisar os outros agora!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -2356,7 +2356,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Arapyra
+  m_text: "Ind\xEDgena chefe"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -2870,7 +2870,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Chefe... Acho que n\xE3o estamos na \xCDndia."
+  m_text: "Chefe\u2026 acho que n\xE3o estamos na \xCDndia."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -3370,7 +3370,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Colonizador chefe
+  m_text: "Portugu\xEAs chefe"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -3522,7 +3522,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Ah! Finalmente chegamos na \xCDndia!"
+  m_text: "Ah! Finalmente chegamos \xE0 \xCDndia!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -4375,7 +4375,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Colonizador chefe
+  m_text: "Portugu\xEAs chefe"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
@@ -4543,8 +4543,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "HM! Que esquisito, jurava que est\xE1vamos no caminho correto. Bom, vamos
-    descer e ver o que esta terra nos aguarda!"
+  m_text: "Hm, que esquisito. Eu jurava que est\xE1vamos no caminho certo. Bom, vamos
+    descer e ver o que essa terra nos reserva!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
   m_sharedMaterial: {fileID: 3140068127808408962, guid: e9d93549a65bc9d4386e8633e922ed8e, type: 2}
