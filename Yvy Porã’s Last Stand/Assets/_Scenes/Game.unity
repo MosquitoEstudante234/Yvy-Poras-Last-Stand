@@ -11895,19 +11895,25 @@ MonoBehaviour:
   sounds:
   - name: Shoot
     clip: {fileID: 8300000, guid: f8a618d6e69b31f47932c8f6fd2a527b, type: 3}
-    volume: 0.319
+    volume: 0.149
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: Spear
     clip: {fileID: 8300000, guid: 37182a5a8eb25c942bfe540698829605, type: 3}
-    volume: 0.335
+    volume: 0.182
     pitch: 1
     loop: 0
     source: {fileID: 0}
   - name: HitEnemy
     clip: {fileID: 8300000, guid: 1a784c35ce664f8478db7efb83e2b0ba, type: 3}
-    volume: 0.335
+    volume: 0.182
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: ShootPortuguese
+    clip: {fileID: 8300000, guid: 50e42aaf13e9b7e4eb871ead4fa03b54, type: 3}
+    volume: 0.182
     pitch: 1
     loop: 0
     source: {fileID: 0}
