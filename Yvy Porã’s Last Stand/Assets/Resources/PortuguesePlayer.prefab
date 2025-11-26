@@ -6792,6 +6792,8 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 2048
+  Footsteps: {fileID: 2609093717278438466}
+  FootstepSource: {fileID: 1500314487075913119}
 --- !u!114 &916101055862681183
 MonoBehaviour:
   m_ObjectHideFlags: 0

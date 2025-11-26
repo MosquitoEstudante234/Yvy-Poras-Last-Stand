@@ -35,6 +35,9 @@ namespace MOBAGame.Player
         private float verticalRotation = 0f;
         private Team playerTeam = Team.None;
 
+        [SerializeField] MonoBehaviour Footsteps;
+        [SerializeField] AudioSource FootstepSource;
+
         private void Start()
         {
             controller = GetComponent<CharacterController>();
@@ -43,7 +46,11 @@ namespace MOBAGame.Player
             {
                 if (playerCamera != null)
                     playerCamera.gameObject.SetActive(false);
-
+                if (Footsteps != null)
+                {
+                    Footsteps.enabled = false;
+                    FootstepSource.enabled = false;
+                }
                 enabled = false;
                 return;
             }
@@ -53,6 +60,7 @@ namespace MOBAGame.Player
                 {
                     objectsToDeactivateWhenMine[i].SetActive(false);
                 }
+                
             }
 
                 if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))

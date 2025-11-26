@@ -16,7 +16,7 @@ MonoBehaviour:
   defaultVolume: 1
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 2049
   textureFootsteps: []
   defaultFootstepSounds:
   - {fileID: 8300000, guid: 9dbc8977807367a4e9c4f225be06ee98, type: 3}
