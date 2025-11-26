@@ -209,6 +209,8 @@ namespace MOBAGame.Player
             // Flash de dano no material (visível para todos)
             StartCoroutine(FlashDamage());
 
+
+
             // Efeito de vinheta de dano - VISÍVEL PARA TODOS
             if (damageVignette != null)
             {
@@ -221,6 +223,7 @@ namespace MOBAGame.Player
             {
                 OnTakeDamageLocal.Invoke();
                 Debug.Log($"[PlayerHealth] Efeito LOCAL ativado apenas para {photonView.Owner.NickName}");
+                AudioManager.instance.Play("Damage");
             }
         }
 
@@ -232,7 +235,6 @@ namespace MOBAGame.Player
                 yield return new WaitForSeconds(0.2f);
                 playerMaterial.color = originalColor;
             }
-            AudioManager.instance.Play("Damage");
         }
 
         private IEnumerator PassiveRegeneration()

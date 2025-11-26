@@ -43,7 +43,6 @@ namespace MOBAGame
 
             currentHealth -= damage;
             currentHealth = Mathf.Max(0, currentHealth);
-            AudioManager.instance.Play("BaseDamage");
 
             photonView.RPC("RPC_UpdateHealth", RpcTarget.All, currentHealth);
 
@@ -65,7 +64,7 @@ namespace MOBAGame
             if (healthBar != null)
             {
                 healthBar.value = currentHealth / maxHealth;
-
+                AudioManager.instance.Play("BaseDamage");
                 // Animação de feedback ao atualizar a barra
                 healthBar.transform.DOKill();
                 healthBar.transform.localScale = Vector3.one;
