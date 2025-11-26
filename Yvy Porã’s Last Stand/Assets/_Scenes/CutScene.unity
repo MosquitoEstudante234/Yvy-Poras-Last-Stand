@@ -998,7 +998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 335616906}
-  fullText: Colonizador minion
+  fullText: "Portugu\xEAs minion"
   delayPerCharacter: 0.05
 --- !u!1001 &339830086
 PrefabInstance:
@@ -1124,7 +1124,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 362081958}
-  fullText: "Esse pessoal n\xE3o parece gente boa... Preciso avisar os outros agora!"
+  fullText: "Esse pessoal n\xE3o parece gente boa\u2026 Preciso avisar os outros
+    agora!"
   delayPerCharacter: 0.05
 --- !u!114 &362081958
 MonoBehaviour:
@@ -2334,7 +2335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 885954859}
-  fullText: Arapyra
+  fullText: "Ind\xEDgena chefe"
   delayPerCharacter: 0.05
 --- !u!114 &885954859
 MonoBehaviour:
@@ -2848,7 +2849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1080584472}
-  fullText: "Chefe... Acho que n\xE3o estamos na \xCDndia."
+  fullText: "Chefe\u2026 acho que n\xE3o estamos na \xCDndia."
   delayPerCharacter: 0.05
 --- !u!114 &1080584472
 MonoBehaviour:
@@ -3462,7 +3463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1312482386}
-  fullText: Colonizador chefe
+  fullText: "Portugu\xEAs chefe"
   delayPerCharacter: 0.05
 --- !u!1 &1349341116
 GameObject:
@@ -3614,7 +3615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1349341118}
-  fullText: "Ah! Finalmente chegamos na \xCDndia!"
+  fullText: "Ah! Finalmente chegamos \xE0 \xCDndia!"
   delayPerCharacter: 0.05
 --- !u!1 &1370401039
 GameObject:
@@ -4467,7 +4468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1828966617}
-  fullText: Colonizador chefe
+  fullText: "Portugu\xEAs chefe"
   delayPerCharacter: 0.05
 --- !u!1 &1866956631
 GameObject:
@@ -4520,8 +4521,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textMeshPro: {fileID: 1866956634}
-  fullText: "HM! Que esquisito, jurava que est\xE1vamos no caminho correto. Bom,
-    vamos descer e ver o que esta terra nos aguarda!"
+  fullText: "Hm, que esquisito. Eu jurava que est\xE1vamos no caminho certo. Bom,
+    vamos descer e ver o que essa terra nos reserva!"
   delayPerCharacter: 0.05
 --- !u!114 &1866956634
 MonoBehaviour:
