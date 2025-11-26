@@ -10567,7 +10567,7 @@ MonoBehaviour:
   impactEffectPrefab: {fileID: 5011289393336422773, guid: 3283199e4e139334e884dfcbf0a7c6a6, type: 3}
   trailDuration: 0.1
   shootSoundName: ShootPortuguese
-  reloadSoundName: Reload
+  reloadSoundName: ReloadPortuguese
   emptyClickSoundName: EmptyClick
 --- !u!114 &1210564162206558265
 MonoBehaviour:
