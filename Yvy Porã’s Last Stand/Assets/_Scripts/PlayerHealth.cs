@@ -232,6 +232,7 @@ namespace MOBAGame.Player
                 yield return new WaitForSeconds(0.2f);
                 playerMaterial.color = originalColor;
             }
+            AudioManager.instance.Play("Damage");
         }
 
         private IEnumerator PassiveRegeneration()

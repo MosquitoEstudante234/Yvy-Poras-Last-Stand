@@ -12039,6 +12039,18 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - name: Damage
+    clip: {fileID: 8300000, guid: 44670abf728f571439a4d717cd011b2c, type: 3}
+    volume: 0.182
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: BaseDamage
+    clip: {fileID: 8300000, guid: bd57084ae27fcb74aa779e6e32fec7d7, type: 3}
+    volume: 0.182
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   Audiogamer: {fileID: 0}
 --- !u!82 &1438749468
 AudioSource:

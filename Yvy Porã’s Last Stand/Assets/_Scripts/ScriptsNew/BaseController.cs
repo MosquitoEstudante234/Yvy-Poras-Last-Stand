@@ -43,6 +43,7 @@ namespace MOBAGame
 
             currentHealth -= damage;
             currentHealth = Mathf.Max(0, currentHealth);
+            AudioManager.instance.Play("BaseDamage");
 
             photonView.RPC("RPC_UpdateHealth", RpcTarget.All, currentHealth);
 
