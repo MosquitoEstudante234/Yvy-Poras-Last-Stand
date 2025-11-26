@@ -4214,7 +4214,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 0d329b1084f0cb94396052f5aa84b852, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.193
+  m_Volume: 0.64
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -20586,6 +20586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bba9532c626e84aa17e89db19033be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneGame: 
   createInput: {fileID: 0}
   joinInput: {fileID: 0}
 --- !u!33 &9127719946586754660

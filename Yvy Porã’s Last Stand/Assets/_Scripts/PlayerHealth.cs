@@ -349,6 +349,7 @@ namespace MOBAGame.Player
             }
 
             isDead = true;
+            AudioManager.instance.Play("DeathSound");
 
             if (playerCollider != null)
                 playerCollider.enabled = false;
