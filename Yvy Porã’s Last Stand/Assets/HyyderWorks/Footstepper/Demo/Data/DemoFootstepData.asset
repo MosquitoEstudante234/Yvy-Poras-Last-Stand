@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7064a597d85b0374b80904cbac42a4b5, type: 3}
   m_Name: DemoFootstepData
   m_EditorClassIdentifier: 
-  stepDistance: 0.89
+  stepDistance: 2.55
   defaultVolume: 0.66
   groundLayerMask:
     serializedVersion: 2
