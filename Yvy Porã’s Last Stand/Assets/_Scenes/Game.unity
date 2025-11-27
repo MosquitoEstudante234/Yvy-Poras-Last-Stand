@@ -12011,7 +12011,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: ShootPortuguese
     clip: {fileID: 8300000, guid: 50e42aaf13e9b7e4eb871ead4fa03b54, type: 3}
-    volume: 0.182
+    volume: 0.072
     pitch: 1
     loop: 0
     source: {fileID: 0}
@@ -12035,7 +12035,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Reload
     clip: {fileID: 8300000, guid: 6b4f1b54de2914f4bb37fac24f35f496, type: 3}
-    volume: 0.182
+    volume: 0.345
     pitch: 1
     loop: 0
     source: {fileID: 0}
@@ -12047,7 +12047,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: BaseDamage
     clip: {fileID: 8300000, guid: bd57084ae27fcb74aa779e6e32fec7d7, type: 3}
-    volume: 0.182
+    volume: 1
     pitch: 1
     loop: 0
     source: {fileID: 0}
